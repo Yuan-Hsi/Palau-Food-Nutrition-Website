@@ -1,0 +1,57 @@
+class APIFeatures {
+  constructor(query, queryString) {
+    this.query = query; // The monogoDB model.find() method
+    this.queryString = queryString; // The queryString in the URL
+  }
+
+  filter() {
+    const queryObj = { ...this.queryString };
+    // Exclue the words not used for the search query
+    const excluedInQuery = ["page", "field", "limit", "sort"];
+    excluedInQuery.map((item) => {
+      delete queryObj[item];
+    });
+
+    // Transform the wrod get  gte, gt, e, lt, lte   ----> $gte, $gt, $e, $lt, $lte
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(
+      /\b(gte|gt|e|lt|lte)\b/g,
+      (match) => "$" + match
+    );
+
+    this.query.find(JSON.parse(queryStr)); // 會返回一個查詢結果的 Promise 來去後面給 await 去拿
+    return this;
+  }
+
+  sort() {
+    if (this.queryString.sort) {
+      const sortBy = this.queryString.split(",").join(" ");
+      this.query = this.query.sort(this.queryString.sort);
+    } else {
+      this.query = this.query.sort("-timestamp");
+    }
+
+    return this;
+  }
+
+  limitFields() {
+    //exclued the information we don't need
+    if (this.queryString.fields) {
+      const fields = this.queryString.fields.split(",").join(" ");
+      this.query = this.query.select(fields);
+    } else {
+      this.query = this.query.select("-__v");
+    }
+    return this;
+  }
+
+  paginate() {
+    const page = this.queryString.page * 1 || 1;
+    const limit = this.queryString.limit * 1 || 4;
+    this.query = this.query.skip((page - 1) * limit).limit(limit); // skip means how amount you want to skip, limit is how mount results you want
+
+    return this;
+  }
+}
+
+module.exports = APIFeatures;
