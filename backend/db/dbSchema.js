@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcryptjs");
+const { use } = require("../app");
 
 const userSchema = mongoose.Schema({
   name: {
@@ -8,7 +10,11 @@ const userSchema = mongoose.Schema({
   },
   title: {
     type: String,
-    default: "Regular",
+    require: [true, "Are you a MOE admin/Cooker/Student ?"],
+  },
+  school: {
+    type: String,
+    require: [true, "Please input the school you are in."],
   },
   email: {
     type: String,
@@ -21,6 +27,7 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, "The pwd field can not be blank."],
     minlength: 8,
+    select: false,
   },
 });
 
@@ -71,6 +78,23 @@ const postSchema = mongoose.Schema({
     default: {},
   },
 });
+
+// pre middleware - the middleware between the require and stroing the document!
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("pwd")) return next();
+
+  this.pwd = await bcrypt.hash(this.pwd, 14);
+
+  next();
+});
+
+// using the instance method (which can be used by the all 'users' documents)
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 exports.User = mongoose.model("User", userSchema);
 exports.Post = mongoose.model("Post", postSchema);
