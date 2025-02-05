@@ -29,6 +29,9 @@ const userSchema = mongoose.Schema({
     minlength: 8,
     select: false,
   },
+  pwdChangeAt: {
+    type: Date,
+  },
 });
 
 const commentSchema = mongoose.Schema({
@@ -54,6 +57,10 @@ const postSchema = mongoose.Schema({
     type: Date,
     required: [true, "The timestamp field can not be blank."],
     default: Date.now(),
+  },
+  author: {
+    type: String,
+    required: [true, "Please give us your name."],
   },
   title: {
     type: String,
@@ -94,6 +101,18 @@ userSchema.methods.correctPassword = async function (
   userPassword
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+// to detect the password is changed after token was build or not?
+userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
+  if (this.pwdChangeAt) {
+    // There is no pwdChangeAt in defaul.
+    const transformTimestamp = parseInt(this.pwdChangeAt.getTime() / 1000, 10);
+
+    return transformTimestamp > JWTTimestamp;
+  }
+
+  return false;
 };
 
 exports.User = mongoose.model("User", userSchema);
