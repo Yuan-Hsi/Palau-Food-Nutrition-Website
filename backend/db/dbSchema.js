@@ -40,6 +40,11 @@ const userSchema = mongoose.Schema({
   pwdResetExpires: {
     type: Date,
   },
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 const commentSchema = mongoose.Schema({
@@ -108,6 +113,12 @@ userSchema.pre("save", function (next) {
 
   this.pwdChangeAt = Date.now() - 1000; // Prevent the token is create after defining this proprerty
 
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  // include findAndUpdate, findAndDelete....
+  this.find({ active: { $ne: false } });
   next();
 });
 

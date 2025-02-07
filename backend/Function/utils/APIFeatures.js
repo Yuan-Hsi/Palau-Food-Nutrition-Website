@@ -6,6 +6,7 @@ class APIFeatures {
 
   filter() {
     const queryObj = { ...this.queryString };
+
     // Exclue the words not used for the search query
     const excluedInQuery = ["page", "field", "limit", "sort"];
     excluedInQuery.map((item) => {
@@ -18,7 +19,7 @@ class APIFeatures {
       /\b(gte|gt|e|lt|lte)\b/g,
       (match) => "$" + match
     );
-
+    console.log(JSON.parse(queryStr));
     this.query.find(JSON.parse(queryStr)); // 會返回一個查詢結果的 Promise 來去後面給 await 去拿
     return this;
   }
