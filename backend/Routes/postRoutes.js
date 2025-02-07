@@ -6,7 +6,10 @@ const {
   deletPost,
   getPost,
 } = require("../Function/postFunction");
-const { protect: loginRequire } = require("../Function/authorizingFunction");
+const {
+  protect: loginRequire,
+  restrictTo,
+} = require("../Function/authorizingFunction");
 
 const postRouter = express.Router();
 
@@ -15,6 +18,6 @@ postRouter.route("/").post(createPost).get(getAllPost);
 postRouter
   .route("/:id")
   .get(getPost)
-  .put(loginRequire, editPost)
-  .delete(loginRequire, deletPost);
+  .put(loginRequire, restrictTo("admin"), editPost)
+  .delete(loginRequire, restrictTo("admin"), deletPost);
 module.exports = postRouter;

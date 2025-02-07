@@ -1,27 +1,31 @@
 const { promisify } = require("util");
-const { User } = require("../db/dbSchema.js");
+const { Post, User } = require("../db/dbSchema.js");
 const jwt = require("jsonwebtoken");
 const catchAsync = require("./utils/catchAsync.js");
 const AppError = require("./utils/appError.js");
+const sendEmail = require("./utils/email");
+const crypto = require("crypto");
 
 const signToken = (id) => {
+  // will need the payload, secret, expires duration
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
+
+const createSendToken = (user, statusCode, res) => {
+  token = signToken(user._id);
+  res.status(statusCode).json({
+    status: "success",
+    token,
+    user: user.name,
   });
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create(req.body); // create the data in the db
 
-  const token = signToken(newUser._id); // ({payload}, secret)
-
-  res.status(201).json({
-    status: "success",
-    token,
-    data: {
-      message: `the user ${req.body.name} is create successfully!`,
-    },
-  });
+  createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -42,12 +46,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // if everything is ok, send the token
-  const token = signToken(user.id);
-  res.status(200).json({
-    status: "success",
-    token,
-    user: user.name,
-  });
+  createSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -89,4 +88,114 @@ exports.protect = catchAsync(async (req, res, next) => {
   // pass the req to the next middleware
   req.user = userAlive;
   next();
+});
+
+exports.restrictTo = (...args) => {
+  // 回傳一個函式
+  return catchAsync(async (req, res, next) => {
+    const post = await Post.findById(req.params.id);
+
+    if (!args.includes(req.user.title) && !(req.user._id == post.author)) {
+      throw new AppError(
+        "You do not have permission to perform this action.",
+        403
+      );
+    }
+
+    next();
+  });
+};
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // get user based on posted email
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    throw new AppError(`There is no email address: ${req.body.email}`, 404);
+  }
+
+  // generate the random reset token
+  const resetToken = user.createPasswordResetoken();
+  await user.save({ validateBeforeSave: false });
+
+  // send it to user's email
+  const resetURL = `${req.protocol}://${req.get("host")}/api/v1/users/resetPassword/${resetToken}}`;
+
+  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL} \n If you didn't forget your password, please ignore this email.`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: `Your password reset token (valid for 10 mins)`,
+      message,
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Token has been sent.",
+    });
+  } catch (err) {
+    user.pwdResetToken = undefined;
+    user.pwdResetExpires = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    throw new AppError(
+      "There was an error sending the email, please contact the maintainer."
+    );
+  }
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  // get user based on the token
+  const hashedToken = crypto // 解密
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+  const user = await User.findOne({
+    pwdResetToken: hashedToken,
+    pwdResetExpires: { $gt: Date.now() },
+  });
+
+  // if token has not expired and there is user, set the new password
+  if (!user) {
+    throw new AppError(
+      "Invalid access: your resetToken is wrong or expired.",
+      400
+    );
+  }
+
+  // using middleware in dbSchema to update changePasswordAt property for the current user
+  user.pwd = req.body.pwd;
+  user.pwdResetToken = undefined;
+  user.pwdResetExpires = undefined;
+  await user.save();
+
+  // log the user in, send JWT
+  createSendToken(user, 200, res);
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // for the user has login (the pre middleware is protect)
+
+  // get user from collection
+  const user = await User.findById(req.user.id).select("+pwd");
+
+  // check if POSTed correct password is correct
+  if (
+    !user ||
+    !(await user.correctPassword(req.body.currentPassword, user.pwd))
+  ) {
+    throw new AppError(
+      "the old password is not correct, please try again",
+      401
+    );
+  }
+
+  // if the password is correct, update the password
+  user.pwd = req.body.password;
+  await user.save();
+
+  // log user in, send JWT
+  createSendToken(user, 200, res);
 });

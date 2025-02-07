@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs"); // 即使相同，一樣輸出不同密鑰
 const { use } = require("../app");
+const crypto = require("crypto"); // 單純 Hash 密碼相同，輸出一樣密鑰
 
 const userSchema = mongoose.Schema({
   name: {
@@ -10,6 +11,7 @@ const userSchema = mongoose.Schema({
   },
   title: {
     type: String,
+    enum: ["admin", "cooker", "student"], // limit the value
     require: [true, "Are you a MOE admin/Cooker/Student ?"],
   },
   school: {
@@ -30,6 +32,12 @@ const userSchema = mongoose.Schema({
     select: false,
   },
   pwdChangeAt: {
+    type: Date,
+  },
+  pwdResetToken: {
+    type: String,
+  },
+  pwdResetExpires: {
     type: Date,
   },
 });
@@ -86,11 +94,19 @@ const postSchema = mongoose.Schema({
   },
 });
 
-// pre middleware - the middleware between the require and stroing the document!
+// pre middleware - the middleware between the require and stroing the document! (but when you using "update" than "save" this will not work!!)
 userSchema.pre("save", async function (next) {
   if (!this.isModified("pwd")) return next();
 
   this.pwd = await bcrypt.hash(this.pwd, 14);
+
+  next();
+});
+
+userSchema.pre("save", function (next) {
+  if (!this.isModified("pwd") || this.isNew) return next();
+
+  this.pwdChangeAt = Date.now() - 1000; // Prevent the token is create after defining this proprerty
 
   next();
 });
@@ -113,6 +129,19 @@ userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
   }
 
   return false;
+};
+
+userSchema.methods.createPasswordResetoken = function () {
+  // 用於連到一個不會被其他人知道的前端介面
+  const resetToken = crypto.randomBytes(32).toString("hex"); // 要寄出 Real token
+  this.pwdResetToken = crypto // 存在資料庫的是 hash 過的密鑰
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.pwdResetExpires = Date.now() + 10 * 60 * 1000; // 還需要再呼叫的那邊做，.save() 才會真的儲存！
+
+  return resetToken;
 };
 
 exports.User = mongoose.model("User", userSchema);
