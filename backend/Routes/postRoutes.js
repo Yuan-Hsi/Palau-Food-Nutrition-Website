@@ -6,12 +6,16 @@ const {
   deletPost,
   getPost,
 } = require("../Function/postFunction");
+const { getComments, postComment } = require("../Function/commentFunction");
 const {
   protect: loginRequire,
   restrictTo,
 } = require("../Function/authorizingFunction");
+const commentRouter = require("./commentRoutes");
 
 const postRouter = express.Router();
+
+postRouter.use("/:postId/comments", commentRouter);
 
 postRouter
   .route("/")

@@ -1,7 +1,7 @@
 const express = require("express");
 const { getComments, postComment } = require("../Function/commentFunction");
 
-const commentRoute = express.Router();
+const commentRoute = express.Router({ mergeParams: true });
 
 commentRoute.route("/").get(getComments).post(postComment);
 
