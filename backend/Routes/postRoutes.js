@@ -13,11 +13,15 @@ const {
 
 const postRouter = express.Router();
 
-postRouter.route("/").post(createPost).get(getAllPost);
+postRouter
+  .route("/")
+  .post(loginRequire, restrictTo("admin"), createPost)
+  .get(getAllPost);
 
 postRouter
   .route("/:id")
   .get(getPost)
   .put(loginRequire, restrictTo("admin"), editPost)
   .delete(loginRequire, restrictTo("admin"), deletPost);
+
 module.exports = postRouter;

@@ -47,57 +47,72 @@ const userSchema = mongoose.Schema({
   },
 });
 
-const commentSchema = mongoose.Schema({
-  timestamp: {
-    type: Date,
-    required: [true, "The timestamp field can not be blank."],
-    default: Date.now(),
+const commentSchema = mongoose.Schema(
+  {
+    timestamp: {
+      type: Date,
+      required: [true, "The timestamp field can not be blank."],
+      default: Date.now(),
+    },
+    comment: {
+      type: String,
+      required: [true, "Comment field can not be blank."],
+    },
+    name: {
+      type: String,
+      required: [true, "You should have a name to comment."],
+    },
+    visibility: {
+      type: Boolean,
+      defualt: true,
+    },
+    post: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Post",
+      required: [true, "Comment must belong to a post"],
+    },
   },
-  name: {
-    type: String,
-  },
-  content: {
-    type: String,
-  },
-  visibility: {
-    type: Boolean,
-    defualt: true,
-  },
-});
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
 
-const postSchema = mongoose.Schema({
-  timestamp: {
-    type: Date,
-    required: [true, "The timestamp field can not be blank."],
-    default: Date.now(),
+const postSchema = mongoose.Schema(
+  {
+    timestamp: {
+      type: Date,
+      required: [true, "The timestamp field can not be blank."],
+      default: Date.now(),
+    },
+    //author: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+    author: {
+      type: Array,
+    },
+    title: {
+      type: String,
+      required: [true, "The title field can not be blank."],
+    },
+    content: {
+      type: String,
+    },
+    setNotice: {
+      type: Boolean,
+    },
+    forCooker: {
+      type: Boolean,
+      default: false,
+    },
+    forStudent: {
+      type: Boolean,
+      default: false,
+    },
   },
-  author: {
-    type: String,
-    required: [true, "Please give us your name."],
-  },
-  title: {
-    type: String,
-    required: [true, "The title field can not be blank."],
-  },
-  content: {
-    type: String,
-  },
-  setNotice: {
-    type: Boolean,
-  },
-  forCooker: {
-    type: Boolean,
-    default: false,
-  },
-  forStudent: {
-    type: Boolean,
-    default: false,
-  },
-  comment: {
-    type: commentSchema,
-    default: {},
-  },
-});
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
 
 // pre middleware - the middleware between the require and stroing the document! (but when you using "update" than "save" this will not work!!)
 userSchema.pre("save", async function (next) {
@@ -120,6 +135,13 @@ userSchema.pre(/^find/, function (next) {
   // include findAndUpdate, findAndDelete....
   this.find({ active: { $ne: false } });
   next();
+});
+
+postSchema.virtual("comments", {
+  // virtual populate
+  ref: "Comment",
+  foreignField: "post",
+  localField: "_id",
 });
 
 // using the instance method (which can be used by the all 'users' documents)
@@ -156,4 +178,14 @@ userSchema.methods.createPasswordResetoken = function () {
 };
 
 exports.User = mongoose.model("User", userSchema);
+exports.Comment = mongoose.model("Comment", commentSchema);
+
+// embed the author
+postSchema.pre("save", async function (next) {
+  const userModel = mongoose.model("User", userSchema);
+  this.author = await userModel.findById(this.author[0]).select("-__v");
+
+  next();
+});
+
 exports.Post = mongoose.model("Post", postSchema);

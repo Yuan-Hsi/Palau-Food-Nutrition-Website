@@ -8,6 +8,7 @@ const hpp = require("hpp");
 
 const postRouter = require("./Routes/postRoutes");
 const userRouter = require("./Routes/userRoutes");
+const commentRouter = require("./Routes/commentRoutes");
 const appError = require("./Function/utils/appError");
 const errorHandler = require("./Function/errorFunction");
 
@@ -39,6 +40,7 @@ app.use(
 
 app.use("/api/v1/post", postRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/comment", commentRouter);
 
 // global error handle middleware
 app.all("*", (req, res, next) => {
