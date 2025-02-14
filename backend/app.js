@@ -5,6 +5,8 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const postRouter = require("./Routes/postRoutes");
 const userRouter = require("./Routes/userRoutes");
@@ -14,10 +16,15 @@ const errorHandler = require("./Function/errorFunction");
 
 const app = express();
 
+// IMPORTANT: set what website can send the require
+app.use(cors({ origin: "http://localhost:3000" })); // 允許前端的 localhost:3000
+
 // middleware
 app.use(helmet()); // set security HTTP headers
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(cookieParser());
+
 const limiter = rateLimit({
   max: 300, // max require amount for same IP
   windowMs: 60 * 60 * 1000, // for how long

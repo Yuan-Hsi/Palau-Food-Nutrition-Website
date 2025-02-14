@@ -65,6 +65,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token)
@@ -103,7 +105,10 @@ exports.restrictTo = (...args) => {
   return catchAsync(async (req, res, next) => {
     const post = await Post.findById(req.params.id);
 
-    if (!args.includes(req.user.title) && !(req.user._id == post.author)) {
+    if (
+      !args.includes(req.user.title) &&
+      !(req.user._id == post.author[0]._id)
+    ) {
       throw new AppError(
         "You do not have permission to perform this action.",
         403

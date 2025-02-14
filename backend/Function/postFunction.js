@@ -2,6 +2,7 @@ const { Post } = require("../db/dbSchema");
 const APIFeatures = require("./utils/APIFeatures");
 const AppError = require("./utils/appError");
 const catchAsync = require("./utils/catchAsync");
+const factory = require("./handleFunction");
 
 exports.createPost = catchAsync(async (req, res, next) => {
   const newPost = await Post.create(req.body);
@@ -46,6 +47,11 @@ exports.getPost = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.editPost = factory.editOne(Post);
+
+exports.deletPost = factory.deleteOne(Post);
+
+/*
 exports.editPost = catchAsync(async (req, res, next) => {
   const update = await Post.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // 返回改後資料
@@ -74,3 +80,4 @@ exports.deletPost = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+*/

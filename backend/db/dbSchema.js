@@ -58,9 +58,10 @@ const commentSchema = mongoose.Schema(
       type: String,
       required: [true, "Comment field can not be blank."],
     },
-    name: {
-      type: String,
-      required: [true, "You should have a name to comment."],
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      required: [true, "must have someone write this comment!"],
     },
     visibility: {
       type: Boolean,
