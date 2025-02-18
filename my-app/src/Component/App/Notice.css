@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css?family=Metal");
+
+.contentDate {
+  font-family: Metal;
+  font-weight: normal;
+  color: #0099ff;
+  margin: 5% 0 0 10%;
+  letter-spacing: 0.13em;
+}
+
+.contentTitle {
+  font-family: Metal;
+  font-weight: normal;
+  color: #ebae20;
+  margin: -3% 0 0 10%;
+  letter-spacing: 0.13em;
+}
+
+.contentText {
+  font-family: Metal;
+  font-weight: normal;
+  color: #b39d62;
+  margin: 0% 10% 0 10%;
+  text-align: right;
+  line-height: 150%;
+}

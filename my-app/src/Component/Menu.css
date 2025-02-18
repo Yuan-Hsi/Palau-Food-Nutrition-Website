@@ -1,0 +1,11 @@
+.menuItem{
+    margin-left:2pt;
+    display:flex;
+    align-items: center;
+}
+.header{
+    display:flex;
+    align-items: center;
+    margin-top:2vh;
+    margin-left:2vw;
+}

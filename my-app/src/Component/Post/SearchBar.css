@@ -1,0 +1,19 @@
+
+#searchBox{
+    background-color: #50B6F9;
+    width:60vw;
+    height:8vh;
+    border-radius: 20px;
+    border:0;
+    padding-left:2vw;
+    color:white;
+    background-repeat: no-repeat;
+    background-position: 95% center;
+    background-size: 5%;
+
+}
+
+::placeholder {
+    color: rgb(252, 252, 252);
+    opacity: 1; /* Firefox */
+  }
