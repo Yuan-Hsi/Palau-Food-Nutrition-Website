@@ -17,7 +17,7 @@ const errorHandler = require("./Function/errorFunction");
 const app = express();
 
 // IMPORTANT: set what website can send the require
-app.use(cors({ origin: "http://localhost:3000" })); // 允許前端的 localhost:3000
+app.use(cors({ origin: "http://localhost:3000", credentials: true })); // 允許前端的 localhost:3000
 
 // middleware
 app.use(helmet()); // set security HTTP headers

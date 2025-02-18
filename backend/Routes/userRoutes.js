@@ -7,6 +7,7 @@ const {
   protect: loginRequire,
   updatePassword,
   restrictTo,
+  isLoggedin,
 } = require("../Function/authorizingFunction");
 const {
   getUsers,
@@ -19,6 +20,7 @@ const authRouter = express.Router();
 
 authRouter.post("/signup", signup);
 authRouter.post("/login", login);
+authRouter.get("/isLoggedin", isLoggedin);
 authRouter.post("/forgotPassword", forgotPassword);
 authRouter.patch("/resetPassword/:token", resetPassword);
 authRouter.patch("/updateMyPassword", loginRequire, updatePassword);

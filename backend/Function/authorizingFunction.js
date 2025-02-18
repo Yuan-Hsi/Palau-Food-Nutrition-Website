@@ -21,6 +21,8 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
+    sameSite: "None",
+    secure: true,
   });
 
   res.status(statusCode).json({
@@ -46,8 +48,6 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // check the pwd is correct
   const user = await User.findOne({ email }).select("+pwd"); // because the default password is not selected
-
-  console.log(user);
 
   if (!user || !(await user.correctPassword(pwd, user.pwd))) {
     throw new AppError("Incorrect email or password", 401);
@@ -211,4 +211,42 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
   // log user in, send JWT
   createSendToken(user, 200, res);
+});
+
+// To let the webpage show the "login" or "userName"
+exports.isLoggedin = catchAsync(async (req, res, next) => {
+  // get the token
+  if (req.cookies.jwt) {
+    // verify the token (the error message is handled in ./errorFunction.js)
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET
+    ); // promisify 使其可以 return 一個 promise，而不用再寫回調函數
+
+    // check user still exists
+    const userAlive = await User.findById(decoded.id); // also verify the id is valid
+
+    if (!userAlive)
+      throw new AppError(
+        "The user's id is not in the database. Are you sure your user profile is still alive?",
+        401
+      );
+
+    // check user change the password after the JWT was issued
+    if (userAlive.changePasswordAfter()) {
+      throw new AppError(
+        "The user recently change the password, please login again!",
+        401
+      );
+    }
+
+    // pass the req to the next middleware
+    res.status(200).json({
+      status: "success",
+      name: userAlive.name,
+      email: userAlive.email,
+    });
+  } else {
+    throw new AppError("The user is not login.", 401);
+  }
 });

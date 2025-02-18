@@ -5,12 +5,12 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500; // 500 means internal server error
   err.status = err.status || "error";
 
+  let error = { ...err };
+
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
   });
-
-  let error = { ...err };
 
   if (error.name === "JsonWebTokenError")
     throw new AppError("Invalid token please login again.", 401);
