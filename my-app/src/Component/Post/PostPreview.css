@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css?family=Niramit");
+
+.prePost{
+    position:relative;
+    width:70vw;
+    height:25vh;
+    background-color: #FFEA00;
+    border-radius: 20px;
+    display:flex;
+    align-items: center;
+    margin-bottom: 2%;
+}
+
+.prePhoto{
+    height:70%;
+    margin: 0 3vw 0 3vw;
+    object-fit: contain;
+}
+
+.preTitleSection{
+    display:flex;
+    align-items: center;
+    justify-content:space-between;
+    width:95%;
+}
+
+.preTitle{ 
+    color:#8F610C;
+    font-family: "Niramit";
+    letter-spacing: 0.05em;
+    margin-right: 5%;
+    margin-top:2%;
+    margin-bottom:1%;
+    line-height: 120%;
+}
+
+.preContext{
+    color:#83672A;
+    font-family: "Niramit";
+    letter-spacing: 0.02em;
+    padding-right: 10%;
+
+}
+
+.forWho{
+    background-color: white;
+    border-radius: 10px;
+    width:30%;
+    height:4vh;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.forMore{
+    position: absolute;
+    top:94%;
+    left:45%;
+    width:20%;
+    height:20%;
+    background-color: white;
+    border:none;
+    border-radius: 20px;
+    font-family: "Niramit";
+    padding-top:0%;
+    text-align: center;
+    padding-top: 0.5%;
+}
+
+.forMore:hover{
+    cursor:pointer;
+}

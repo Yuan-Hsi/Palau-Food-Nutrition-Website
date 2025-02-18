@@ -2,6 +2,7 @@ import React, { useEffect, Fragment, useState, useRef } from "react";
 import Menu from "./Component/Menu";
 import "./Post.css";
 import SearchBar from "./Component/Post/SearchBar";
+import PostPreview from "./Component/Post/PostPreview";
 
 function Post() {
     // initialize UIsize
@@ -34,6 +35,7 @@ function Post() {
       <Fragment>
         <Menu size = {size}/>
         <SearchBar margin="2vh 0% 0% 3vw" size ={size}/>
+        <PostPreview margin="4vh 0% 0% 3vw" size ={size} />
       </Fragment>
     );
   }
