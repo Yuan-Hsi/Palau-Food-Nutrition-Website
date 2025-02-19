@@ -52,7 +52,7 @@ function PostPreview(props) {
                         <div className="preTitleSection" >
                         <h1 className="preTitle" style={{fontSize:sizeAdjustment(0.04)
                         }}> {post.title}</h1>
-                        <div className="forWho"> <p style={{fontSize:sizeAdjustment(0.018), letterSpacing:"0.1em"}}> 
+                        <div className="forWho"> <p style={{fontSize:sizeAdjustment(0.018), letterSpacing:"0.1em",overflow: 'hidden', textOverflow: 'clip',whiteSpace: "nowrap"}}> 
                           {forwho(post)} </p> </div>
                         </div>
                         <div className="preContext" style={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 3 }}>

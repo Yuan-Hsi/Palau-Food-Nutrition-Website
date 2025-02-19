@@ -3,6 +3,8 @@ import Menu from "./Component/Menu";
 import "./Post.css";
 import SearchBar from "./Component/Post/SearchBar";
 import PostPreview from "./Component/Post/PostPreview";
+import WritePostBtn from "./Component/Post/WritePostBtn";
+import ForwhoFilter from "./Component/Post/ForwhoFilter";
 
 function Post() {
     // initialize UIsize
@@ -34,8 +36,14 @@ function Post() {
     return (
       <Fragment>
         <Menu size = {size}/>
+        <div style={{display:"flex"}}>
         <SearchBar margin="2vh 0% 0% 3vw" size ={size}/>
+        <WritePostBtn margin="2.5vh 0 0 7vw" size={size}/>
+        </div>
+        <div style={{display:"flex"}}>
         <PostPreview margin="4vh 0% 0% 3vw" size ={size} />
+        <ForwhoFilter margin="10vh 0% 0% 0"  size ={size}/>
+        </div>
       </Fragment>
     );
   }
