@@ -189,4 +189,6 @@ postSchema.pre("save", async function (next) {
   next();
 });
 
+postSchema.index({ title: "text", content: "text" });
+
 exports.Post = mongoose.model("Post", postSchema);

@@ -8,7 +8,7 @@ class APIFeatures {
     const queryObj = { ...this.queryString };
 
     // Exclue the words not used for the search query
-    const excluedInQuery = ["page", "field", "limit", "sort"];
+    const excluedInQuery = ["page", "field", "limit", "sort", "q"];
     excluedInQuery.map((item) => {
       delete queryObj[item];
     });
@@ -19,8 +19,20 @@ class APIFeatures {
       /\b(gte|gt|e|lt|lte)\b/g,
       (match) => "$" + match
     );
+    /*
     console.log(JSON.parse(queryStr));
     this.query.find(JSON.parse(queryStr)); // 會返回一個查詢結果的 Promise 來去後面給 await 去拿
+*/
+    // 轉換回物件
+    let filters = JSON.parse(queryStr);
+
+    // 如果有 `q` 參數，則加入全文搜尋
+    if (this.queryString.q) {
+      filters.$text = { $search: this.queryString.q };
+    }
+
+    console.log("🔍 查詢條件:", filters);
+    this.query.find(filters);
     return this;
   }
 
