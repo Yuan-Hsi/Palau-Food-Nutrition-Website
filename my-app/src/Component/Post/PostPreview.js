@@ -5,30 +5,36 @@ const url = 'http://localhost:3005/'
 
 function PostPreview(props) {
     const [posts, setPosts] = useState([1,2,3,4]);
-    const [position, setPosition] = useState(['','','','']);
     const sizeAdjustment = ( scale ) => 
         parseFloat(props.size) * scale + props.size.slice(-2);
     
     // Get all post API
     useEffect(() => {
-    async function getAllPost() {
-        try {
-          const response = await fetch(`${url}api/v1/post`, {
+    async function getPost(args) {
+          
+          let api = `${url}api/v1/post?`;
+
+          if(props.clickFilter){
+            if(args.q!=='') api += `q=${args.q}&`;
+            if(!(args.whoFilter.forCooker && args.whoFilter.forStudent)){
+              if(args.whoFilter.forCooker) api+='forCooker=true&';
+              if(args.whoFilter.forStudent) api+='forStudent=true&';
+            }
+          }
+
+          const response = await fetch(api, {
             method: "GET",
             credentials: "include" // 確保 cookie 會隨請求發送
           });
           
           const data = await response.json();
           if (data.status === "success") {
-            console.log(data.data.posts);
             setPosts(data.data.posts);
           }
-        } catch (error) {
-          alert(error);
-        }
       }
-      getAllPost();
-    }, []);
+
+    getPost({q:props.q, whoFilter:props.whoFilter});
+    }, [props.q, props.whoFilter, props.clickFilter]);
 
     // forWho function
     const forwho = function (post){
@@ -43,7 +49,7 @@ function PostPreview(props) {
     
 
     return(
-        <div className = 'preSection' style={{margin:props.margin}}>
+        <div className = 'preSection' style={{margin:props.margin,width:"130%"}}>
             {posts.map((post,idx) => {
                 return (
                     <div className ='prePost'>

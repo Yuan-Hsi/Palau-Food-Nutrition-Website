@@ -31,7 +31,6 @@ class APIFeatures {
       filters.$text = { $search: this.queryString.q };
     }
 
-    console.log("🔍 查詢條件:", filters);
     this.query.find(filters);
     return this;
   }

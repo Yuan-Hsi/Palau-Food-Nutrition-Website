@@ -10,6 +10,9 @@ function Post() {
     // initialize UIsize
     const [size, setSize] = useState("90vh");
     const [isVertical, setIsVertical] = useState(false);
+    const [clickFilter, setClickFilter] = useState(false);
+    const [q,setQ] = useState('');
+    const [whoFilter, setWhoFilter] = useState({forCooker:0,forStudent:0});
 
     useEffect(() => {
       function updateSize() {
@@ -40,9 +43,9 @@ function Post() {
         <SearchBar margin="2vh 0% 0% 3vw" size ={size}/>
         <WritePostBtn margin="2.5vh 0 0 7vw" size={size}/>
         </div>
-        <div style={{display:"flex"}}>
-        <PostPreview margin="4vh 0% 0% 3vw" size ={size} />
-        <ForwhoFilter margin="10vh 0% 0% 0"  size ={size}/>
+        <div style={{display:"flex",height:"100vh"}}>
+        <PostPreview margin="4vh 0% 0% 3vw" size ={size} whoFilter={whoFilter} clickFilter={clickFilter} q ={q}/>
+        <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} margin="10vh 0% 0% 0"  size ={size} />
         </div>
       </Fragment>
     );
