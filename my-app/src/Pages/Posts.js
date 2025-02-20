@@ -1,10 +1,11 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
-import Menu from "./Component/Menu";
-import "./Post.css";
-import SearchBar from "./Component/Post/SearchBar";
-import PostPreview from "./Component/Post/PostPreview";
-import WritePostBtn from "./Component/Post/WritePostBtn";
-import ForwhoFilter from "./Component/Post/ForwhoFilter";
+import Menu from "../Component/Utils/Menu";
+import "./Posts.css";
+import SearchBar from "../Component/Post/SearchBar";
+import PostPreview from "../Component/Post/PostPreview";
+import WritePostBtn from "../Component/Post/WritePostBtn";
+import ForwhoFilter from "../Component/Post/ForwhoFilter";
+
 
 function Post() {
     // initialize UIsize

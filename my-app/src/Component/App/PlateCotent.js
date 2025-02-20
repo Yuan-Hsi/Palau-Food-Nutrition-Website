@@ -29,7 +29,7 @@ function PlateContent(props) {
         ></hr>
         <div id="news" style={{ height: "30%", position: "relative" }}>
           <a
-            href="#"
+            href="/Posts"
             style={{
               position: "absolute",
               right: "8%",

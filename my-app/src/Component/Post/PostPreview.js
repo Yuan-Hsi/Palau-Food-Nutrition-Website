@@ -1,6 +1,7 @@
 import React, { useEffect, Fragment, useState } from "react";
-import PageSection from "../PageSection";
+import PageSection from "../Utils/PageSection";
 import "./PostPreview.css"
+import { useNavigate } from "react-router-dom";
 
 const url = 'http://localhost:3005/'
 
@@ -8,6 +9,7 @@ function PostPreview(props) {
     const [posts, setPosts] = useState([1,2,3,4]);
     const [page, setPage] = useState(1);
     const [totalPage,setTotalPage] = useState(1);
+    const navigate = useNavigate();
 
     const sizeAdjustment = ( scale ) => 
         parseFloat(props.size) * scale + props.size.slice(-2);
@@ -51,6 +53,11 @@ function PostPreview(props) {
       }
       return 'For Student'
     }
+
+    //  Go to the post
+    const goToPost = (postId) => {
+    navigate(`/post/${postId}`);
+  };
     
 
     return(
@@ -70,7 +77,7 @@ function PostPreview(props) {
                         <p style={{fontSize:sizeAdjustment(0.022), marginTop:"2%"}}> {post.content}</p>
                         </div>
                     </div>
-                    <a href='#' className="forMore" style={{fontSize:sizeAdjustment(0.02), letterSpacing:"0.3em"}}>More...</a>
+                    <button className="forMore" onClick={() => goToPost(post._id)} style={{fontSize:sizeAdjustment(0.02), letterSpacing:"0.3em"}}>More...</button>
                 </div>
                 )
             })}

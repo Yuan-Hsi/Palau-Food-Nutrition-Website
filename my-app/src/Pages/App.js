@@ -1,9 +1,9 @@
 import "./App.css";
 import React, { useEffect, Fragment, useState } from "react";
 
-import Login from "./Component/Login";
-import PlateContent from "./Component/App/PlateCotent";
-import Notice from "./Component/App/Notice";
+import Login from "../Component/Utils/Login";
+import PlateContent from "../Component/App/PlateCotent";
+import Notice from "../Component/App/Notice";
 
 const plateStyle = {
   borderRadius: "50%",

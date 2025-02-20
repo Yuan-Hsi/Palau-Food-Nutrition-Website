@@ -8,7 +8,7 @@ function WritePostBtn(props) {
             <a href="#"
             style={{fontSize: `${
       parseFloat(props.size) * 0.03
-    }${props.size.slice(-2)}`, color:"black",fontWeight: "bold",overflow: 'hidden', textOverflow: 'clip',whiteSpace: "nowrap"}}>WANNA <span style={{textDecoration: "underline"}}>WRITE</span> A POST ? </a>
+    }${props.size.slice(-2)}`, color:"black",fontWeight: "bold",overflow: 'hidden', textOverflow: 'clip',whiteSpace: "nowrap"}}>or WANNA <span style={{textDecoration: "underline"}}>WRITE</span> A POST ? </a>
         </div>
     )
 }

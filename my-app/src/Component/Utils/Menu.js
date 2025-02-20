@@ -3,7 +3,7 @@ import "./Menu.css";
 import Login from "./Login";
 
 const options = ['RECIPE','NEWS','WASTE & MEALS COUNT', 'INVENTORY FORM']
-const hrefs = ['#','#','https://docs.google.com/forms/d/e/1FAIpQLSf5442P5mYrNRNq061oKVaIK966b7rid-e8NWhuGvmWWcAe6A/viewform?usp=sf_link','#']
+const hrefs = ['#','/Posts','https://docs.google.com/forms/d/e/1FAIpQLSf5442P5mYrNRNq061oKVaIK966b7rid-e8NWhuGvmWWcAe6A/viewform?usp=sf_link','#']
 
 function Menu(props) {
     return(<Fragment>

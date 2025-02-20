@@ -8,7 +8,8 @@
     border-radius: 20px;
     display:flex;
     align-items: center;
-    margin-bottom: 2%;
+    margin-bottom: 2.5%;
+    box-shadow: 4px 3px 5px rgb(233, 233, 233);
 }
 
 .prePhoto{
@@ -64,7 +65,7 @@
     font-family: "Niramit";
     padding-top:0%;
     text-align: center;
-    padding-top: 0.5%;
+    padding-bottom: 1.5%;
 }
 
 .forMore:hover{
