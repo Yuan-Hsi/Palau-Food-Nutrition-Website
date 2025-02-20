@@ -1,10 +1,14 @@
 import React, { useEffect, Fragment, useState } from "react";
+import PageSection from "../PageSection";
 import "./PostPreview.css"
 
 const url = 'http://localhost:3005/'
 
 function PostPreview(props) {
     const [posts, setPosts] = useState([1,2,3,4]);
+    const [page, setPage] = useState(1);
+    const [totalPage,setTotalPage] = useState(1);
+
     const sizeAdjustment = ( scale ) => 
         parseFloat(props.size) * scale + props.size.slice(-2);
     
@@ -12,7 +16,7 @@ function PostPreview(props) {
     useEffect(() => {
     async function getPost(args) {
           
-          let api = `${url}api/v1/post?`;
+          let api = `${url}api/v1/post?page=${page}&`;
 
           if(props.clickFilter){
             if(args.q!=='') api += `q=${args.q}&`;
@@ -29,12 +33,13 @@ function PostPreview(props) {
           
           const data = await response.json();
           if (data.status === "success") {
+            setTotalPage(Math.ceil(data.totalResults/4));
             setPosts(data.data.posts);
           }
       }
 
     getPost({q:props.q, whoFilter:props.whoFilter});
-    }, [props.q, props.whoFilter, props.clickFilter]);
+    }, [props.q, props.whoFilter, props.clickFilter,page]);
 
     // forWho function
     const forwho = function (post){
@@ -69,6 +74,8 @@ function PostPreview(props) {
                 </div>
                 )
             })}
+
+            <PageSection totalPage={totalPage} setPage={setPage} page={page}/>
         </div>
     )
 }

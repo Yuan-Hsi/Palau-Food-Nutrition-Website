@@ -7,6 +7,7 @@ function SearchBar(props) {
       e.preventDefault();
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData.entries());
+      props.setClickFilter(true);
       props.setQ(data.query);
     }
     

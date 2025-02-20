@@ -17,12 +17,15 @@ exports.getAllPost = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Post.find(), req.query)
     .filter()
     .sort()
-    .limitFields()
-    .paginate();
-  const posts = await features.query; // 因為不能跟查詢同時，必須要等到查詢完後才能進行排序
+    .limitFields();
+
+  const totalPosts = await features.query;
+  features.paginate();
+  const posts = await features.query;
 
   res.status(200).json({
     status: "success",
+    totalResults: totalPosts.length,
     result: posts.length,
     data: {
       posts,
