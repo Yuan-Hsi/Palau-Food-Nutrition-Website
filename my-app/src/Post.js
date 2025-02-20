@@ -40,7 +40,7 @@ function Post() {
       <Fragment>
         <Menu size = {size}/>
         <div style={{display:"flex"}}>
-        <SearchBar margin="2vh 0% 0% 3vw" size ={size}/>
+        <SearchBar margin="2vh 0% 0% 3vw" size ={size} setQ={setQ}/>
         <WritePostBtn margin="2.5vh 0 0 7vw" size={size}/>
         </div>
         <div style={{display:"flex",height:"100vh"}}>
