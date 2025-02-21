@@ -1,5 +1,7 @@
 import React, { useEffect, Fragment, useState } from "react";
 import "./SearchBar.css"
+import SizeHelper from "../Utils/utils.js"
+
 
 function SearchBar(props) {
 
@@ -10,17 +12,15 @@ function SearchBar(props) {
       props.setClickFilter(true);
       props.setQ(data.query);
     }
+
+    const mySize = new SizeHelper(props.size);
     
     return(
         <Fragment>
           <form id="searchBar" onSubmit={sentQ}>
-            <input name='query' id="searchBox" style={{margin:props.margin, fontSize: `${
-      parseFloat(props.size) * 0.03
-    }${props.size.slice(-2)}`}} type="text" placeholder="Search..." >
+            <input name='query' id="searchBox" style={{margin:props.margin, fontSize: mySize.adjust(0.03)}} type="text" placeholder="Search..." >
             </input>
-            <button type="submit" id="searchBtn" style={{backgroundImage: `url('/searchIcon.png')`, backgroundSize: `${
-      parseFloat(props.size) * 0.04
-    }${props.size.slice(-2)}`}}></button>
+            <button type="submit" id="searchBtn" style={{backgroundImage: `url('/searchIcon.png')`, backgroundSize: mySize.adjust(0.04)}}></button>
             </form>
         </Fragment>
     )

@@ -245,6 +245,7 @@ exports.isLoggedin = catchAsync(async (req, res, next) => {
       status: "success",
       name: userAlive.name,
       email: userAlive.email,
+      _id:userAlive._id
     });
   } else {
     throw new AppError("The user is not login.", 401);

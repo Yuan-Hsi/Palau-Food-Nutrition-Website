@@ -1,7 +1,7 @@
 import React, { useEffect, Fragment, useState } from "react";
 import "./PageSection.css"
 
-
+// <PageSection page totalPage setPage/>
 function PageSection(props) {
 
         const btnAmount = 5;

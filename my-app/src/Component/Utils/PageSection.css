@@ -18,6 +18,13 @@
     color:#8F610C;
 }
 
+.goBtn{
+    background-color: #0c98fc;
+    font-weight: bold;
+    color:rgb(233, 206, 31);
+    border: 1px solid rgb(255, 183, 0);
+}
+
 .goBtn:hover{
     cursor:pointer;
 }

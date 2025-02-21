@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css?family=Niramit");
+@import url("https://fonts.googleapis.com/css?family=Inria+Sans");
+
+#commentSection{
+    width:100%;
+    margin-top: 3%;
+    margin-left: 4%;
+    margin-bottom:5%;
+}
+
+#postComment{
+    width: 60%;
+    height: 100%;
+    background-color: #F4F4F4;
+    border-radius: 10px;
+    padding-left: 3%;
+    padding-top: 1%;
+}
+
+#inputUser{
+    margin-bottom:2%;
+    font-family: "Niramit";
+    font-weight: bold;
+    letter-spacing: 0.2em;
+}
+
+#inputComment{
+    width:91%;
+    height:50%;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 3px 6px 5px rgb(170, 167, 167);
+    overflow: scroll;
+    padding-left: 3%;
+    padding-top: 1%;
+}
+
+#inputComment:disabled{
+    background-color: #fff;
+    cursor: no-drop;
+}
+
+#sentBtn{
+    margin-left: 3%;
+    margin-right:-3%;
+    margin-top:2%;
+    width:20%;
+    height:5vh;
+    border: none;
+    border-radius: 10px;
+    letter-spacing: 0.2em;
+    box-shadow: 3px 6px 5px rgb(170, 167, 167);
+    font-family: "Niramit";
+    font-weight: bold;
+}
+
+
+#sentBtn:hover{
+    cursor: pointer;
+}
+
+#sentBtn:active {
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+.comments{
+    width: 60%;
+    background-color: #F4F4F4;
+    border-radius: 10px;
+    margin-top: 2%;
+    padding-left: 3%;
+    padding-top: 0.5%;
+    box-shadow: 3px 6px 5px rgb(170, 167, 167);
+    padding-bottom: 1.5%;
+}
+
+#comment_1{
+    margin-top:5%;
+}
+
+#commenter{
+    font-family: "Niramit";
+    font-weight: bold;
+    letter-spacing: 0.15em;
+}
+
+#commentTime{
+    color:#616161;
+    letter-spacing: 0.1em;
+}
+
+#commentContent{
+    padding-right: 2%;
+    margin-top: 1.5%;
+    overflow: auto; /* 修改為 auto 以顯示捲軸 */
+    display: block; /* 修改為 block 以支持捲軸 */
+    max-height: calc(4 * 1.5em); /* 設置最大高度為 4 行 */
+}

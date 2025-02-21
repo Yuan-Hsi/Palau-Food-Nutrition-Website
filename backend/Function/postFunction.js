@@ -34,7 +34,13 @@ exports.getAllPost = catchAsync(async (req, res, next) => {
 });
 
 exports.getPost = catchAsync(async (req, res, next) => {
-  const post = await Post.findById(req.params.id).populate("comments");
+  // const post = await Post.findById(req.params.id).populate("comments");
+  const post = await Post.findById(req.params.id).populate({
+    path: 'comments',
+    populate: {
+      path: 'user'
+    }
+  });
 
   // error handling
   if (!post) {

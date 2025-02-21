@@ -1,17 +1,20 @@
 import React, { useEffect, Fragment, useState } from "react";
 import "./Login.css";
+import SizeHelper from "./utils.js"
 
-const url = 'http://localhost:3005/'
+const url = process.env.REACT_APP_BACKEND_URL;
 
-const singupColumn ={
-  display:"flex",
-  margin:"5% 5% 0 3%"
-}
+const singupColumn = {
+  display: "flex",
+  margin: "5% 5% 0 3%",
+};
 
 const inputFontSize = 0.02;
 
+
 function Login(props) {
   // For initializing
+  const mySize = new SizeHelper(props.plateSize);
   const [isHorizon, setisHorizon] = useState(true);
   useEffect(() => {
     function screenDetect() {
@@ -39,19 +42,20 @@ function Login(props) {
   const [openSignup, setOpenSingup] = useState(false);
 
   // isLogin
-  const [user, setUser] = useState('Login');
+  const [user, setUser] = useState("Login");
 
   useEffect(() => {
     async function checkLoginStatus() {
       try {
         const response = await fetch(`${url}api/v1/user/isLoggedin`, {
           method: "GET",
-          credentials: "include" // 確保 cookie 會隨請求發送
+          credentials: "include", // 確保 cookie 會隨請求發送
         });
 
         const data = await response.json();
         if (data.status === "success") {
           setUser(`Hi, ${data.name}`); // 設置用戶狀態
+          props.setUserInfo({name:`${data.name} :`,id:data._id}); // This is for the CommentSection.js
         }
       } catch (error) {
         console.error("Error checking login status:", error);
@@ -61,50 +65,50 @@ function Login(props) {
     checkLoginStatus();
   }, []); // 依賴陣列為空，表示只在組件掛載時執行一次
 
-    // Login API
-    const submitLogin = async (e) =>{
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const jsonData = JSON.stringify(Object.fromEntries(formData.entries()));
-      const response = await fetch(`${url}api/v1/user/login`,{
-        method:"POST",
-        headers: { "Content-Type": "application/json" },
-        body: jsonData,
-        credentials: "include"
-      });
-  
-      const data = await response.json();
-      if (data.status === "success") {
-        setUser(`Hi, ${data.user}`);
-        setOpenLogin(false);
-      }
-      else{
-        alert(data.message)
-      }
-    }
+  // Login API
+  const submitLogin = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const jsonData = JSON.stringify(Object.fromEntries(formData.entries()));
+    const response = await fetch(`${url}api/v1/user/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: jsonData,
+      credentials: "include",
+    });
 
-    // Signup API
-    const submitSignup = async (e) =>{
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const jsonData = JSON.stringify(Object.fromEntries(formData.entries()));
-      const response = await fetch(`${url}api/v1/user/signup`,{
-        method:"POST",
-        headers: { "Content-Type": "application/json" },
-        body: jsonData,
-        credentials: "include"
-      });
-  
-      const data = await response.json();
-      if (data.status === "success") {
-        setUser(`Hi, ${data.user}`);
-        alert("Account create successfully!");
-        setOpenSingup(false);
-      }
-      else{
-        alert(data.message)
-      }
+    const data = await response.json();
+    if (data.status === "success") {
+      setUser(`Hi, ${data.user}`);
+      setOpenLogin(false);
+      props.setUserInfo({name:`${data.user} :`,id:data._id}); // This is for the CommentSection.js
+    } else {
+      alert(data.message);
     }
+  };
+
+  // Signup API
+  const submitSignup = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const jsonData = JSON.stringify(Object.fromEntries(formData.entries()));
+    const response = await fetch(`${url}api/v1/user/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: jsonData,
+      credentials: "include",
+    });
+
+    const data = await response.json();
+    if (data.status === "success") {
+      setUser(`Hi, ${data.user}`);
+      props.setUserInfo({name:`${data.user} :`,id:data._id}); // This is for the CommentSection.js
+      alert("Account create successfully!");
+      setOpenSingup(false);
+    } else {
+      alert(data.message);
+    }
+  };
 
   return (
     <Fragment>
@@ -117,9 +121,7 @@ function Login(props) {
             onClick={() => setOpenLogin(true)}
             id="loginButton"
             style={{
-              fontSize: `${
-                parseFloat(props.plateSize) * 0.04
-              }${props.plateSize.slice(-2)}`,
+              fontSize: mySize.adjust(0.04),
             }}
           >
             {user}
@@ -143,9 +145,7 @@ function Login(props) {
             type="submit"
             onClick={() => setOpenLogin(true)}
             style={{
-              fontSize: `${
-                parseFloat(props.plateSize) * 0.04
-              }${props.plateSize.slice(-2)}`,
+              fontSize: mySize.adjust(0.04),
             }}
           >
             - LOGIN -
@@ -157,12 +157,8 @@ function Login(props) {
           <div
             id="outerBox"
             style={{
-              width: `${
-                parseFloat(props.plateSize) * 0.6
-              }${props.plateSize.slice(-2)}`,
-              height: `${
-                parseFloat(props.plateSize) * 0.8
-              }${props.plateSize.slice(-2)}`,
+              width: mySize.adjust(0.6),
+              height: mySize.adjust(0.8),
             }}
           >
             <div id="innerBox">
@@ -170,99 +166,82 @@ function Login(props) {
                 <hr
                   id="closeLine"
                   style={{
-                    border: `${
-                      parseFloat(props.plateSize) * 0.005
-                    }${props.plateSize.slice(-2)} solid white`,
+                    border: `${mySize.adjust(0.005)} solid white`,
                   }}
                 ></hr>
               </button>
               <h1
                 id="loginTitle"
                 style={{
-                  fontSize: `${
-                    parseFloat(props.plateSize) * 0.04
-                  }${props.plateSize.slice(-2)}`,
+                  fontSize: mySize.adjust(0.04),
                 }}
               >
                 LOGI<span style={{ letterSpacing: 0 }}>N</span>
               </h1>
               <form id="loginForm" onSubmit={submitLogin}>
-              <div className="loginInfo" style={{ marginTop: "13%" }}>
-                <h2
-                  className="accText"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.035
-                    }${props.plateSize.slice(-2)}`,
-                    textAlign:"center"
-                  }}
-                >
-                  User
-                </h2>
-                <input
-                  id="accInput"
-                  className="inputArea"
-                  name="email"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.025
-                    }${props.plateSize.slice(-2)}`,
-                    height:"5vh"
-                  }}
-                ></input>
-              </div>
-              <div className="loginInfo" style={{ marginTop: "5%" }}>
-                <h2
-                  className="accText"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.035
-                    }${props.plateSize.slice(-2)}`,
-                    textAlign:"center",
-                  }}
-                >
-                  Password
-                </h2>
-                <input
-                  type="password"
-                  id="pwdInput"
-                  className="inputArea"
-                  name="pwd"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.025
-                    }${props.plateSize.slice(-2)}`,
-                    height:"5vh"
-                  }}
-                ></input>
-              </div>
-              <div id="loginBtnSet">
-                <button
-                  onClick={() => {
-                    setOpenSingup(true);
-                    setOpenLogin(false);
-                  }
-                  }
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.04
-                    }${props.plateSize.slice(-2)}`,
-                  }}
-                  className="signupBtn"
-                >
-                  Signup
-                </button>
-                <button
-                  id="loginBtn"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.04
-                    }${props.plateSize.slice(-2)}`,
-                  }}
-                >
-                  LOGIN
-                </button>
-              </div>
+                <div className="loginInfo" style={{ marginTop: "13%" }}>
+                  <h2
+                    className="accText"
+                    style={{
+                      fontSize: mySize.adjust(0.035),
+                      textAlign: "center",
+                    }}
+                  >
+                    User
+                  </h2>
+                  <input
+                    id="accInput"
+                    className="inputArea"
+                    name="email"
+                    style={{
+                      fontSize: mySize.adjust(0.025),
+                      height: "5vh",
+                    }}
+                  ></input>
+                </div>
+                <div className="loginInfo" style={{ marginTop: "5%" }}>
+                  <h2
+                    className="accText"
+                    style={{
+                      fontSize: mySize.adjust(0.035),
+                      textAlign: "center",
+                    }}
+                  >
+                    Password
+                  </h2>
+                  <input
+                    type="password"
+                    id="pwdInput"
+                    className="inputArea"
+                    name="pwd"
+                    style={{
+                      fontSize:mySize.adjust(0.025),
+                      height: "5vh",
+                    }}
+                  ></input>
+                </div>
+                <div id="loginBtnSet">
+                  <button
+                    onClick={() => {
+                      setOpenSingup(true);
+                      setOpenLogin(false);
+                    }}
+                    style={{
+                      fontSize: mySize.adjust(0.04),
+                    }}
+                    className="signupBtn"
+                  >
+                    Signup
+                  </button>
+                  <button
+                    id="loginBtn"
+                    style={{
+                      fontSize: mySize.adjust(0.04),
+                    }}
+                  >
+                    LOGIN
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -273,12 +252,8 @@ function Login(props) {
           <div
             id="outerBox"
             style={{
-              width: `${
-                parseFloat(props.plateSize) * 0.6
-              }${props.plateSize.slice(-2)}`,
-              height: `${
-                parseFloat(props.plateSize) * 0.8
-              }${props.plateSize.slice(-2)}`,
+              width: mySize.adjust(0.6),
+              height:mySize.adjust(0.8),
             }}
           >
             <div id="innerBox">
@@ -286,9 +261,7 @@ function Login(props) {
                 <hr
                   id="closeLine"
                   style={{
-                    border: `${
-                      parseFloat(props.plateSize) * 0.005
-                    }${props.plateSize.slice(-2)} solid white`,
+                    border: `${mySize.adjust(0.005)} solid white`,
                   }}
                 ></hr>
               </button>
@@ -296,138 +269,126 @@ function Login(props) {
                 id="loginTitle"
                 style={{
                   fontFamily: "Inria Sans",
-                  fontSize: `${
-                    parseFloat(props.plateSize) * 0.04
-                  }${props.plateSize.slice(-2)}`,
-                  marginTop:'10%'
+                  fontSize: mySize.adjust(0.04),
+                  marginTop: "10%",
                 }}
               >
                 Signu<span style={{ letterSpacing: 0 }}>p</span>
               </h1>
-              <form className="signupInfo" style={{marginTop:"8%"}} onSubmit = {submitSignup}>
-              <div style={singupColumn}>
-                <h2
+              <form
+                className="signupInfo"
+                style={{ marginTop: "8%" }}
+                onSubmit={submitSignup}
+              >
+                <div style={singupColumn}>
+                  <h2
                     className="accText"
                     style={{
-                      fontSize: `${
-                        parseFloat(props.plateSize) * 0.035
-                      }${props.plateSize.slice(-2)}`,
+                      fontSize: mySize.adjust(0.035),
                     }}
                   >
                     Title
                   </h2>
-                  <select name="title" className="inputArea"                   style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.02
-                    }${props.plateSize.slice(-2)}`,
-                  }}>
-                    <option value="" disabled>Please choose your title</option>
-                    <option value="MOE" disabled>MOE (Contact the admin)</option>
+                  <select
+                    name="title"
+                    className="inputArea"
+                    style={{
+                      fontSize: mySize.adjust(0.02),
+                    }}
+                  >
+                    <option value="" disabled>
+                      Please choose your title
+                    </option>
+                    <option value="MOE" disabled>
+                      MOE (Contact the admin)
+                    </option>
                     <option value="cooker">Cooker</option>
                     <option value="student">Student</option>
-                </select>
+                  </select>
                 </div>
                 <div style={singupColumn}>
-                <h2
+                  <h2
                     className="accText"
                     style={{
-                      fontSize: `${
-                        parseFloat(props.plateSize) * 0.035
-                      }${props.plateSize.slice(-2)}`,
+                      fontSize: mySize.adjust(0.035),
                     }}
                   >
                     Name
                   </h2>
                   <input
-                  id="accSignup"
-                  className="inputArea"
-                  name="name"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * inputFontSize
-                    }${props.plateSize.slice(-2)}`,
-                  }}
-                ></input>
+                    id="accSignup"
+                    className="inputArea"
+                    name="name"
+                    style={{
+                      fontSize: mySize.adjust(inputFontSize),
+                    }}
+                  ></input>
                 </div>
                 <div style={singupColumn}>
-                <h2
-                  className="accText"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.035
-                    }${props.plateSize.slice(-2)}`,
-                    letterSpacing:"0.1rem"
-                  }}
-                >
-                  Email
-                </h2>
-                <input
-                  id="emailInput"
-                  className="inputArea"
-                  name="email"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * inputFontSize
-                    }${props.plateSize.slice(-2)}`,
-                  }}
-                ></input>
+                  <h2
+                    className="accText"
+                    style={{
+                      fontSize: mySize.adjust(0.035),
+                      letterSpacing: "0.1rem",
+                    }}
+                  >
+                    Email
+                  </h2>
+                  <input
+                    id="emailInput"
+                    className="inputArea"
+                    name="email"
+                    style={{
+                      fontSize:  mySize.adjust(inputFontSize),
+                    }}
+                  ></input>
                 </div>
                 <div style={singupColumn}>
-                <h2
-                  className="accText"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.035
-                    }${props.plateSize.slice(-2)}`,
-                    letterSpacing:"0.1rem"
-                  }}
-                >
-                  Password
-                </h2>
-                <input
-                  type="password"
-                  id="pwdSignup"
-                  className="inputArea"
-                  name="pwd"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * inputFontSize
-                    }${props.plateSize.slice(-2)}`,
-                  }}
-                ></input>
+                  <h2
+                    className="accText"
+                    style={{
+                      fontSize: mySize.adjust(0.035),
+                      letterSpacing: "0.1rem",
+                    }}
+                  >
+                    Password
+                  </h2>
+                  <input
+                    type="password"
+                    id="pwdSignup"
+                    className="inputArea"
+                    name="pwd"
+                    style={{
+                      fontSize:  mySize.adjust(inputFontSize),
+                    }}
+                  ></input>
                 </div>
                 <div style={singupColumn}>
-                <h2
-                  className="accText"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.035
-                    }${props.plateSize.slice(-2)}`,
-                    letterSpacing:"0.1rem"
-                  }}
-                >
-                  School
-                </h2>
-                <input
-                  id="schoolSignup"
-                  className="inputArea"
-                  name="school"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * inputFontSize
-                    }${props.plateSize.slice(-2)}`,
-                  }}
-                ></input>
+                  <h2
+                    className="accText"
+                    style={{
+                      fontSize: mySize.adjust(0.035),
+                      letterSpacing: "0.1rem",
+                    }}
+                  >
+                    School
+                  </h2>
+                  <input
+                    id="schoolSignup"
+                    className="inputArea"
+                    name="school"
+                    style={{
+                      fontSize:  mySize.adjust(inputFontSize),
+                    }}
+                  ></input>
                 </div>
                 <button
-                type="submit"
+                  type="submit"
                   style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.04
-                    }${props.plateSize.slice(-2)}`,
+                    fontSize: mySize.adjust(0.04),
                   }}
                   className="signupBtn"
-                  id = "joinBtn"
+                  id="joinBtn"
                 >
                   JOIN
                 </button>

@@ -1,6 +1,5 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import Menu from "../Component/Utils/Menu";
-import "./Posts.css";
 import SearchBar from "../Component/Post/SearchBar";
 import PostPreview from "../Component/Post/PostPreview";
 import WritePostBtn from "../Component/Post/WritePostBtn";
@@ -40,7 +39,7 @@ function Post() {
     return (
       <Fragment>
         <Menu size = {size}/>
-        <div style={{display:"flex"}}>
+        <div style={{display:"flex",marginTop:"3%"}}>
         <SearchBar margin="2vh 0% 0% 3vw" size ={size} setQ={setQ} setClickFilter={setClickFilter}/>
         <WritePostBtn margin="2.5vh 0 0 7vw" size={size}/>
         </div>
