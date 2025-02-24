@@ -110,6 +110,27 @@ function Login(props) {
     }
   };
 
+  // For Log out
+  const [clickUser, setClickUser] = useState(false);
+  const Logout = async(e) => {
+    e.preventDefault();
+    const response = await fetch(`${url}api/v1/user/logout`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+
+    const data = await response.json();
+    if (data.status === "success") {
+      setUser("Login");
+      props.setUserInfo({name:'Please Log in to comment',id:'',title:''});
+    } else {
+      alert(response.message);
+    }
+  }
+
+
+
   return (
     <Fragment>
       {isHorizon && ( // 橫向的 Login text
@@ -118,14 +139,27 @@ function Login(props) {
           style={{ position: "absolute", right: 30, zIndex: 3 }}
         >
           <button
-            onClick={() => setOpenLogin(true)}
+            onClick={() => {
+              if(user === 'Login') {
+                setOpenLogin(true);
+              }}}
             id="loginButton"
             style={{
               fontSize: mySize.adjust(0.04),
             }}
+            onMouseEnter={() => user !== "Login" && setClickUser(true)}
           >
             {user}
           </button>
+          {
+           clickUser && (user!=="Login") &&(
+            <ul className="drop-down-menu" onMouseLeave={() => setClickUser(false)}>
+              <li>
+                <button style={{ fontSize: mySize.adjust(0.02) }} onClick={Logout}>Log out</button>
+              </li>
+            </ul>
+            )
+          }
         </div>
       )}
       {!isHorizon && ( // 直向的 Login text

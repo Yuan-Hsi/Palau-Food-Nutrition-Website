@@ -59,6 +59,18 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+exports.logout = (req,res) => {
+  res.cookie(
+    'jwt', 'logged out' ,{
+      expires: new Date(Date.now() + 10 * 1000),
+      httpOnly: true 
+    }
+  );
+  res.status(200).json({
+    status: 'success',
+  })
+}
+
 exports.protect = catchAsync(async (req, res, next) => {
   // get the token
   let token = null;
@@ -216,41 +228,39 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 });
 
 // To let the webpage show the "login" or "userName"
-exports.isLoggedin = catchAsync(async (req, res, next) => {
-  // get the token
-  if (req.cookies.jwt) {
-    // verify the token (the error message is handled in ./errorFunction.js)
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET
-    ); // promisify 使其可以 return 一個 promise，而不用再寫回調函數
+exports.isLoggedin = async (req, res, next) => {
 
-    // check user still exists
-    const userAlive = await User.findById(decoded.id); // also verify the id is valid
+    // get the token
+    if (req.cookies.jwt) {
+      try{
+      // verify the token (the error message is handled in ./errorFunction.js)
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      ); // promisify 使其可以 return 一個 promise，而不用再寫回調函數
 
-    if (!userAlive)
-      throw new AppError(
-        "The user's id is not in the database. Are you sure your user profile is still alive?",
-        401
-      );
+      // check user still exists
+      const userAlive = await User.findById(decoded.id); // also verify the id is valid
 
-    // check user change the password after the JWT was issued
-    if (userAlive.changePasswordAfter()) {
-      throw new AppError(
-        "The user recently change the password, please login again!",
-        401
-      );
+      if (!userAlive){return next();}
+
+      // check user change the password after the JWT was issued
+      if (userAlive.changePasswordAfter()) {
+        return next();
+      }
+
+      // pass the req to the next middleware
+      res.status(200).json({
+        status: "success",
+        name: userAlive.name,
+        email: userAlive.email,
+        title:userAlive.title,
+        _id:userAlive._id
+      });
+    } 
+      catch(err){
+        return next();
+      }
     }
-
-    // pass the req to the next middleware
-    res.status(200).json({
-      status: "success",
-      name: userAlive.name,
-      email: userAlive.email,
-      title:userAlive.title,
-      _id:userAlive._id
-    });
-  } else {
-    throw new AppError("The user is not login.", 401);
-  }
-});
+next();
+};

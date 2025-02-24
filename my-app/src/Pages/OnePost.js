@@ -17,7 +17,7 @@ function OnePost() {
     const [size, setSize] = useState("90vh");
     const [isVertical, setIsVertical] = useState(false);
     const [post, setPost] = useState({comments:[]});
-    const [userInfo, setUserInfo] = useState({name:'Please Log in to comment',id:''});
+    const [userInfo, setUserInfo] = useState({name:'Please Log in to comment',id:'',title:''});
     const [commentChunk, setCommentChunk]= useState([[]]);
     const { id } = useParams();
     

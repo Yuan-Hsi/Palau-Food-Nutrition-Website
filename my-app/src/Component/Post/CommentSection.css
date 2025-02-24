@@ -2,9 +2,9 @@
 @import url("https://fonts.googleapis.com/css?family=Inria+Sans");
 
 #commentSection{
-    width:100%;
+    width:96%;
     margin-top: 3%;
-    margin-left: 4%;
+    padding-left: 4%;
     margin-bottom:5%;
 }
 
