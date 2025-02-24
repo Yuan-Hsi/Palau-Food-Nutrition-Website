@@ -76,7 +76,7 @@ function OnePost() {
         <PostContent size = {size} post = {post} />
         <div className='vl' style={{marginTop:"10%",borderColor:"#FFDD31",...vlStyle}}></div>
         </div>
-        <CommentSection post={post} userInfo={userInfo} size = {size} commentChunk={commentChunk}/>
+        <CommentSection post={post} userInfo={userInfo} size = {size} commentChunk={commentChunk} setCommentChunk = {setCommentChunk}/>
       </Fragment>
     );
   }

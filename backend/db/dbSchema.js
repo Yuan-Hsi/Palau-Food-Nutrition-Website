@@ -65,7 +65,7 @@ const commentSchema = mongoose.Schema(
     },
     visibility: {
       type: Boolean,
-      defualt: true,
+      default: true,
     },
     post: {
       type: mongoose.Schema.ObjectId,

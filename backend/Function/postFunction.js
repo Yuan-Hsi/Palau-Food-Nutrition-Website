@@ -37,6 +37,7 @@ exports.getPost = catchAsync(async (req, res, next) => {
   // const post = await Post.findById(req.params.id).populate("comments");
   const post = await Post.findById(req.params.id).populate({
     path: 'comments',
+    match: { visibility: true },
     populate: {
       path: 'user'
     }

@@ -29,6 +29,8 @@ const createSendToken = (user, statusCode, res) => {
     status: "success",
     token,
     user: user.name,
+    title: user.title,
+    _id: user._id,
   });
 };
 
@@ -245,6 +247,7 @@ exports.isLoggedin = catchAsync(async (req, res, next) => {
       status: "success",
       name: userAlive.name,
       email: userAlive.email,
+      title:userAlive.title,
       _id:userAlive._id
     });
   } else {

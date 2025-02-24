@@ -55,7 +55,7 @@ function Login(props) {
         const data = await response.json();
         if (data.status === "success") {
           setUser(`Hi, ${data.name}`); // 設置用戶狀態
-          props.setUserInfo({name:`${data.name} :`,id:data._id}); // This is for the CommentSection.js
+          props.setUserInfo({name:`${data.name} :`,id:data._id,title:data.title}); // This is for the CommentSection.js
         }
       } catch (error) {
         console.error("Error checking login status:", error);
@@ -81,7 +81,7 @@ function Login(props) {
     if (data.status === "success") {
       setUser(`Hi, ${data.user}`);
       setOpenLogin(false);
-      props.setUserInfo({name:`${data.user} :`,id:data._id}); // This is for the CommentSection.js
+      props.setUserInfo({name:`${data.user} :`,id:data._id,title:data.title}); // This is for the CommentSection.js
     } else {
       alert(data.message);
     }
@@ -102,7 +102,7 @@ function Login(props) {
     const data = await response.json();
     if (data.status === "success") {
       setUser(`Hi, ${data.user}`);
-      props.setUserInfo({name:`${data.user} :`,id:data._id}); // This is for the CommentSection.js
+      props.setUserInfo({name:`${data.user} :`,id:data._id,title:data.title}); // This is for the CommentSection.js
       alert("Account create successfully!");
       setOpenSingup(false);
     } else {

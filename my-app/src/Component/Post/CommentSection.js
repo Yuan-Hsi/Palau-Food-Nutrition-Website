@@ -31,6 +31,33 @@ function CommentSection(props) {
     console.log(data);
   };
 
+  // connet to Get Comment API (If the user is admin)
+    useEffect( () => {
+      async function getComments(postId) {
+        
+          let api = `${url}api/v1/post/${postId}/comments`;
+          
+          const response = await fetch(api, {
+              method:"GET",
+              credentials:"include"
+          });
+          
+          const data = await response.json();
+          console.log(data);
+          if (data.status === "success") {
+              // Chunk the comment to the size for 'one' page of comment section
+              props.setCommentChunk(chunkArray(data.data.comments));
+          }
+      }
+      
+    if(props.userInfo.title === 'admin'){
+      getComments(props.post._id)
+    }
+    
+
+    },[]);
+
+
   return (
     <div id='commentSection'>
       <div style={{ display: "flex", height: "20%", alignItems: "center" }}>
@@ -39,7 +66,7 @@ function CommentSection(props) {
           <textarea id='inputComment' name='comment' disabled={props.userName === "Please Log in"} style={{ fontSize: mySize.adjust(0.028) }}></textarea>
           <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", paddingRight: "2%"}}>
             <div style={{ display: "flex", alignItems: "center", marginTop: "-3%", }}>
-              <input type='checkbox' id='privateBtn' name='visibility' value='true'></input>
+              <input type='checkbox' id='privateBtn' name='visibility' value='false'></input>
               <label for='privateBtn' style={{ fontSize: mySize.adjust(0.015), marginLeft: "5%", whiteSpace: "nowrap", }}> ONLY BE SEEN BY ADMIN </label>
             </div>
             <button type='submit' id='sentBtn' style={{ fontSize: mySize.adjust(0.03) }}> SENT </button>
