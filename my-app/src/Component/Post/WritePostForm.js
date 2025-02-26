@@ -4,7 +4,7 @@ import SizeHelper from "../Utils/utils.js"
 import Tiptap from "../Utils/Tiptap.js";
 import { useUser } from "../Utils/UserContext.js";
 import DOMPurify from "dompurify";
-
+import { useNavigate } from "react-router-dom";
 
 const centerStyle={
     display:"flex",
@@ -17,12 +17,12 @@ const url = process.env.REACT_APP_BACKEND_URL;
 function WritePostForm(props) {
 
     const { user } = useUser();
-
+    const navigate = useNavigate();
     const mySize = new SizeHelper(props.size);
-
     const [cooker, setCooker] = useState(false);
     const [student, setStudent] = useState(false);
     const [content, setContent] = useState("");
+    
 
     const sendPost = async (e) => {
         e.preventDefault();
@@ -46,11 +46,11 @@ function WritePostForm(props) {
 
         const data = await response.json();
         if (data.status === "success") {
-            console.log('success');
+            navigate(`/post/${data.postId}`);
         } else {
           alert(data.message);
         }
-        
+
       };
     
     return(

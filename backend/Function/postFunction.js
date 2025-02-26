@@ -10,6 +10,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
   res.status(201).json({
     status: "success",
     message: `the post with title '${req.body.title}' successfully create.`,
+    postId:newPost._id
   });
 });
 
