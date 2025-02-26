@@ -22,6 +22,7 @@ const lineStyle = {
 };
 
 function App() {
+  const [userInfo, setUserInfo] = useState({name:'',id:'',title:''});
   // initialize UIsize
   const [plateSize, setplateSize] = useState("90vh");
   useEffect(() => {
@@ -47,7 +48,7 @@ function App() {
 
   return (
     <Fragment>
-      <Login plateSize={plateSize} />
+      <Login plateSize={plateSize} setUserInfo={setUserInfo} />
       <div
         id="menu"
         style={{ height: "100vh", position: "relative", ...centerStyle }}

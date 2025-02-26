@@ -16,7 +16,7 @@ function Menu(props) {
   const mySize = new SizeHelper(props.size);
   return (
     <Fragment>
-      <Login plateSize={props.size} setUserInfo={props.setUserInfo} />
+      <Login plateSize={props.size} />
       <div id='menu'>
         {options.map((item, idx) => {
           return (

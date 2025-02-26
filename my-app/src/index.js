@@ -5,15 +5,20 @@ import "./index.css";
 import App from "./Pages/App.js";
 import Posts from "./Pages/Posts.js";
 import OnePost from "./Pages/OnePost.js";
+import WriteAPost from "./Pages/WriteAPost.js";
+import { UserProvider } from "./Component/Utils/UserContext.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+
 root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/posts" element={<Posts />} />
-        <Route path="/post/:id" element={<OnePost />} />
+        <Route path="/" element={<UserProvider><App /></UserProvider>}/>
+        <Route path="/posts" element={<UserProvider><Posts /></UserProvider>} />
+        <Route path="/post/:id" element={<UserProvider><OnePost /></UserProvider>} />
+        <Route path="/writeapost" element={<UserProvider><WriteAPost /></UserProvider>} />
       </Routes>
     </Router>
   </React.StrictMode>

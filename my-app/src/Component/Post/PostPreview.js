@@ -3,6 +3,7 @@ import PageSection from "../Utils/PageSection";
 import "./PostPreview.css";
 import SizeHelper from "../Utils/utils.js";
 import { useNavigate } from "react-router-dom";
+import he from "he"
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -60,6 +61,10 @@ function PostPreview(props) {
   return (
     <div className="preSection" style={{ margin: props.margin, width: "130%" }}>
       {posts.map((post, idx) => {
+
+        // Drop the decoration of the content
+        const postContent = (post.content===undefined) ? '' : he.decode(post.content).replace(/<[^>]+>/g, "");
+
         return (
           <div className="prePost">
             <img className="prePhoto" src="imageHolder.png" alt=""></img>
@@ -82,8 +87,7 @@ function PostPreview(props) {
                 }}
               >
                 <p style={{ fontSize: mySize.adjust(0.022), marginTop: "2%" }}>
-                  {" "}
-                  {post.content}
+                  {postContent}
                 </p>
               </div>
             </div>

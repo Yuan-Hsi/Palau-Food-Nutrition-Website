@@ -163,6 +163,7 @@ ul{
 .drop-down-menu li {
   position: relative;
   white-space: nowrap;
+  list-style-type: none;
   border:none;
 }
 

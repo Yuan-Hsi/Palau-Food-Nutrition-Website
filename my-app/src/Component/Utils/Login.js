@@ -1,6 +1,8 @@
 import React, { useEffect, Fragment, useState } from "react";
 import "./Login.css";
 import SizeHelper from "./utils.js"
+import { useUser } from "../Utils/UserContext.js";
+
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -12,7 +14,9 @@ const singupColumn = {
 const inputFontSize = 0.02;
 
 
+
 function Login(props) {
+
   // For initializing
   const mySize = new SizeHelper(props.plateSize);
   const [isHorizon, setisHorizon] = useState(true);
@@ -41,31 +45,9 @@ function Login(props) {
   const [openLogin, setOpenLogin] = useState(false);
   const [openSignup, setOpenSingup] = useState(false);
 
-  // isLogin
-  const [user, setUser] = useState("Login");
-
-  useEffect(() => {
-    async function checkLoginStatus() {
-      try {
-        const response = await fetch(`${url}api/v1/user/isLoggedin`, {
-          method: "GET",
-          credentials: "include", // 確保 cookie 會隨請求發送
-        });
-
-        const data = await response.json();
-        if (data.status === "success") {
-          setUser(`Hi, ${data.name}`); // 設置用戶狀態
-          props.setUserInfo({name:`${data.name} :`,id:data._id,title:data.title}); // This is for the CommentSection.js
-        }
-      } catch (error) {
-        console.error("Error checking login status:", error);
-      }
-    }
-
-    checkLoginStatus();
-  }, []); // 依賴陣列為空，表示只在組件掛載時執行一次
-
   // Login API
+  const { user, setUser } = useUser();
+
   const submitLogin = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -79,9 +61,8 @@ function Login(props) {
 
     const data = await response.json();
     if (data.status === "success") {
-      setUser(`Hi, ${data.user}`);
+      setUser({ name: data.user, id: data._id, title: data.title });
       setOpenLogin(false);
-      props.setUserInfo({name:`${data.user} :`,id:data._id,title:data.title}); // This is for the CommentSection.js
     } else {
       alert(data.message);
     }
@@ -101,8 +82,7 @@ function Login(props) {
 
     const data = await response.json();
     if (data.status === "success") {
-      setUser(`Hi, ${data.user}`);
-      props.setUserInfo({name:`${data.user} :`,id:data._id,title:data.title}); // This is for the CommentSection.js
+      setUser({ name: data.user, id: data._id, title: data.title });
       alert("Account create successfully!");
       setOpenSingup(false);
     } else {
@@ -122,8 +102,7 @@ function Login(props) {
 
     const data = await response.json();
     if (data.status === "success") {
-      setUser("Login");
-      props.setUserInfo({name:'Please Log in to comment',id:'',title:''});
+      setUser({ name: 'Login'});
     } else {
       alert(response.message);
     }
@@ -140,19 +119,19 @@ function Login(props) {
         >
           <button
             onClick={() => {
-              if(user === 'Login') {
+              if(user.name === 'Login') {
                 setOpenLogin(true);
               }}}
             id="loginButton"
             style={{
               fontSize: mySize.adjust(0.04),
             }}
-            onMouseEnter={() => user !== "Login" && setClickUser(true)}
+            onMouseEnter={() => user.name !== "Login" && setClickUser(true)}
           >
-            {user}
+            {user.name}
           </button>
           {
-           clickUser && (user!=="Login") &&(
+           clickUser && (user.name!=="Login") &&(
             <ul className="drop-down-menu" onMouseLeave={() => setClickUser(false)}>
               <li>
                 <button style={{ fontSize: mySize.adjust(0.02) }} onClick={Logout}>Log out</button>

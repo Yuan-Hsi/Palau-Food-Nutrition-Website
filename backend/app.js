@@ -20,7 +20,22 @@ const app = express();
 app.use(cors({ origin: "http://localhost:3000", credentials: true })); // 允許前端的 localhost:3000
 
 // middleware
-app.use(helmet()); // set security HTTP headers
+app.use(helmet({
+  frameguard: { action: "deny" }, // 禁止 iframe 內嵌
+  contentSecurityPolicy: {
+    directives: {
+      frameAncestors: ["'none'"], // 禁止網站被嵌入 iframe
+    },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"], // 只允許來自信任來源的 script
+        objectSrc: ["'none'"], // 禁止加載 Flash 等
+        upgradeInsecureRequests: [],
+      },
+    }
+  }
+})); // set security HTTP headers
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());

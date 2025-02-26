@@ -15,16 +15,16 @@ function PageSection(props) {
 
         const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);  // smart move by ChatGPT
 
-
     return(
         <div id="pageSection" >
-            <button className='goBtn' style={{marginRight:"2%"}} onClick={() => props.setPage(1)}>&lt;&lt;</button>
+            {!(pages.length === 0) && props.page!==1 && <button className='goBtn' style={{marginRight:"2%"}} onClick={() => props.setPage(1)}>&lt;&lt;</button>}
+            
             {pages.map((i) => (
                 <button className="pageBtn" key={i} id={i === props.page ? "curPage" : `page${i}`}  disabled={i === props.page} 
                 onClick={() => props.setPage(i)}
                 >  {i} </button>
                 ))}
-            <button className='goBtn' style={{marginLeft:"2%"}} onClick={() => props.setPage(props.totalPage)} >&gt;&gt;</button>
+            {!(pages.length === 0) && props.page!==props.totalPage && <button className='goBtn' style={{marginLeft:"2%"}} onClick={() => props.setPage(props.totalPage)} >&gt;&gt;</button>}
         </div>
 
     )

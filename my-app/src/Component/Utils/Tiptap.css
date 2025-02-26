@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css?family=Inria+Sans");
+
+button{
+    margin-left: 1%;
+    border-radius: 3px;
+    border:0.5px solid black;
+}
+
+p{
+    line-height: 1.4em;
+    font-family: Inria Sans;
+}
+
+ul li{
+    list-style-type: circle;
+    margin-left: 3%;
+}
+
+blockquote{
+    background-color: #e7e5e4;
+    padding-left: 16pt;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+ol li{
+    list-style-type: decimal;
+}
+

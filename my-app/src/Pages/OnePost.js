@@ -17,7 +17,6 @@ function OnePost() {
     const [size, setSize] = useState("90vh");
     const [isVertical, setIsVertical] = useState(false);
     const [post, setPost] = useState({comments:[]});
-    const [userInfo, setUserInfo] = useState({name:'Please Log in to comment',id:'',title:''});
     const [commentChunk, setCommentChunk]= useState([[]]);
     const { id } = useParams();
     
@@ -70,13 +69,13 @@ function OnePost() {
 
     return (
       <Fragment>
-        <Menu size = {size} setUserInfo = {setUserInfo}/>
+        <Menu size = {size} />
         <div style={{display:"flex",height:"100%",marginLeft:"3%"}}>
         <div className='vl' style={{marginTop:"20%", borderColor:"#50B6F9",...vlStyle}}></div>
         <PostContent size = {size} post = {post} />
         <div className='vl' style={{marginTop:"10%",borderColor:"#FFDD31",...vlStyle}}></div>
         </div>
-        <CommentSection post={post} userInfo={userInfo} size = {size} commentChunk={commentChunk} setCommentChunk = {setCommentChunk}/>
+        <CommentSection post={post} size = {size} commentChunk={commentChunk} setCommentChunk = {setCommentChunk}/>
       </Fragment>
     );
   }
