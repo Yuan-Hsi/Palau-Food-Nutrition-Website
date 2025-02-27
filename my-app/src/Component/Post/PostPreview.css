@@ -28,7 +28,8 @@
 }
 
 .prePhoto{
-    height:70%;
+    max-height:70%;
+    width:20%;
     margin: 0 3vw 0 3vw;
     object-fit: contain;
 }

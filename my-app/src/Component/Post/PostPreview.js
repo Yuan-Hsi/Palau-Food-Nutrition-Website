@@ -88,13 +88,27 @@ function PostPreview(props) {
     <div className="preSection" style={{ margin: props.margin, width: "130%" }}>
       { posts.map((post, idx) => {
 
-        // Drop the decoration of the content
-        const postContent = (post.content===undefined) ? '' : he.decode(post.content).replace(/<[^>]+>/g, "");
+        let postContent = "";
+        let firstImageBase64 = null;
+
+        if(post.content!==undefined){
+
+          const htmlContent = he.decode(post.content);
+
+          // Drop the decoration of the content
+          postContent = htmlContent.replace(/<[^>]+>/g, "");
+  
+          // Read the imgfile (only first one)
+          const imgRegex = /<img[^>]+src="([^">]+)"/g;
+          const match = imgRegex.exec(htmlContent);
+          firstImageBase64 = match ? match[1] : null; 
+        }
+
 
         return (
           <div className="prePost" key={`prePost${idx}`}>
             { (user.title === 'admin' || (post.author && user.id === post.author[0]._id)) && <button className='delBtn' style={{height:mySize.adjust(0.045),width:mySize.adjust(0.045)}} onClick={() => delPost(post.id)}>✖︎</button>}
-            <img className="prePhoto" src="imageHolder.png" alt=""></img>
+            <img className="prePhoto" src={firstImageBase64} alt=""></img>
             <div style={{ width: "100%" }}>
               <div className="preTitleSection">
                 <h1 className="preTitle" style={{ fontSize: mySize.adjust(0.04) }} > {post.title} </h1>
