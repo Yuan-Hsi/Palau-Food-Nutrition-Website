@@ -18,8 +18,8 @@ function ForwhoFilter(props) {
         <div id='forWhoFilter' style={{margin:props.margin,width:'100%'}}>
             <h1 id='UR' style={{fontSize:mySize.adjust(0.04)}}>You are</h1>
             <div id='filterBtnSet'>
-                <button class='filterBtn' id='cookerFilter' onClick={() => filterClick("forCooker")}  style={{fontSize:mySize.adjust(0.025), backgroundColor: (props.whoFilter.forCooker ? "#6be508" : "#c0c0c0")}}> Cooker </button>
-                <button class='filterBtn' id='studentFilter' onClick={() => filterClick("forStudent")} style={{fontSize:mySize.adjust(0.025), backgroundColor: (props.whoFilter.forStudent ? "#6be508" : "#c0c0c0")}}> Student</button>
+                <button className='filterBtn' id='cookerFilter' onClick={() => filterClick("forCooker")}  style={{fontSize:mySize.adjust(0.025), backgroundColor: (props.whoFilter.forCooker ? "#6be508" : "#c0c0c0")}}> Cooker </button>
+                <button className='filterBtn' id='studentFilter' onClick={() => filterClick("forStudent")} style={{fontSize:mySize.adjust(0.025), backgroundColor: (props.whoFilter.forStudent ? "#6be508" : "#c0c0c0")}}> Student</button>
             </div>
         </div>
     )

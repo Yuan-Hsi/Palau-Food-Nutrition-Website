@@ -12,6 +12,21 @@
     box-shadow: 4px 3px 5px rgb(233, 233, 233);
 }
 
+.delBtn{
+    position:absolute;
+    border-radius: 100%;
+    left:96%;
+    top:-5%;
+    border:2px solid black;
+    box-shadow: 4px 3px 5px rgb(233, 233, 233);
+    margin:0;
+    padding:0;
+}
+
+.delBtn:hover{
+    cursor: pointer;
+}
+
 .prePhoto{
     height:70%;
     margin: 0 3vw 0 3vw;

@@ -20,7 +20,7 @@ function Menu(props) {
       <div id='menu'>
         {options.map((item, idx) => {
           return (
-            <div class='menuItem'>
+            <div className='menuItem' key={`menu-item-${idx}`}>
               <a href={hrefs[idx]} style={{ marginLeft: "1vw", marginRight: "1vw", fontSize: mySize.adjust(0.025) }}>
                 {item}
               </a>

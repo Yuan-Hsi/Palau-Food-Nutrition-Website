@@ -23,6 +23,7 @@ const userSchema = mongoose.Schema({
     required: [true, "The email field can not be blank."],
     unique: [true, "Your email is been used."],
     lowercase: true,
+    select: false,
     validate: [validator.isEmail, "Please provide a valid email "],
   },
   pwd: {
@@ -184,7 +185,7 @@ exports.Comment = mongoose.model("Comment", commentSchema);
 // embed the author
 postSchema.pre("save", async function (next) {
   const userModel = mongoose.model("User", userSchema);
-  this.author = await userModel.findById(this.author[0]).select("-__v");
+  this.author = await userModel.findById(this.author[0]).select("-__v -email");
 
   next();
 });

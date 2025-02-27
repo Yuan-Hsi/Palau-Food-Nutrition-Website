@@ -4,6 +4,7 @@ import "./PostPreview.css";
 import SizeHelper from "../Utils/utils.js";
 import { useNavigate } from "react-router-dom";
 import he from "he"
+import { useUser } from "../Utils/UserContext.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -12,6 +13,7 @@ function PostPreview(props) {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const navigate = useNavigate();
+  const { user } = useUser();
 
   const mySize = new SizeHelper(props.size);
 
@@ -37,6 +39,7 @@ function PostPreview(props) {
       if (data.status === "success") {
         setTotalPage(Math.ceil(data.totalResults / 4));
         setPosts(data.data.posts);
+        console.log(data.data.posts);
       }
     }
 
@@ -58,15 +61,39 @@ function PostPreview(props) {
     navigate(`/post/${postId}`);
   };
 
+  // Delete post API
+  const delPost = async (postId) => {
+    
+    if(!window.confirm("Are you sure to delete the post?")){
+      return;
+    }
+
+    const response = await fetch(`${url}api/v1/post/${postId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    const data = await response;
+    if (data.status === 204) {
+      const updatePosts = posts.filter(item => item.id !== postId);
+      setPosts(updatePosts);
+    }
+    else{
+      alert('something wrong...')
+    }
+
+  }
+
   return (
     <div className="preSection" style={{ margin: props.margin, width: "130%" }}>
-      {posts.map((post, idx) => {
+      { posts.map((post, idx) => {
 
         // Drop the decoration of the content
         const postContent = (post.content===undefined) ? '' : he.decode(post.content).replace(/<[^>]+>/g, "");
 
         return (
-          <div className="prePost">
+          <div className="prePost" key={`prePost${idx}`}>
+            { (user.title === 'admin' || (post.author && user.id === post.author[0]._id)) && <button className='delBtn' style={{height:mySize.adjust(0.045),width:mySize.adjust(0.045)}} onClick={() => delPost(post.id)}>✖︎</button>}
             <img className="prePhoto" src="imageHolder.png" alt=""></img>
             <div style={{ width: "100%" }}>
               <div className="preTitleSection">
