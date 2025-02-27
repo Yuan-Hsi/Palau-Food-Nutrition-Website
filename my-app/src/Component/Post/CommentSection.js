@@ -20,7 +20,6 @@ function CommentSection(props) {
     const formData = new FormData(e.target);
     const req = Object.assign(Object.fromEntries(formData.entries()), {timestamp:Date.now(), user:user.id,post:props.post._id})
     const jsonReq = JSON.stringify(req);
-    console.log(jsonReq);
 
     const response = await fetch(`${url}api/v1/post/${props.post._id}/comments`, {
       method: "POST",
@@ -31,7 +30,6 @@ function CommentSection(props) {
 
     const data = await response.json();
 
-    console.log(data);
     if (data.status === "success") {
       const now = new Date();  // 純粹放進去 array ，更新畫面而已
       const newComment ={"timestamp": now.setTime(Date.now()), "visibility": true, "_id": data.data._id,
@@ -56,8 +54,8 @@ function CommentSection(props) {
   // connet to Get Comment API (If the user is admin)
     useEffect( () => {
       async function getComments(postId) {
-        
-          let api = `${url}api/v1/post/${postId}/comments`;
+      try{
+          let api = `${url}api/v1/post/${postId}/comments/user`;
           
           const response = await fetch(api, {
               method:"GET",
@@ -65,14 +63,16 @@ function CommentSection(props) {
           });
           
           const data = await response.json();
-          console.log(data);
           if (data.status === "success") {
               // Chunk the comment to the size for 'one' page of comment section
               props.setCommentChunk(chunkArray(data.data.comments));
           }
       }
-
-    if(props.post._id && user.title === 'admin'){
+      catch{
+        alert('something wrong...')
+      }
+    }
+    if(props.post._id && user.title ){
       getComments(props.post._id)
     }
     },[user,props.setCommentChunk,props.post._id]);
@@ -120,7 +120,7 @@ function CommentSection(props) {
       <div id='commentView' style={{height:"100%"}}>
         {
           props.commentChunk[page-1] && props.commentChunk[page-1].map((item,idx) => (
-          <div class='comments' id={`comment_${idx+1}`}>
+          <div className='comments' id={`comment_${idx+1}`} key={`comment_${idx+1}`}>
             { (user.title === 'admin' || (item.user._id && user.id === item.user._id )) && <button className='delBtn commentDelBtn' onClick={() => delComment(item._id)} style={{height:mySize.adjust(0.045),width:mySize.adjust(0.045)}} >✖︎</button>}
             <div style={{display:"flex",justifyContent:"space-between",paddingRight:'3%',paddingTop:'2%'}}> 
               <p style={{fontSize: mySize.adjust(0.03)}} id="commenter"> {`${item.user.name} - `} </p>

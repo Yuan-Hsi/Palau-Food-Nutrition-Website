@@ -5,22 +5,81 @@ import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import TextAlign from '@tiptap/extension-text-align';
 import SizeHelper from "./utils.js";
+import FileHandler from '@tiptap-pro/extension-file-handler'
+import Image from '@tiptap/extension-image'
+import { Node, mergeAttributes,findParentNode } from "@tiptap/core";
+
 
 import "./Tiptap.css";
 
-// <Tiptap size={props.size}  sendPost={sendPost}/>
+// Create a CustomImage to add the style attribute
+const CustomImage = Image.configure({
+  inline: true,
+}).extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      style: {
+        default: `width: 300px; height: auto; max-width: 450px;`, // Add the default style
+      },
+    };
+  },
+});
 
 const Tiptap = (props) => {
   const mySize = new SizeHelper(props.size);
 
   const editor = useEditor({
-    extensions: [StarterKit, Color,TextStyle,TextAlign.configure({types: ['heading', 'paragraph']}),],
+    extensions: [StarterKit, Color,TextStyle,TextAlign.configure({types: ['heading', 'paragraph']}),
+    CustomImage,FileHandler.configure({
+      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+      onDrop: (currentEditor, files, pos) => {
+        files.forEach(file => {
+          const fileReader = new FileReader()
+
+          fileReader.readAsDataURL(file)
+          fileReader.onload = () => {
+            currentEditor.chain().insertContentAt(pos, {
+              type: 'image',
+              attrs: {
+                src: fileReader.result,
+              },
+            }).focus().run()
+          }
+        })
+      },
+      onPaste: (currentEditor, files, htmlContent) => {
+        const transfer = new DataTransfer();
+
+        for (let i = 0; i < files.length; i++) {
+          transfer.items.add(files[i])
+        }
+        
+        const newFiles = Array.from(transfer.files)
+
+        newFiles.forEach(file => {
+          const fileReader = new FileReader();
+
+          fileReader.readAsDataURL(file);
+          fileReader.onload = () => {
+            currentEditor.chain().focus().insertContent({
+              type: 'image',
+              attrs: {
+                src: fileReader.result,
+              },
+            }).run();
+          };
+        });
+      },
+
+    }),],
     content: `<p><span style="color: #858585">Write down here...</span></p>`,
   });
 
   const mainFunction = ["Font","Color","Align","List","Quote","Media"];
   const [selected, setSelected] = useState("Font");
   const [initializing,setInitializing] = useState(true);
+  const [imageSize, setImageSize] = useState("medium");
 
   useEffect(() => {
     if (editor) {
@@ -37,8 +96,30 @@ const Tiptap = (props) => {
     }
   };
 
+  const setImageStyle = (size) => {
+    setImageSize(size);
+    const { state } = editor;
+    //find the selected image
+    const { from, to } = state.selection;
+    const image = state.doc.nodesBetween(from, to, (node, pos) => {
+      if (node.type.name === "image") {
+        return { node, pos };
+      }
+    });
+    if (image.length > 0){
+      const {node,pos} = image[0]
+      editor.chain().focus().command(({ tr }) => {
+        tr.setNodeMarkup(pos, undefined, {
+          ...node.attrs,
+          style: `width: ${size}; height: auto; max-width:450px;`, // Modify the style attribute
+        });
+      return true
+      }).run();
+    }
+  };
+
   return (
-    <div style={{ marginTop: "2%", backgroundColor: "#efefef", width: "70%", borderRadius: "10px", padding: "3%",}}>
+    <div style={{ marginTop: "2%", backgroundColor: "#efefef", width: "70%", borderRadius: "10px", padding: "3%",}} onClick={handleEditorClick}>
       <div style={{ marginBottom: "10px" }}>
         {mainFunction.map(item=>(
           <button type="button" key={item}
@@ -132,10 +213,23 @@ const Tiptap = (props) => {
           <button type="button" onClick={() => editor.chain().focus().unsetBlockquote().run()} disabled={!editor.can().unsetBlockquote()} className="Quote">
             Unset blockquote
           </button></Fragment>}
+
+          {selected === "Media" && <Fragment>
+            <button type="button" onClick={() => setImageStyle("25%")}
+            >
+              Small
+            </button>
+            <button type="button" onClick={() => setImageStyle("50%")} >
+              Medium
+            </button>
+            <button type="button" onClick={() => setImageStyle("100%")}>
+              Large
+            </button>
+          </Fragment>}
       </div>
       
       <div style={{ height: "30vh", overflow: "auto", padding: "20px", background: "#fff" }} onClick={handleEditorClick}>
-        <EditorContent editor={editor} style={{ minHeight: "100%" }} />
+        <EditorContent editor={editor} style={{ minHeight: "100%" }}  />
       </div>
 
     </div>
