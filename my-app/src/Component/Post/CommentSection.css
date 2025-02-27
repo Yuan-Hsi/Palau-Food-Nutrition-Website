@@ -73,6 +73,7 @@
     padding-top: 0.5%;
     box-shadow: 3px 6px 5px rgb(170, 167, 167);
     padding-bottom: 1.5%;
+    position:relative;
 }
 
 #comment_1{
@@ -96,4 +97,9 @@
     overflow: auto; /* 修改為 auto 以顯示捲軸 */
     display: block; /* 修改為 block 以支持捲軸 */
     max-height: calc(4 * 1.5em); /* 設置最大高度為 4 行 */
+}
+
+.commentDelBtn{
+    position:absolute;
+    left: 98%;
 }

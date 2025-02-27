@@ -27,6 +27,9 @@ exports.postComment = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Your comment is been sent.",
+    data: {
+      _id: newComment._id,
+    },
   });
 });
 
