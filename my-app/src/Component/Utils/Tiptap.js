@@ -119,7 +119,7 @@ const Tiptap = (props) => {
   };
 
   return (
-    <div style={{ marginTop: "2%", backgroundColor: "#efefef", width: "70%", borderRadius: "10px", padding: "3%",}} onClick={handleEditorClick}>
+    <div style={{ marginTop: "2%", backgroundColor: "#efefef", width: "70%", borderRadius: "10px", padding: "3% 3% 4.5% 3%",}} onClick={handleEditorClick}>
       <div style={{ marginBottom: "10px" }}>
         {mainFunction.map(item=>(
           <button type="button" key={item}

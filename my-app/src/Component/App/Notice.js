@@ -1,5 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import "./Notice.css";
+import {transformDate} from "../Utils/utils.js";
+import he from "he";
 
 const months = [
   "Jan",
@@ -16,10 +18,13 @@ const months = [
   "Dec",
 ];
 
+const url = process.env.REACT_APP_BACKEND_URL;
+
 function Notice(props) {
   // Notice close
   const [closeNotice, setCloseNotice] = useState(false);
   const [openNotice, setOpenNotice] = useState(true);
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const handleClick = () => {
@@ -43,7 +48,26 @@ function Notice(props) {
     };
   }, []);
 
+  useEffect(() => {
   // Notice content
+  const noticeContent = async (e) => {
+    const response = await fetch(`${url}api/v1/post?setNotice=true`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+
+    const data = await response.json();
+    if (data.status === "success") {
+      setPosts(data.data.posts);
+    } else {
+      alert(data.message);
+    }
+  };
+  
+  noticeContent();
+  }, [setPosts]);
+
   // Date
   const time_stamp = [1737605433150, 1737605433150]; // 透過 Date.now() 拿
   const dayArr = [];
@@ -82,45 +106,43 @@ function Notice(props) {
           }}
         >
           <div className="content" style={{ overflow: "auto", height: "100%" }}>
-            {dayArr.map(
-              (
-                item,
-                idx // 注意這邊的匿名函數是用 () 而不是 {}!!!!
-              ) => (
+            {
+              posts && 
+              posts.map( (post) => (
                 <>
+                <h1
+                className="contentDate"
+                style={{
+                  fontSize: `${
+                    parseFloat(props.plateSize) * 0.055
+                  }${props.plateSize.slice(-2)}`,
+                }}
+              >
+                {transformDate(post.timestamp).split(' / ')[0] + " " + months[transformDate(post.timestamp).split(' / ')[1]-1]}
+              </h1>
                   <h1
-                    className="contentDate"
-                    style={{
-                      fontSize: `${
-                        parseFloat(props.plateSize) * 0.055
-                      }${props.plateSize.slice(-2)}`,
-                    }}
-                  >
-                    {item + " " + monthArr[idx]}
-                  </h1>
-                  <h1
-                    className="contentTitle"
-                    style={{
-                      fontSize: `${
-                        parseFloat(props.plateSize) * 0.055
-                      }${props.plateSize.slice(-2)}`,
-                    }}
-                  >
-                    {titelArr[idx]}
-                  </h1>
-                  <p
+                  className="contentTitle"
+                  style={{
+                    fontSize: `${
+                      parseFloat(props.plateSize) * 0.055
+                    }${props.plateSize.slice(-2)}`,
+                  }}
+                >
+                  {post.title}
+                </h1>
+                <p
                     className="contentText"
                     style={{
                       fontSize: `${
                         parseFloat(props.plateSize) * 0.035
                       }${props.plateSize.slice(-2)}`,
                     }}
+                    dangerouslySetInnerHTML={{ __html: he.decode(post.content) }} 
                   >
-                    {contextArr[idx]}
                   </p>
                 </>
-              )
-            )}
+              ))
+            }
           </div>
           {openNotice && (
             <div

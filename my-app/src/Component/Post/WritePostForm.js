@@ -70,12 +70,16 @@ function WritePostForm(props) {
                 </input>
                 </div>
             </div>
-            <div style={{marginTop:"5%",height:"100%",width:"100%",...centerStyle,flexDirection:"column"}}>
+            <div style={{marginTop:"5%",width:"100%",...centerStyle,flexDirection:"column"}}>
                 <h1 id='contextLabel' style={{fontSize: mySize.adjust(0.04)}}>CONTEXT</h1>
                 <Tiptap size={props.size}  setContent={setContent}/>
             </div>
+            <div style={{display:"flex",marginTop:mySize.adjust(-0.04),alignItems:"center",justifyItems:"flex-start",width:"65%"}}>
+                <input type='checkBox' id='setNotice' name="setNotice" value='true' style={{fontSize: mySize.adjust(0.03),width: mySize.adjust(0.02)}}/>
+                <p style={{fontSize: mySize.adjust(0.025),marginLeft:mySize.adjust(0.005)}}>Set as an announcement</p>
+            </div>
             <div style={{display:"flex",justifyContent:"flex-end",width:"80%"}}>
-                <button id='send' type="submit"  style={{fontSize: mySize.adjust(0.03)}}>Send</button> 
+                <button id='send' type="submit"  style={{fontSize: mySize.adjust(0.03),marginTop:mySize.adjust(-0.045),marginBottom:mySize.adjust(0.01)}}>Send</button> 
             </div>
             </form>
         </Fragment>
@@ -83,3 +87,4 @@ function WritePostForm(props) {
 }
 
 export default WritePostForm;
+

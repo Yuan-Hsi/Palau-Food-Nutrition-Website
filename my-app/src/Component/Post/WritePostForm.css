@@ -39,6 +39,10 @@
     font-family: Inria Sans;
 }
 
+#setNotice{
+
+}
+
 #send{
     padding:1%;
     letter-spacing: 0.2em;
@@ -46,8 +50,6 @@
     font-family: Inria Sans;
     font-weight: bold;
     width: 17%;
-    margin-top: -5%;
-    margin-bottom: -2%;
 }
 
 #send:hover{

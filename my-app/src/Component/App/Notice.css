@@ -12,11 +12,21 @@
   font-family: Metal;
   font-weight: normal;
   color: #ebae20;
-  margin: -3% 0 0 10%;
+  margin: -3% 0 3% 10%;
   letter-spacing: 0.13em;
+  line-height: 110%;
 }
 
 .contentText {
+  font-family: Metal;
+  font-weight: normal;
+  color: #b39d62;
+  margin: 0% 10% 0 10%;
+  text-align: right;
+  line-height: 150%;
+}
+
+.contentText p{
   font-family: Metal;
   font-weight: normal;
   color: #b39d62;
