@@ -27,7 +27,7 @@ exports.editOne = (Model) =>
 
     if (!update) {
       throw new AppError(
-        `Can not find the post with id: ${req.params.id}`,
+        `Can not find the id: ${req.params.id}`,
         404
       );
     }

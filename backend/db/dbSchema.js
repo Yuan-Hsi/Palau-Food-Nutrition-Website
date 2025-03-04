@@ -46,6 +46,14 @@ const userSchema = mongoose.Schema({
     default: true,
     select: false,
   },
+  favorite:{
+    type: Array,
+    select: false,
+  },
+  dislike:{
+    type: Array,
+    select: false,
+  }
 });
 
 const commentSchema = mongoose.Schema(
@@ -193,3 +201,33 @@ postSchema.pre("save", async function (next) {
 postSchema.index({ title: "text", content: "text" });
 
 exports.Post = mongoose.model("Post", postSchema);
+
+
+
+// ------------ FOR MENU CALEDAR ---------------
+
+// Category Schema
+const categorySchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  color: { type: String, required: true }
+});
+
+
+// Food Schema
+const foodSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true  },
+  category_id: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+  likes:{type:Number},
+  dislikes:{type:Number},
+});
+
+
+// Calendar Schema
+const calendarSchema = new mongoose.Schema({
+  date: { type: Date, required: true },
+  foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }] // 用 food_id 來引用 foods
+});
+
+const Category = mongoose.model("Category", categorySchema);
+const Food = mongoose.model("Food", foodSchema);
+const Calendar = mongoose.model("Calendar", calendarSchema);

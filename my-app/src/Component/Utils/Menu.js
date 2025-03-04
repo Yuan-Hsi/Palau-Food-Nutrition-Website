@@ -5,7 +5,7 @@ import SizeHelper from "./utils.js"
 
 const options = ["RECIPE", "NEWS", "WASTE & MEALS COUNT", "INVENTORY FORM"];
 const hrefs = [
-  "#",
+  "/calendar",
   "/Posts",
   "https://docs.google.com/forms/d/e/1FAIpQLSf5442P5mYrNRNq061oKVaIK966b7rid-e8NWhuGvmWWcAe6A/viewform?usp=sf_link",
   "#",

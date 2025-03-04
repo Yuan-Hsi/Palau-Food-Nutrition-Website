@@ -6,7 +6,7 @@ function PlateContent(props) {
       <div id="leftSide" style={{ width: "50%", height: "90%" }}>
         <div id="recipe" style={{ height: "58%", position: "relative" }}>
           <a
-            href="#"
+            href="calendar"
             style={{
               position: "absolute",
               right: "8%",

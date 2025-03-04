@@ -6,6 +6,7 @@ import App from "./Pages/App.js";
 import Posts from "./Pages/Posts.js";
 import OnePost from "./Pages/OnePost.js";
 import WriteAPost from "./Pages/WriteAPost.js";
+import Calendar from "./Pages/Calendar.js";
 import { UserProvider } from "./Component/Utils/UserContext.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -19,6 +20,7 @@ root.render(
         <Route path="/posts" element={<UserProvider><Posts /></UserProvider>} />
         <Route path="/post/:id" element={<UserProvider><OnePost /></UserProvider>} />
         <Route path="/writeapost" element={<UserProvider><WriteAPost /></UserProvider>} />
+        <Route path="/calendar" element={<UserProvider><Calendar /></UserProvider>} />
       </Routes>
     </Router>
   </React.StrictMode>
