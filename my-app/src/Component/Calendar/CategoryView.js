@@ -9,42 +9,45 @@ function CategoryView(props) {
 
     const mySize = new SizeHelper(props.size);
 
-    const getCategories = async() => {
-        const response = await fetch(`${url}/api/v1/calendar/category`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-          });
+    useEffect(() =>{
+        const getCategories = async() => {
+            const response = await fetch(`${url}api/v1/calendar/category`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+              });
+    
+              const data = await response.json();
+              if (data.status === "success") {
+                setCategories(data.data.category);
+              } else {
+                alert(response.message);
+              }
+        }
+        getCategories();
+    },[setCategories])
 
-          const data = await response.json();
-          if (data.status === "success") {
-            console.log(data);
-          } else {
-            alert(response.message);
-          }
-    }
 
     const addCategory = async(e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const objData = Object.fromEntries(formData.entries())
         const jsonData = JSON.stringify(objData);
-        setCategories([objData,...categories]);
+        
 
-        /*
-        const response = await fetch(`${url}api/v1/user/logout`, {
-          method: "GET",
+        const response = await fetch(`${url}api/v1/calendar/category`, {
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
+          body: jsonData,
         });
     
         const data = await response.json();
         if (data.status === "success") {
-          setUser({ name: 'Login'});
+            setCategories([...categories,objData]);
         } else {
           alert(response.message);
         }
-          */
       }
 
     function getTextColor(hex) {
@@ -67,7 +70,10 @@ function CategoryView(props) {
                 <div  className = 'categoryView' id = 'categoryList' >
                     {
                         categories.map((item) =>(
+                            <Fragment>
+                            
                             <button className="categoryView categories" style={{backgroundColor:item.color, color:getTextColor(item.color), fontSize:mySize.adjust(0.02)}}> {item.name} </button>
+                            </Fragment>
                         ))
                     }
                     <form className="categoryView" id='addCategory' onSubmit={addCategory}>

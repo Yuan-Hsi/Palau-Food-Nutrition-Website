@@ -228,6 +228,6 @@ const calendarSchema = new mongoose.Schema({
   foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }] // 用 food_id 來引用 foods
 });
 
-const Category = mongoose.model("Category", categorySchema);
-const Food = mongoose.model("Food", foodSchema);
-const Calendar = mongoose.model("Calendar", calendarSchema);
+exports.Category = mongoose.model("Category", categorySchema);
+exports.Food = mongoose.model("Food", foodSchema);
+exports.Calendar = mongoose.model("Calendar", calendarSchema);

@@ -117,17 +117,23 @@ exports.protect = catchAsync(async (req, res, next) => {
 exports.restrictTo = (...args) => {
   // 回傳一個函式
   return catchAsync(async (req, res, next) => {
-    const post = await Post.findById(req.params.id);
 
+
+    const post = await Post.findById(req.params.id);
+    
     if (
-      !args.includes(req.user.title) &&
-      !(req.user._id == post.author[0]._id)
+      !args.includes(req.user.title)
     ) {
       throw new AppError(
         "You do not have permission to perform this action.",
         403
       );
     }
+
+    if( post && !(req.user._id == post.author[0]._id))throw new AppError(
+      "You do not have permission to perform this action.",
+      403
+    );
 
     next();
   });
