@@ -99,3 +99,82 @@
     margin-left:103%;
     border-radius: 10px;
 }
+
+.categoryView#view{
+    background-color: rgb(212, 210, 210);
+    width:80%;
+    border-radius: 20px;
+    box-shadow: 4px 6px 12px 0px #bababa;
+    padding:2.5%;
+}
+
+.categoryView#categoryList{
+    width:60%;
+    height:20%;
+    display: flex;
+    margin-bottom: 2%;
+    display:flex;
+    align-items: center;
+}
+
+.categoryView.categories{
+    border: none;
+    border-radius: 30px;
+    padding: 1% 1.5% 1% 1.5%;
+    margin-right: 1%;
+}
+
+.categoryView#addCategory{
+    border-radius: 20px;
+    background-color: white;
+    padding:1% 0 1% 1%;
+    width:26%;
+    height:100%;
+    display:flex;
+    align-items: center;
+}
+
+.categoryView#inputColor{
+    border-radius: 10px;
+    border: none;
+    padding: 0%;
+    cursor: pointer;
+    margin-right:3%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* 讓 input[type="color"] 看起來像圓形按鈕 */
+.categoryView#inputColor:-webkit-color-swatch-wrapper {
+padding: 0;
+border-radius: 50%;
+}
+
+.categoryView#inputColor::-webkit-color-swatch {
+border: none;
+border-radius: 50%;
+}
+
+.categoryView#inputColor::-moz-color-swatch {
+border: none;
+border-radius: 50%;
+}
+
+
+.categoryView#inputCategory{
+    width:70%;
+    height:80%;
+    border:none;
+}
+
+.categoryView#inputCategory::placeholder {
+    color: #9b9b9b; /* 設置較明顯的顏色 */
+}
+
+.categoryView.item{
+    border-radius: 20px;
+    background-color: white;
+    padding:0.5% 2% 0.5% 2%;
+    width: fit-content;
+}

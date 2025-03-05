@@ -1,8 +1,8 @@
 import React, { useEffect, Fragment, useState } from "react";
-import "./FoodCalendar.css"
-import SizeHelper from "../Utils/utils.js"
+import "./FoodCalendar.css";
+import SizeHelper from "../Utils/utils.js";
+import CategoryView from "./CategoryView.js";
 import DayCalendar from "./DayCalendar.js";
-
 
 
 const months = ["Jan","Feb","Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -74,6 +74,8 @@ function FoodCalendar(props) {
     }
 
     return(
+        <Fragment>
+        <CategoryView size={props.size}/>
         <div id ="foodCalendar">
             <h1 id = "curMonth" className="foodCalendar" style={{fontSize:mySize.adjust(0.045)}}> {`${months[month]}`}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{`${year}`} </h1>
             <div style={{width:"80%", position:"relative",zIndex:1,display:"flex",alignItems:"center",marginBottom:"-1.5%"}}>
@@ -95,8 +97,8 @@ function FoodCalendar(props) {
             <div style={{width:"80%", position:"relative",zIndex:1,marginTop:"-32%"}}>
                 <button className="foodCalendar" id='goToNextMonth' style={{fontSize:mySize.adjust(0.018)}} onClick={() => nextMonth()}>GOING TO NEXT MONTH</button>
             </div>
-
         </div>
+        </Fragment>
     )
 }
 
