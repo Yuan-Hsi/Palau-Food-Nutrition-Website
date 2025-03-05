@@ -1,0 +1,101 @@
+@import url("https://fonts.googleapis.com/css?family=Jua");
+
+#foodCalendar{
+    margin-top:4%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.foodCalendar{
+    font-family: "jua";
+}
+
+#curMonth{
+    text-align: right;
+    margin-right: 14%;
+    width:100%;
+    color:rgb(255, 217, 0)
+}
+
+#editBtn {
+    border: none;
+    padding:1.5%;
+    border-radius: 100%;
+    background-color: #ffc61d;
+    letter-spacing: 0.07em;
+    position: absolute;
+    z-index: 1;
+}
+
+#editBtn:hover {
+    cursor:pointer;
+}
+
+#goToPreMonth {
+    width:25%;
+    padding: 1%;
+    margin-left:0%;
+    color:white;
+    background-color: #d93417;
+    margin-left:103%;
+    border: none;
+}
+
+#calendar{
+    height:100vh;
+    width: 85vw;
+    background-color: #F5F5F5;
+    border-radius: 45px;
+    margin-top: 1%;
+    margin-bottom: 6%;
+    box-shadow: 4px 6px 12px 0px #bababa;
+    position: relative;
+    z-index: 2;
+}
+
+#weekdays{
+    width:100%;
+    height:92%; 
+    border-collapse: collapse;
+}
+
+.foodCalendar thead{
+    height: 13%;
+
+}
+
+.foodCalendar th{
+    width:10%;
+    color:rgb(0, 157, 255);
+}
+
+.foodCalendar tr{
+    border-bottom: 0.7px solid #e0e0e0
+}
+
+.foodCalendar td{
+    padding:0 3% 0 3%;
+}
+
+.foodCalendar #date{
+    color:rgb(231, 85, 0)
+}
+
+#addFood{
+    border: none;
+    border-radius: 20px;
+    background-color: #cfcfcf;
+}
+
+#goToNextMonth {
+    width:3%;
+    height:100%;
+    padding: 5% 7% 5% 2%;
+    margin-left:0%;
+    line-height: 150%;
+    color:white;
+    background-color: #0070f0;
+    margin-left:103%;
+    border-radius: 10px;
+}

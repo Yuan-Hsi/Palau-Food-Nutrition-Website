@@ -1,5 +1,6 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import Menu from "../Component/Utils/Menu";
+import FoodCalendar from "../Component/Calendar/FoodCalendar";
 
 const url = "http://localhost:3005/";
 
@@ -36,7 +37,7 @@ function Calendar() {
     return (
       <Fragment>
         <Menu size = {size} setUserInfo = {setUserInfo}/>
-        
+        <FoodCalendar size = {size}/>
       </Fragment>
     );
   }
