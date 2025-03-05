@@ -5,7 +5,8 @@ const url = process.env.REACT_APP_BACKEND_URL;
 
 function CategoryView(props) {
 
-    const[categories,setCategories] = useState([{color:'#000000',name:'testC'}]);
+    const[categories,setCategories] = useState([{color:'',name:''}]);
+    const[delBtn, setDelBtn] = useState('');
 
     const mySize = new SizeHelper(props.size);
 
@@ -50,6 +51,29 @@ function CategoryView(props) {
         }
       }
 
+  // Delete post API
+  const delCategory = async (categoryId) => {
+    
+    if(!window.confirm("Are you sure to delete the category?")){
+      return;
+    }
+
+    const response = await fetch(`${url}api/v1/calendar/category/${categoryId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    const data = await response;
+    if (data.status === 204) {
+      const updateCategories = categories.filter(item => item._id !== categoryId);
+      setCategories(updateCategories);
+    }
+    else{
+      alert('something wrong...')
+    }
+
+  }
+
     function getTextColor(hex) {
         // 將 HEX 顏色轉為 RGB
         let r = parseInt(hex.substring(1, 3), 16);
@@ -70,9 +94,14 @@ function CategoryView(props) {
                 <div  className = 'categoryView' id = 'categoryList' >
                     {
                         categories.map((item) =>(
-                            <Fragment>
-                            
-                            <button className="categoryView categories" style={{backgroundColor:item.color, color:getTextColor(item.color), fontSize:mySize.adjust(0.02)}}> {item.name} </button>
+                            <Fragment key={item._id}>
+   
+                            <button className="categoryView categories" style={{backgroundColor:item.color, color:getTextColor(item.color), fontSize:mySize.adjust(0.02)}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')}>                       
+                                { delBtn === item._id && 
+                            <button className="categoryView delBtn" id={item._id} onClick={()=>delCategory(item._id)}> X </button>
+                                }
+                            {item.name} 
+                                </button>
                             </Fragment>
                         ))
                     }

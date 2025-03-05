@@ -14,7 +14,7 @@ foodCalendarRouter
 
 foodCalendarRouter
 .route("/category/:id")
-.delete(loginRequire, restrictTo("admin"), foodCalendar.createCategory)
+.delete(loginRequire, restrictTo("admin"), foodCalendar.deleteCategory)
 
 foodCalendarRouter
   .route("/foods")
