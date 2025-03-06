@@ -1,6 +1,7 @@
 const { Category,Food,Calendar } = require("../db/dbSchema");
 const catchAsync = require("./utils/catchAsync");
 const factory = require("./handleFunction");
+const APIFeatures = require("./utils/APIFeatures");
 
 exports.createCategory = catchAsync(async(req,res,next) => {
 
@@ -26,8 +27,9 @@ exports.getCategories = catchAsync(async(req,res,next) => {
 exports.deleteCategory = factory.deleteOne(Category);
 
 exports.createFood = catchAsync(async(req,res,next) => {
-    const newFood = await Food.create(req.body);
 
+    const newFood = await Food.create({category_id:req.params.id,...req.body});
+    
     res.status(201).json({
         status:'success',
         message:`food '${req.body.name}'created successfully`,
@@ -36,7 +38,10 @@ exports.createFood = catchAsync(async(req,res,next) => {
 });
 
 exports.getFoods = catchAsync(async(req,res,next) => {
-    const food = await Food.find({category_id:req.params.id});
+    const features = new APIFeatures(Food.find(), req.query)
+    .filter()
+
+    const food = await features.query;
     
     res.status(200).json({
         status: "success",

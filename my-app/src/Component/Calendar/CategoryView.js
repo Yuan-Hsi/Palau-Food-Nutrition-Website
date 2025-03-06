@@ -6,10 +6,13 @@ const url = process.env.REACT_APP_BACKEND_URL;
 function CategoryView(props) {
 
     const[categories,setCategories] = useState([{color:'',name:''}]);
+    const[curCategory, setCurCategory] = useState('');
+    const[foods,setFoods] = useState([]);
     const[delBtn, setDelBtn] = useState('');
 
     const mySize = new SizeHelper(props.size);
 
+    // get category
     useEffect(() =>{
         const getCategories = async() => {
             const response = await fetch(`${url}api/v1/calendar/category`, {
@@ -21,6 +24,7 @@ function CategoryView(props) {
               const data = await response.json();
               if (data.status === "success") {
                 setCategories(data.data.category);
+                setCurCategory(data.data.category[0]._id);
               } else {
                 alert(response.message);
               }
@@ -28,7 +32,30 @@ function CategoryView(props) {
         getCategories();
     },[setCategories])
 
+    // get food
+    useEffect(() => {
 
+          const getItems = async() => {
+            const response= await fetch(`${url}api/v1/calendar/foods?category_id=${curCategory}`, {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+            });
+
+            const data = await response.json();
+            if (data.status === "success") {
+              setFoods(data.data.food);
+              console.log(data.data.food);
+            } else {
+              alert('please check there is no duplicate name');
+            }
+          }
+  
+          if(curCategory !== '')getItems();
+          
+    },[curCategory,setFoods])
+
+    // Create category API
     const addCategory = async(e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -45,34 +72,84 @@ function CategoryView(props) {
     
         const data = await response.json();
         if (data.status === "success") {
+            objData._id=data.categoryId;
             setCategories([...categories,objData]);
+            e.target.reset();
         } else {
           alert(response.message);
         }
       }
 
-  // Delete post API
-  const delCategory = async (categoryId) => {
-    
-    if(!window.confirm("Are you sure to delete the category?")){
-      return;
+    // Delete category API
+    const delCategory = async (categoryId) => {
+      
+      if(!window.confirm("Are you sure to delete the category?")){
+        return;
+      }
+
+      const response = await fetch(`${url}api/v1/calendar/category/${categoryId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const data = await response;
+      if (data.status === 204) {
+        const updateCategories = categories.filter(item => item._id !== categoryId);
+        setCategories(updateCategories);
+        setCurCategory(updateCategories[0]._id);
+      }
+      else{
+        alert('something wrong...')
+      }
+
     }
 
-    const response = await fetch(`${url}api/v1/calendar/category/${categoryId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-
-    const data = await response;
-    if (data.status === 204) {
-      const updateCategories = categories.filter(item => item._id !== categoryId);
-      setCategories(updateCategories);
+    // Create food API
+    const addItem = async(e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const objData = Object.fromEntries(formData.entries())
+      const jsonData = JSON.stringify(objData);
+ 
+      const response = await fetch(`${url}api/v1/calendar/foods/${curCategory}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: jsonData,
+      });
+  
+      const data = await response.json();
+      if (data.status === "success") {
+        objData._id = data.foodId;
+        setFoods([...foods,objData]);
+        e.target.reset();
+      } else {
+        alert(response.message);
+      }
     }
-    else{
-      alert('something wrong...')
+
+    // Delete food API
+    const delItem = async (foodId) => {
+      if(!window.confirm("Are you sure to delete this food?")){
+        return;
+      }
+
+      const response = await fetch(`${url}api/v1/calendar/foods/${foodId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const data = await response;
+      if (data.status === 204) {
+        const updateFoods = foods.filter(item => item._id !== foodId);
+        setFoods(updateFoods);
+      }
+      else{
+        alert('something wrong...')
+      }
     }
 
-  }
+
 
     function getTextColor(hex) {
         // 將 HEX 顏色轉為 RGB
@@ -96,9 +173,9 @@ function CategoryView(props) {
                         categories.map((item) =>(
                             <Fragment key={item._id}>
    
-                            <button className="categoryView categories" style={{backgroundColor:item.color, color:getTextColor(item.color), fontSize:mySize.adjust(0.02)}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')}>                       
+                            <button className="categoryView categories" style={{backgroundColor:item.color, color:getTextColor(item.color), fontSize:mySize.adjust(0.02), boxShadow:(item._id === curCategory)?'rgb(255 188 0) -2px 0px 14px 3px':''}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')} onClick={()=>setCurCategory(item._id)}>                       
                                 { delBtn === item._id && 
-                            <button className="categoryView delBtn" id={item._id} onClick={()=>delCategory(item._id)}> X </button>
+                            <button className="categoryView delBtn" id={item._id} onClick={()=>delCategory(item._id)} style={{width:mySize.adjust((0.025))}}> X </button>
                                 }
                             {item.name} 
                                 </button>
@@ -112,7 +189,24 @@ function CategoryView(props) {
                     </form>
                 </div>
                 <div className = 'categoryView' id = 'itemList'>
-                    <div className="categoryView item" id='item_1' style={{fontSize:mySize.adjust(0.02)}}> item_1 </div>
+                  {
+                    foods.map((item) =>(
+                      <Fragment key={item._id}>
+
+                      <button className="categoryView item" id='item_1' style={{fontSize:mySize.adjust(0.02)}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')}>          
+                      { delBtn === item._id && 
+                      <button className="categoryView delBtn" style={{width:mySize.adjust((0.025))}} id={item._id}  onClick={()=>delItem(item._id)}> X </button>
+                      }
+                      {item.name} 
+                          </button>
+                      </Fragment>
+                  ))
+                  }
+                    
+                    <form className="categoryView" id='addItem' onSubmit={addItem}>
+                        <input type='text' className="categoryView" 
+                        id='inputItem' placeholder="+ new item" style={{fontSize:mySize.adjust(0.02)}} name='name'></input>
+                    </form>
                 </div>
             </div>
         </div>

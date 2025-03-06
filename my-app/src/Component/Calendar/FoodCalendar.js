@@ -3,6 +3,7 @@ import "./FoodCalendar.css";
 import SizeHelper from "../Utils/utils.js";
 import CategoryView from "./CategoryView.js";
 import DayCalendar from "./DayCalendar.js";
+import { useUser } from "../Utils/UserContext.js";
 
 
 const months = ["Jan","Feb","Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -16,6 +17,8 @@ function FoodCalendar(props) {
     const [year,setYear] = useState(today.getFullYear()); 
     const [monthdays,setMonthdays] = useState(0);
     const [firstWeekDay,setFirstWeekDay] = useState(0);
+    const [editMode, setEditMode] = useState(false);
+    const { user } = useUser();
 
     useEffect(() => {
         const lastDay = new Date(year,month+1,0);
@@ -33,9 +36,9 @@ function FoodCalendar(props) {
         const firstWeek = [];
         for (let i = 0; i < 7; i++) {
             if (i < firstDay) {
-                firstWeek.push(<DayCalendar date="" key={`empty-${i}`} className="foodCalendar"/>);
+                firstWeek.push(<DayCalendar  editMode={editMode} date="" key={`empty-${i}`} className="foodCalendar"/>);
             } else {
-                firstWeek.push(<DayCalendar date={date++} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
+                firstWeek.push(<DayCalendar editMode={editMode} date={date++} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
             }
         }
         dailyCalendar.push(<tr key="week-1">{firstWeek}</tr>);
@@ -44,11 +47,11 @@ function FoodCalendar(props) {
         while (date <= monthdays) {
             const week = [];
             for (let i = 0; i < 7 && date <= monthdays; i++) {
-                week.push(<DayCalendar date={date++} key={date} className="foodCalendar"/>);
+                week.push(<DayCalendar date={date++} key={date} editMode={editMode} className="foodCalendar"/>);
             }
             // 補充空白格
             while (week.length < 7) {
-                week.push(<DayCalendar date="" key={`empty-end-${week.length}`} className="foodCalendar"/>);
+                week.push(<DayCalendar date=""editMode={editMode}  key={`empty-end-${week.length}`} className="foodCalendar"/>);
             }
             dailyCalendar.push(<tr key={`week-${date}`}>{week}</tr>);
         }
@@ -75,11 +78,11 @@ function FoodCalendar(props) {
 
     return(
         <Fragment>
-        <CategoryView size={props.size}/>
+        {editMode && <CategoryView size={props.size}/>}
         <div id ="foodCalendar">
             <h1 id = "curMonth" className="foodCalendar" style={{fontSize:mySize.adjust(0.045)}}> {`${months[month]}`}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{`${year}`} </h1>
             <div style={{width:"80%", position:"relative",zIndex:1,display:"flex",alignItems:"center",marginBottom:"-1.5%"}}>
-                <button className="foodCalendar" id='editBtn' style={{fontSize:mySize.adjust(0.02)}}>Edit</button>
+                { user.title==='admin' && <button className="foodCalendar" id='editBtn' style={{fontSize:mySize.adjust(0.02)}}onClick={()=>setEditMode(!editMode)}>Edit</button>}
                 <button className="foodCalendar" id='goToPreMonth' style={{fontSize:mySize.adjust(0.018),marginLeft:"10%"}} onClick={() => preMonth()}>GOING TO PREVIOUS MONTH</button>
             </div>
             <div id="calendar" className="foodCalendar">

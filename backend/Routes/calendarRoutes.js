@@ -17,12 +17,12 @@ foodCalendarRouter
 .delete(loginRequire, restrictTo("admin"), foodCalendar.deleteCategory)
 
 foodCalendarRouter
-  .route("/foods")
-  .post(loginRequire, restrictTo("admin"), foodCalendar.createFood)
+.route("/foods")
+.get(foodCalendar.getFoods) 
 
 foodCalendarRouter
 .route("/foods/:id")
-.get(foodCalendar.getFoods) // the id here is the categoryID
+.post(loginRequire, restrictTo("admin"), foodCalendar.createFood) // the id here is the categoryID
 .delete(loginRequire, restrictTo("admin"), foodCalendar.deleteFood)  // the id here is the foodID
 
 

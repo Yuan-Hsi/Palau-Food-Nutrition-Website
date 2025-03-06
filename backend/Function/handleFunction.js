@@ -4,7 +4,7 @@ const AppError = require("./utils/appError");
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const del = await Model.findByIdAndDelete(req.params.id);
-
+    
     if (!del) {
       throw new AppError(
         `Can not find the document with id: ${req.params.id}`,

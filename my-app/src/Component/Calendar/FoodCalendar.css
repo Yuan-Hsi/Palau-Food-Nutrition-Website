@@ -105,37 +105,42 @@
     width:80%;
     border-radius: 20px;
     box-shadow: 4px 6px 12px 0px #bababa;
-    padding:2.5%;
+    padding:1.5% 2%;
 }
 
 .categoryView#categoryList{
-    width:60%;
-    height:20%;
+    width:100%;
+    height:30%;
     display: flex;
     margin-bottom: 2%;
     display:flex;
     align-items: center;
+    overflow: scroll;
+    scrollbar-width: thin;
 }
 
 .categoryView.delBtn{
     position:absolute;
     z-index: 2;
-    margin-top: -5%;
+    margin-top: -1%;
     width: 2vw;
-    height:70%;
+    aspect-ratio: 1/1;
     border:none;
     border-radius: 100%;
     background-color: rgb(1, 1, 1);
     color:#f80000;
     left:75%;
     top:-20%;
+    box-shadow: none;
 }
 
 .categoryView.categories{
     border: none;
     border-radius: 30px;
-    padding: 1% 1.5% 1% 1.5%;
+    padding: 0% 1.5% 0% 1.5%;
     margin-right: 1%;
+    height:65%;
+    width:fit-content;
     position:relative;
     z-index: 1;
 }
@@ -144,8 +149,8 @@
     border-radius: 20px;
     background-color: white;
     padding:1% 0 1% 1%;
-    width:26%;
-    height:100%;
+    min-width:18%;
+    height:40%;
     display:flex;
     align-items: center;
 }
@@ -180,7 +185,7 @@ border-radius: 50%;
 
 .categoryView#inputCategory{
     width:70%;
-    height:80%;
+    height:100%;
     border:none;
 }
 
@@ -188,9 +193,38 @@ border-radius: 50%;
     color: #9b9b9b; /* 設置較明顯的顏色 */
 }
 
+.categoryView#itemList{
+    display:flex;
+    align-items: flex-start;
+    height:10vh;
+}
+
 .categoryView.item{
     border-radius: 20px;
     background-color: white;
     padding:0.5% 2% 0.5% 2%;
     width: fit-content;
+    position:relative;
+    z-index: 1;
+}
+
+.categoryView#addItem{
+    border-radius: 20px;
+    background-color: white;
+    padding:0% 0 0% 2%;
+    width:12%;
+    height:35%;
+    display:flex;
+    align-items: center;
+    margin-left: 0.5%;
+}
+
+.categoryView#inputItem{
+    width:80%;
+    height:70%;
+    border:none;
+}
+
+.categoryView#inputItem::placeholder {
+    color: #9b9b9b; /* 設置較明顯的顏色 */
 }

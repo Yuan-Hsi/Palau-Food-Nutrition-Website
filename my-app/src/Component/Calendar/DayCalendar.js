@@ -14,7 +14,7 @@ function DayCalendar(props) {
             {props.date !== "" &&
             <div>
                 <p className="foodCalendar" >content</p>
-                { addItem && user.title==='admin' &&
+                { props.editMode && addItem &&
                     <button className="foodCalendar" id='addFood'>add food</button>
                 }
             </div>

@@ -198,6 +198,17 @@ postSchema.pre("save", async function (next) {
   next();
 });
 
+// delete related comments
+postSchema.pre(['findOneAndDelete', 'findByIdAndDelete'], async function(next) {
+  const postId = this.getQuery()["_id"];
+  try {
+      await mongoose.model('Comment', commentSchema).deleteMany({ post: postId });
+  } catch (error) {
+      console.error('Error deleting relavent comments:', error);
+  }
+  next();
+});
+
 postSchema.index({ title: "text", content: "text" });
 
 exports.Post = mongoose.model("Post", postSchema);
@@ -215,17 +226,27 @@ const categorySchema = new mongoose.Schema({
 
 // Food Schema
 const foodSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true  },
+  name: { type: String, required: true  },
   category_id: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   likes:{type:Number},
   dislikes:{type:Number},
 });
 
-
 // Calendar Schema
 const calendarSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }] // 用 food_id 來引用 foods
+});
+
+// delete related comments
+categorySchema.pre(['findOneAndDelete', 'findByIdAndDelete'], async function(next) {
+  const categoryId = this.getQuery()["_id"];
+  try {
+      await mongoose.model("Food", foodSchema).deleteMany({ category_id: categoryId });
+  } catch (error) {
+      console.error('Error deleting relavent comments:', error);
+  }
+  next();
 });
 
 exports.Category = mongoose.model("Category", categorySchema);
