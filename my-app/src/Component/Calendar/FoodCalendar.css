@@ -129,7 +129,8 @@
     border-radius: 100%;
     background-color: rgb(1, 1, 1);
     color:#f80000;
-    left:75%;
+    position:absolute;
+    transform: translateX(-50%);
     top:-20%;
     box-shadow: none;
 }

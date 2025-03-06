@@ -175,10 +175,10 @@ function CategoryView(props) {
    
                             <button className="categoryView categories" style={{backgroundColor:item.color, color:getTextColor(item.color), fontSize:mySize.adjust(0.02), boxShadow:(item._id === curCategory)?'rgb(255 188 0) -2px 0px 14px 3px':''}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')} onClick={()=>setCurCategory(item._id)}>                       
                                 { delBtn === item._id && 
-                            <button className="categoryView delBtn" id={item._id} onClick={()=>delCategory(item._id)} style={{width:mySize.adjust((0.025))}}> X </button>
+                              <button className="categoryView delBtn" id={item._id} onClick={()=>delCategory(item._id)} style={{width:mySize.adjust((0.025))}}> X </button>
                                 }
                             {item.name} 
-                                </button>
+                            </button>
                             </Fragment>
                         ))
                     }
@@ -195,10 +195,11 @@ function CategoryView(props) {
 
                       <button className="categoryView item" id='item_1' style={{fontSize:mySize.adjust(0.02)}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')}>          
                       { delBtn === item._id && 
-                      <button className="categoryView delBtn" style={{width:mySize.adjust((0.025))}} id={item._id}  onClick={()=>delItem(item._id)}> X </button>
+                          <button className="categoryView delBtn" style={{width:mySize.adjust((0.025)),    backgroundColor: "white",
+                            color:"black"}} id={item._id}  onClick={()=>delItem(item._id)}> X </button>
                       }
                       {item.name} 
-                          </button>
+                      </button>
                       </Fragment>
                   ))
                   }
