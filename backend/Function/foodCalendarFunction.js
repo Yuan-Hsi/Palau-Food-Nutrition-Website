@@ -28,7 +28,9 @@ exports.deleteCategory = factory.deleteOne(Category);
 
 exports.createFood = catchAsync(async(req,res,next) => {
 
+    console.log('hi');
     const newFood = await Food.create({category_id:req.params.id,...req.body});
+    console.log('h2');
     
     res.status(201).json({
         status:'success',

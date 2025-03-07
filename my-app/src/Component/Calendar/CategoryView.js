@@ -5,7 +5,6 @@ const url = process.env.REACT_APP_BACKEND_URL;
 
 function CategoryView(props) {
 
-    const[categories,setCategories] = useState([{color:'',name:''}]);
     const[curCategory, setCurCategory] = useState('');
     const[foods,setFoods] = useState([]);
     const[delBtn, setDelBtn] = useState('');
@@ -23,14 +22,14 @@ function CategoryView(props) {
     
               const data = await response.json();
               if (data.status === "success") {
-                setCategories(data.data.category);
+                props.setCategories(data.data.category);
                 setCurCategory(data.data.category[0]._id);
               } else {
                 alert(response.message);
               }
         }
         getCategories();
-    },[setCategories])
+    },[props.setCategories])
 
     // get food
     useEffect(() => {
@@ -45,7 +44,6 @@ function CategoryView(props) {
             const data = await response.json();
             if (data.status === "success") {
               setFoods(data.data.food);
-              console.log(data.data.food);
             } else {
               alert('please check there is no duplicate name');
             }
@@ -73,7 +71,7 @@ function CategoryView(props) {
         const data = await response.json();
         if (data.status === "success") {
             objData._id=data.categoryId;
-            setCategories([...categories,objData]);
+            props.setCategories([...props.categories,objData]);
             e.target.reset();
         } else {
           alert(response.message);
@@ -94,8 +92,8 @@ function CategoryView(props) {
 
       const data = await response;
       if (data.status === 204) {
-        const updateCategories = categories.filter(item => item._id !== categoryId);
-        setCategories(updateCategories);
+        const updateCategories = props.categories.filter(item => item._id !== categoryId);
+        props.setCategories(updateCategories);
         setCurCategory(updateCategories[0]._id);
       }
       else{
@@ -124,7 +122,7 @@ function CategoryView(props) {
         setFoods([...foods,objData]);
         e.target.reset();
       } else {
-        alert(response.message);
+        alert('Something wrong...');
       }
     }
 
@@ -170,7 +168,7 @@ function CategoryView(props) {
             <div className = 'categoryView' id='view' >
                 <div  className = 'categoryView' id = 'categoryList' >
                     {
-                        categories.map((item) =>(
+                        props.categories.map((item) =>(
                             <Fragment key={item._id}>
    
                             <button className="categoryView categories" style={{backgroundColor:item.color, color:getTextColor(item.color), fontSize:mySize.adjust(0.02), boxShadow:(item._id === curCategory)?'rgb(255 188 0) -2px 0px 14px 3px':''}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')} onClick={()=>setCurCategory(item._id)}>                       
@@ -203,7 +201,6 @@ function CategoryView(props) {
                       </Fragment>
                   ))
                   }
-                    
                     <form className="categoryView" id='addItem' onSubmit={addItem}>
                         <input type='text' className="categoryView" 
                         id='inputItem' placeholder="+ new item" style={{fontSize:mySize.adjust(0.02)}} name='name'></input>
