@@ -221,6 +221,9 @@ exports.Post = mongoose.model("Post", postSchema);
 const categorySchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   color: { type: String, required: true }
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
 
@@ -236,6 +239,14 @@ const foodSchema = new mongoose.Schema({
 const calendarSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }] // 用 food_id 來引用 foods
+});
+
+
+categorySchema.virtual("foods", {
+  // virtual populate
+  ref: "Food",
+  foreignField: "category_id",
+  localField: "_id",
 });
 
 // delete related comments

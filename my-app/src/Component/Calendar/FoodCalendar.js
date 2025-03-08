@@ -5,6 +5,7 @@ import CategoryView from "./CategoryView.js";
 import DayCalendar from "./DayCalendar.js";
 import { useUser } from "../Utils/UserContext.js";
 
+const url = process.env.REACT_APP_BACKEND_URL;
 
 const months = ["Jan","Feb","Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -19,6 +20,7 @@ function FoodCalendar(props) {
     const [firstWeekDay,setFirstWeekDay] = useState(0);
     const [editMode, setEditMode] = useState(false);
     const[categories,setCategories] = useState([{color:'',name:''}]);
+    const [foodDB, setFoodDB] = useState([{color:'',name:''}]);
     const { user } = useUser();
 
     useEffect(() => {
@@ -27,6 +29,26 @@ function FoodCalendar(props) {
         setMonthdays(lastDay.getDate());
         setFirstWeekDay(firstDay.getDay());
     },[year,month,setMonthdays,setFirstWeekDay])
+
+    // get foodDB
+    useEffect(() =>{
+        const getfoodDB = async() => {
+            const response = await fetch(`${url}api/v1/calendar/classifyfoods`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                });
+    
+                const res = await response.json();
+                if (res.status === "success") {
+                setFoodDB(res.data.FoodsDB);
+                console.log(res.data.FoodsDB);
+                } else {
+                alert(response.message);
+                }
+        }
+        if(editMode) getfoodDB();
+        },[editMode,setFoodDB])
 
     // tables body
     function daily(firstDay, monthdays) {
@@ -37,9 +59,9 @@ function FoodCalendar(props) {
         const firstWeek = [];
         for (let i = 0; i < 7; i++) {
             if (i < firstDay) {
-                firstWeek.push(<DayCalendar categories={categories} editMode={editMode} date="" key={`empty-${i}`} className="foodCalendar"/>);
+                firstWeek.push(<DayCalendar foodDB={foodDB} categories={categories} editMode={editMode} date="" key={`empty-${i}`} className="foodCalendar"/>);
             } else {
-                firstWeek.push(<DayCalendar categories={categories} editMode={editMode} date={date++} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
+                firstWeek.push(<DayCalendar foodDB={foodDB} categories={categories} editMode={editMode} date={date++} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
             }
         }
         dailyCalendar.push(<tr key="week-1">{firstWeek}</tr>);
@@ -48,11 +70,11 @@ function FoodCalendar(props) {
         while (date <= monthdays) {
             const week = [];
             for (let i = 0; i < 7 && date <= monthdays; i++) {
-                week.push(<DayCalendar categories={categories} date={date++} key={date} editMode={editMode} className="foodCalendar"/>);
+                week.push(<DayCalendar foodDB={foodDB} categories={categories} date={date++} key={date} editMode={editMode} className="foodCalendar"/>);
             }
             // 補充空白格
             while (week.length < 7) {
-                week.push(<DayCalendar categories={categories} date="" editMode={editMode}  key={`empty-end-${week.length}`} className="foodCalendar"/>);
+                week.push(<DayCalendar foodDB={foodDB} categories={categories} date="" editMode={editMode}  key={`empty-end-${week.length}`} className="foodCalendar"/>);
             }
             dailyCalendar.push(<tr key={`week-${date}`}>{week}</tr>);
         }
@@ -79,7 +101,7 @@ function FoodCalendar(props) {
 
     return(
         <Fragment>
-        {editMode && <CategoryView categories={categories} setCategories={setCategories} size={props.size}/>}
+        {editMode && <CategoryView foodDB={foodDB} categories={categories} setCategories={setCategories} size={props.size}/>}
         <div id ="foodCalendar">
             <h1 id = "curMonth" className="foodCalendar" style={{fontSize:mySize.adjust(0.045)}}> {`${months[month]}`}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{`${year}`} </h1>
             <div style={{width:"80%", position:"relative",zIndex:1,display:"flex",alignItems:"center",marginBottom:"-1.5%"}}>

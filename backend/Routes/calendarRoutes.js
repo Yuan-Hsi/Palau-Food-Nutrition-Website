@@ -21,6 +21,10 @@ foodCalendarRouter
 .get(foodCalendar.getFoods) 
 
 foodCalendarRouter
+.route("/classifyFoods")
+.get(foodCalendar.getFoodsDB)
+
+foodCalendarRouter
 .route("/foods/:id")
 .post(loginRequire, restrictTo("admin"), foodCalendar.createFood) // the id here is the categoryID
 .delete(loginRequire, restrictTo("admin"), foodCalendar.deleteFood)  // the id here is the foodID

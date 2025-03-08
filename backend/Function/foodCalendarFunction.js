@@ -54,6 +54,18 @@ exports.getFoods = catchAsync(async(req,res,next) => {
 
 exports.deleteFood = factory.deleteOne(Food);
 
+exports.getFoodsDB = catchAsync(async(req,res,next) => {
+
+    const FoodsDB = await Category.find().populate({
+        path: 'foods',
+        select: 'name likes dislikes -category_id '}) 
+
+    res.status(200).json({
+        status: "success",
+        data:{FoodsDB}
+    })
+});
+
 exports.createDate = catchAsync(async(req,res,next) => {
     const newDate = await Calendar.create(req.body);
 

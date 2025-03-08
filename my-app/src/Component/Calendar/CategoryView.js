@@ -5,53 +5,35 @@ const url = process.env.REACT_APP_BACKEND_URL;
 
 function CategoryView(props) {
 
-    const[curCategory, setCurCategory] = useState('');
     const[foods,setFoods] = useState([]);
+    const[curCategory, setCurCategory] = useState('');
+    const[curFoods, setcurFoods] = useState([]);
     const[delBtn, setDelBtn] = useState('');
 
     const mySize = new SizeHelper(props.size);
 
-    // get category
-    useEffect(() =>{
-        const getCategories = async() => {
-            const response = await fetch(`${url}api/v1/calendar/category`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-              });
-    
-              const data = await response.json();
-              if (data.status === "success") {
-                props.setCategories(data.data.category);
-                setCurCategory(data.data.category[0]._id);
-              } else {
-                alert(response.message);
-              }
-        }
-        getCategories();
-    },[props.setCategories])
-
-    // get food
+    // produce a foods map = {categoryName : [foods:{_id,name,...},...]}
     useEffect(() => {
 
-          const getItems = async() => {
-            const response= await fetch(`${url}api/v1/calendar/foods?category_id=${curCategory}`, {
-              method: "GET",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-            });
+      let foodsBaseket = {};
+      if(props.foodDB){
+      props.foodDB.map((category) =>{
+        foodsBaseket[category.name]=category.foods;
+      })
 
-            const data = await response.json();
-            if (data.status === "success") {
-              setFoods(data.data.food);
-            } else {
-              alert('please check there is no duplicate name');
-            }
-          }
-  
-          if(curCategory !== '')getItems();
-          
-    },[curCategory,setFoods])
+      setFoods(foodsBaseket);
+      setCurCategory(props.foodDB[0].name);
+      }
+    },[props.foodDB,setFoods])
+    
+
+    useEffect(() =>{
+      if(curCategory !==''){
+        setcurFoods(foods[curCategory]);
+      }
+    }, [curCategory,setcurFoods])
+    
+
 
     // Create category API
     const addCategory = async(e) => {
@@ -168,14 +150,14 @@ function CategoryView(props) {
             <div className = 'categoryView' id='view' >
                 <div  className = 'categoryView' id = 'categoryList' >
                     {
-                        props.categories.map((item) =>(
-                            <Fragment key={item._id}>
+                        props.foodDB && props.foodDB.map((category) =>(
+                            <Fragment key={category._id}>
    
-                            <button className="categoryView categories" style={{backgroundColor:item.color, color:getTextColor(item.color), fontSize:mySize.adjust(0.02), boxShadow:(item._id === curCategory)?'rgb(255 188 0) -2px 0px 14px 3px':''}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')} onClick={()=>setCurCategory(item._id)}>                       
-                                { delBtn === item._id && 
-                              <button className="categoryView delBtn" id={item._id} onClick={()=>delCategory(item._id)} style={{width:mySize.adjust((0.025))}}> X </button>
+                            <button className="categoryView categories" style={{backgroundColor:category.color, color:getTextColor(category.color), fontSize:mySize.adjust(0.02), boxShadow:(category.name === curCategory)?'rgb(255 188 0) -2px 0px 14px 3px':''}} onMouseEnter={()=>setDelBtn(category._id)} onMouseLeave={()=>setDelBtn('')} onClick={()=>setCurCategory(category.name)}>                       
+                                { delBtn === category._id && 
+                              <button className="categoryView delBtn" id={category._id} onClick={()=>delCategory(category._id)} style={{width:mySize.adjust((0.025))}}> X </button>
                                 }
-                            {item.name} 
+                            {category.name} 
                             </button>
                             </Fragment>
                         ))
@@ -188,7 +170,7 @@ function CategoryView(props) {
                 </div>
                 <div className = 'categoryView' id = 'itemList'>
                   {
-                    foods.map((item) =>(
+                    curFoods && curFoods.map((item) =>(
                       <Fragment key={item._id}>
 
                       <button className="categoryView item" id='item_1' style={{fontSize:mySize.adjust(0.02)}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')}>          
