@@ -28,9 +28,7 @@ exports.deleteCategory = factory.deleteOne(Category);
 
 exports.createFood = catchAsync(async(req,res,next) => {
 
-    console.log('hi');
     const newFood = await Food.create({category_id:req.params.id,...req.body});
-    console.log('h2');
     
     res.status(201).json({
         status:'success',
@@ -77,10 +75,14 @@ exports.createDate = catchAsync(async(req,res,next) => {
 });
 
 exports.getDates = catchAsync(async(req,res,next) => {
-    const date = new APIFeatures(Calendar.find(), req.query)
+    const features = new APIFeatures(Calendar.find(), req.query)
     .filter()
     .sort();
     
+    const date = await features.query.populate({
+        path: 'foods',
+        select: 'name likes dislikes category_id '}) ;
+
     res.status(200).json({
         status: "success",
         result:date.length,
@@ -90,3 +92,19 @@ exports.getDates = catchAsync(async(req,res,next) => {
 
 exports.updateDate = factory.editOne(Calendar);
 
+exports.delDates = catchAsync(async(req,res,next) => {
+    
+    const queryObj = req.query
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(
+      /\b(gte|gt|e|lt|lte)\b/g,
+      (match) => "$" + match
+    );
+
+    await Calendar.deleteMany(JSON.parse(queryStr));
+
+    res.status(204).json({
+        status: "success",
+        data:null
+      });
+});

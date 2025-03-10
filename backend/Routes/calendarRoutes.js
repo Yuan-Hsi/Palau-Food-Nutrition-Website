@@ -33,7 +33,8 @@ foodCalendarRouter
 foodCalendarRouter
   .route("/")
   .post(loginRequire, restrictTo("admin"), foodCalendar.createDate)
-  .get(foodCalendar.getDates);
+  .get(foodCalendar.getDates)
+  .delete(loginRequire, restrictTo("admin"), foodCalendar.delDates)
 
 foodCalendarRouter
 .route("/:id")

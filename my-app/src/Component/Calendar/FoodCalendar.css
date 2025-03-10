@@ -107,10 +107,14 @@
     width:100%;
     padding:2% 0 2% 0;
     margin-bottom: 4%;
+    margin-top:3%;
 }
 
 .foodList.food{
     display: block;
+    width:100%;
+    padding:2% 0 2% 0;
+    margin-bottom: 1%;
 }
 
 

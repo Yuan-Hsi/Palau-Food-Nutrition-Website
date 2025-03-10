@@ -18,11 +18,13 @@ function FoodCalendar(props) {
     const [year,setYear] = useState(today.getFullYear()); 
     const [monthdays,setMonthdays] = useState(0);
     const [firstWeekDay,setFirstWeekDay] = useState(0);
-    const [editMode, setEditMode] = useState(false);
-    const[categories,setCategories] = useState([{color:'',name:''}]);
+    const [mode, setMode] = useState('view');
     const [foodDB, setFoodDB] = useState([{color:'',name:''}]);
+    const [foods, setFoods] = useState({});
+    const [colors, setColors] = useState({});
     const { user } = useUser();
 
+    // set monthdays and find the weed day of first day
     useEffect(() => {
         const lastDay = new Date(year,month+1,0);
         const firstDay = new Date(year,month,1);
@@ -47,8 +49,34 @@ function FoodCalendar(props) {
                 alert(response.message);
                 }
         }
-        if(editMode) getfoodDB();
-        },[editMode,setFoodDB])
+        if(mode==='edit') getfoodDB();
+        },[mode,setFoodDB])
+    
+    // produce a foods map = {categoryName : [foods:{_id,name,...},...]}
+    useEffect(() => {
+
+        let foodsBaseket = {};
+        if(foodDB){
+    
+        foodDB.map((category) =>{
+            foodsBaseket[category.name]=category.foods;
+        })
+    
+        setFoods(foodsBaseket);
+        }
+        },[foodDB,setFoods])
+    
+    // produce a category's color map = {categoryName : colorCode }
+    useEffect(() => {
+            
+        let colorBaseket = {};
+        if(foodDB){
+        foodDB.map((category) =>{
+            colorBaseket[category._id]=category.color;
+        })
+        setColors(colorBaseket);
+        }
+        },[foodDB])
 
     // tables body
     function daily(firstDay, monthdays) {
@@ -59,9 +87,9 @@ function FoodCalendar(props) {
         const firstWeek = [];
         for (let i = 0; i < 7; i++) {
             if (i < firstDay) {
-                firstWeek.push(<DayCalendar foodDB={foodDB} categories={categories} editMode={editMode} date="" key={`empty-${i}`} className="foodCalendar"/>);
+                firstWeek.push(<DayCalendar foods={foods} foodDB={foodDB} colors={colors} mode={mode} date="" y_m={`${year}-${month+1}`} key={`empty-${i}`} className="foodCalendar"/>);
             } else {
-                firstWeek.push(<DayCalendar foodDB={foodDB} categories={categories} editMode={editMode} date={date++} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
+                firstWeek.push(<DayCalendar foods={foods} foodDB={foodDB} colors={colors} mode={mode} date={date++} y_m={`${year}-${month+1}`} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
             }
         }
         dailyCalendar.push(<tr key="week-1">{firstWeek}</tr>);
@@ -70,17 +98,18 @@ function FoodCalendar(props) {
         while (date <= monthdays) {
             const week = [];
             for (let i = 0; i < 7 && date <= monthdays; i++) {
-                week.push(<DayCalendar foodDB={foodDB} categories={categories} date={date++} key={date} editMode={editMode} className="foodCalendar"/>);
+                week.push(<DayCalendar foods={foods} foodDB={foodDB} colors={colors} date={date++} y_m={`${year}-${month+1}`} key={date} mode={mode} className="foodCalendar"/>);
             }
             // 補充空白格
             while (week.length < 7) {
-                week.push(<DayCalendar foodDB={foodDB} categories={categories} date="" editMode={editMode}  key={`empty-end-${week.length}`} className="foodCalendar"/>);
+                week.push(<DayCalendar foods={foods} foodDB={foodDB}  colors={colors} date="" y_m={`${year}-${month+1}`} mode={mode}  key={`empty-end-${week.length}`} className="foodCalendar"/>);
             }
             dailyCalendar.push(<tr key={`week-${date}`}>{week}</tr>);
         }
         return dailyCalendar;
     }
 
+    // next month button
     function nextMonth (){
         if(month === 11){
             setMonth(0);
@@ -90,6 +119,7 @@ function FoodCalendar(props) {
         }
     }
 
+    // previous month button
     function preMonth (){
         if(month === 0){
             setMonth(11);
@@ -101,11 +131,11 @@ function FoodCalendar(props) {
 
     return(
         <Fragment>
-        {editMode && <CategoryView foodDB={foodDB} categories={categories} setCategories={setCategories} size={props.size}/>}
+        {mode==='edit' && <CategoryView foods={foods} setFoods={setFoods} foodDB={foodDB} setFoodDB={setFoodDB} size={props.size}/>}
         <div id ="foodCalendar">
             <h1 id = "curMonth" className="foodCalendar" style={{fontSize:mySize.adjust(0.045)}}> {`${months[month]}`}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{`${year}`} </h1>
             <div style={{width:"80%", position:"relative",zIndex:1,display:"flex",alignItems:"center",marginBottom:"-1.5%"}}>
-                { user.title==='admin' && <button className="foodCalendar" id='editBtn' style={{fontSize:mySize.adjust(0.02)}}onClick={()=>setEditMode(!editMode)}>Edit</button>}
+                { user.title==='admin' && <button className="foodCalendar" id='editBtn' style={{fontSize:mySize.adjust(0.02)}}onClick={()=>setMode(mode === 'view' ? 'edit': 'view')}>{mode === 'view' ? 'Edit': 'View'}</button>}
                 <button className="foodCalendar" id='goToPreMonth' style={{fontSize:mySize.adjust(0.018),marginLeft:"10%"}} onClick={() => preMonth()}>GOING TO PREVIOUS MONTH</button>
             </div>
             <div id="calendar" className="foodCalendar">

@@ -1,6 +1,5 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import SizeHelper from "../Utils/utils.js"
-import { useUser } from "../Utils/UserContext.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -8,9 +7,7 @@ function DayCalendar(props) {
     const [addItem, setAddItem] = useState(false);
     const [showFoods, setShowFoods] = useState({});
     const [showList, setShowList] = useState(false);
-    const [selectedCategories, setSelectedCategories] = useState([]);
     const mySize = new SizeHelper(props.size);
-    const { user } = useUser();
 
     // auto floatwindow position
     const listRef = useRef(null);
@@ -39,6 +36,24 @@ function DayCalendar(props) {
     }, [showList]);
     
 
+    function clickCategory(categoryName) {
+        if(showFoods[categoryName]){
+            setShowFoods(pre => {
+                const state = { ...pre }
+                state[categoryName] = undefined;
+                return state;
+            })
+        }
+        else{
+            
+        const updateFoods = props.foods[categoryName];
+        setShowFoods(pre => ({
+            ...pre,
+            [categoryName]: updateFoods
+                })) 
+            }
+        }
+
     // auto tuning text color
     function getTextColor(hex) {
         // 將 HEX 顏色轉為 RGB
@@ -53,6 +68,24 @@ function DayCalendar(props) {
         return brightness < 128 ? "#ffffff" : "#000000";
       }
 
+    const addCalendar = async(foodId) => {
+        const theDate = `${props.y_m}-${props.date+1}`;
+        const jsonData = JSON.stringify({date:theDate, foods:[foodId]});
+
+        const response = await fetch(`${url}api/v1/calendar`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: jsonData,
+        });
+
+        const data = await response.json();
+        if (data.status === "success") {
+            console.log(data);
+        } else {
+            alert('Something wrong...');
+        }
+    }
 
     return(
         <td className="foodCalendar" onMouseEnter={() => setAddItem(true)} onMouseLeave={() => setAddItem(false)}> 
@@ -62,7 +95,7 @@ function DayCalendar(props) {
             <Fragment>
             <div>
                 <p className="foodCalendar" >content</p>
-                { props.editMode && addItem &&
+                { props.mode==='edit' && addItem &&
                     <button className="foodCalendar"style={{zIndex:3}} id='addFood' onClick={() => setShowList(true)}>add food</button>
                 }
             </div>
@@ -72,13 +105,13 @@ function DayCalendar(props) {
                     right: listPosition === 'right' ? '0' : 'auto',
                     left: listPosition === 'left' ? '0' : 'auto'
                 }}>
-                    {props.categories.map((category) =>(
+                    {props.foodDB.map((category) =>(
                         <Fragment key={category._id}>
-                            <button className="foodCalendar foodList category" style={{backgroundColor: category.color, color:getTextColor(category.color)}} onClick={() => setSelectedCategories((prev) => [category.name,...prev])} key={category._id}
+                            <button className="foodCalendar foodList category" style={{backgroundColor: category.color, color:getTextColor(category.color)}} onClick={() => clickCategory(category.name)} key={category._id}
                             >{category.name} </button>
 
                             {showFoods[category.name] && showFoods[category.name].map((item) =>(
-                                <button className="foodCalendar foodList food">{item.name}</button>)
+                                <button className="foodCalendar foodList food" key={item._id} onClick={() => addCalendar(item._id)}>{item.name}</button>)
                             )} 
                         </Fragment>
                     ))}                    

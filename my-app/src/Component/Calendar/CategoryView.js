@@ -5,36 +5,23 @@ const url = process.env.REACT_APP_BACKEND_URL;
 
 function CategoryView(props) {
 
-    const[foods,setFoods] = useState([]);
-    const[curCategory, setCurCategory] = useState('');
+    const[curCategory, setCurCategory] = useState({name:'',id:''});
     const[curFoods, setcurFoods] = useState([]);
     const[delBtn, setDelBtn] = useState('');
 
     const mySize = new SizeHelper(props.size);
-
-    // produce a foods map = {categoryName : [foods:{_id,name,...},...]}
-    useEffect(() => {
-
-      let foodsBaseket = {};
-      if(props.foodDB){
-      props.foodDB.map((category) =>{
-        foodsBaseket[category.name]=category.foods;
-      })
-
-      setFoods(foodsBaseket);
-      setCurCategory(props.foodDB[0].name);
-      }
-    },[props.foodDB,setFoods])
     
-
+    // update curFoods
     useEffect(() =>{
-      if(curCategory !==''){
-        setcurFoods(foods[curCategory]);
+      if(props.foodDB){
+        if(curCategory.name===''){
+          const curCategory = {name:props.foodDB[0].name,id:props.foodDB[0]._id};
+          setCurCategory(curCategory);
+        }
+        setcurFoods(props.foods[curCategory.name]);
       }
-    }, [curCategory,setcurFoods])
+    }, [curCategory,setcurFoods,props.foods])
     
-
-
     // Create category API
     const addCategory = async(e) => {
         e.preventDefault();
@@ -53,7 +40,7 @@ function CategoryView(props) {
         const data = await response.json();
         if (data.status === "success") {
             objData._id=data.categoryId;
-            props.setCategories([...props.categories,objData]);
+            props.setFoodDB([...props.foodDB,objData]);
             e.target.reset();
         } else {
           alert(response.message);
@@ -74,9 +61,9 @@ function CategoryView(props) {
 
       const data = await response;
       if (data.status === 204) {
-        const updateCategories = props.categories.filter(item => item._id !== categoryId);
-        props.setCategories(updateCategories);
-        setCurCategory(updateCategories[0]._id);
+        const updateCategories = props.foodDB.filter(item => item._id !== categoryId);
+        props.setFoodDB(updateCategories);
+        setCurCategory({name:updateCategories[0].name,id:updateCategories[0]._id});
       }
       else{
         alert('something wrong...')
@@ -90,8 +77,8 @@ function CategoryView(props) {
       const formData = new FormData(e.target);
       const objData = Object.fromEntries(formData.entries())
       const jsonData = JSON.stringify(objData);
- 
-      const response = await fetch(`${url}api/v1/calendar/foods/${curCategory}`, {
+
+      const response = await fetch(`${url}api/v1/calendar/foods/${curCategory.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -101,7 +88,10 @@ function CategoryView(props) {
       const data = await response.json();
       if (data.status === "success") {
         objData._id = data.foodId;
-        setFoods([...foods,objData]);
+        props.setFoods(prev => ({
+          ...prev,
+          [curCategory.name]: [...prev[curCategory.name], objData]  
+      }));
         e.target.reset();
       } else {
         alert('Something wrong...');
@@ -113,7 +103,7 @@ function CategoryView(props) {
       if(!window.confirm("Are you sure to delete this food?")){
         return;
       }
-
+      
       const response = await fetch(`${url}api/v1/calendar/foods/${foodId}`, {
         method: "DELETE",
         credentials: "include",
@@ -121,8 +111,11 @@ function CategoryView(props) {
 
       const data = await response;
       if (data.status === 204) {
-        const updateFoods = foods.filter(item => item._id !== foodId);
-        setFoods(updateFoods);
+        const updateFoods = props.foods[curCategory.name].filter(item => item._id !== foodId);
+        props.setFoods(prev => ({
+          ...prev,
+          [curCategory.name]: updateFoods
+        }));
       }
       else{
         alert('something wrong...')
@@ -153,7 +146,7 @@ function CategoryView(props) {
                         props.foodDB && props.foodDB.map((category) =>(
                             <Fragment key={category._id}>
    
-                            <button className="categoryView categories" style={{backgroundColor:category.color, color:getTextColor(category.color), fontSize:mySize.adjust(0.02), boxShadow:(category.name === curCategory)?'rgb(255 188 0) -2px 0px 14px 3px':''}} onMouseEnter={()=>setDelBtn(category._id)} onMouseLeave={()=>setDelBtn('')} onClick={()=>setCurCategory(category.name)}>                       
+                            <button className="categoryView categories" style={{backgroundColor:category.color, color:getTextColor(category.color), fontSize:mySize.adjust(0.02), boxShadow:(category.name === curCategory.name)?'rgb(255 188 0) -2px 0px 14px 3px':''}} onMouseEnter={()=>setDelBtn(category._id)} onMouseLeave={()=>setDelBtn('')} onClick={()=>setCurCategory({name:category.name,id:category._id})}>                       
                                 { delBtn === category._id && 
                               <button className="categoryView delBtn" id={category._id} onClick={()=>delCategory(category._id)} style={{width:mySize.adjust((0.025))}}> X </button>
                                 }
