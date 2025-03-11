@@ -11,16 +11,17 @@ function CategoryView(props) {
 
     const mySize = new SizeHelper(props.size);
     
-    // update curFoods
+    // initial the current category
     useEffect(() =>{
       if(props.foodDB){
-        if(curCategory.name===''){
-          const curCategory = {name:props.foodDB[0].name,id:props.foodDB[0]._id};
-          setCurCategory(curCategory);
-        }
+        setCurCategory({name:props.foodDB[0].name,id:props.foodDB[0]._id});
+    }
+  }, [props.foodDB])
+
+    // update curFoods
+    useEffect(() =>{
         setcurFoods(props.foods[curCategory.name]);
-      }
-    }, [curCategory,setcurFoods,props.foods])
+    }, [curCategory,props.foods])
     
     // Create category API
     const addCategory = async(e) => {

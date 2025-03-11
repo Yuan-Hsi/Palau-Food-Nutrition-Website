@@ -1,5 +1,6 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import SizeHelper from "../Utils/utils.js"
+import { produce } from 'immer';
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -7,6 +8,7 @@ function DayCalendar(props) {
     const [addItem, setAddItem] = useState(false);
     const [showFoods, setShowFoods] = useState({});
     const [showList, setShowList] = useState(false);
+    const [theDate, setTheDate] = useState('');
     const mySize = new SizeHelper(props.size);
 
     // auto floatwindow position
@@ -33,8 +35,13 @@ function DayCalendar(props) {
         }
 
         autoPosition();
-    }, [showList]);
+    }, [showList,listPosition]);
     
+    useEffect(() =>{
+        const d = (props.date < 10) ? '0' + props.date : props.date;
+        const m = (props.month < 10) ? '0' + props.month : props.month;
+        setTheDate(`${props.year}-${m}-${d}`);
+    },[props.year,props.month,props.date])
 
     function clickCategory(categoryName) {
         if(showFoods[categoryName]){
@@ -68,24 +75,61 @@ function DayCalendar(props) {
         return brightness < 128 ? "#ffffff" : "#000000";
       }
 
-    const addCalendar = async(foodId) => {
-        const theDate = `${props.y_m}-${props.date+1}`;
-        const jsonData = JSON.stringify({date:theDate, foods:[foodId]});
+    const addCalendar = async(foodId,categoryId,foodName) => {
+        
 
-        const response = await fetch(`${url}api/v1/calendar`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: jsonData,
-        });
 
-        const data = await response.json();
-        if (data.status === "success") {
-            console.log(data);
-        } else {
-            alert('Something wrong...');
+        if(props.calendarDB[theDate] === undefined){ // create the day
+            
+            const jsonData = JSON.stringify({date:theDate, foods:[foodId]});
+            const response = await fetch(`${url}api/v1/calendar`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: jsonData,
+            });
+            const data = await response.json();
+            
+            if (data.status === "success") {
+            props.setCalendarDB(
+                produce(prevCalendarDB => {
+                    prevCalendarDB[theDate] = {
+                      foods:[{ _id: foodId, name: foodName, category_id: categoryId }],
+                      _id: data.update._id,
+                    };
+                  })
+            );
+            } else {
+                alert('Something wrong... in addCalendar');
+            }
+            }
+        else{  // update the day
+            
+            const foodsBaseket = props.calendarDB[theDate].foods.map(food => food._id);
+            foodsBaseket.push(foodId);
+            const jsonData = JSON.stringify({foods:foodsBaseket});
+            const response = await fetch(`${url}api/v1/calendar/${props.calendarDB[theDate]._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: jsonData,
+            });
+            const data = await response.json();
+            
+            if (data.status === "success") {
+                props.setCalendarDB(
+                    produce(prevCalendarDB => {
+                        prevCalendarDB[theDate] = {
+                          foods:[...prevCalendarDB[theDate].foods,{"_id":foodId,"name":foodName,"category_id":categoryId}],
+                          _id: data.update._id,
+                        };
+                      })
+                );
+            } else {
+                alert('Something wrong... in addCalendar');
+            }
+            }
         }
-    }
 
     return(
         <td className="foodCalendar" onMouseEnter={() => setAddItem(true)} onMouseLeave={() => setAddItem(false)}> 
@@ -94,7 +138,14 @@ function DayCalendar(props) {
             {props.date !== "" &&
             <Fragment>
             <div>
-                <p className="foodCalendar" >content</p>
+                {   props.calendarDB[theDate] !== undefined && 
+                    props.calendarDB[theDate].foods.map((food) => (
+                        <div style={{display:"flex"}}>
+                        <input type="color" id='inputColor' className="categoryView" disabled value={props.colors[food.category_id]} style={{width:mySize.adjust(0.03),height:mySize.adjust(0.035)}}></input>
+                        <p className="foodCalendar" key={food._id} >{food.name}</p>
+                        </div>
+                    ))  
+                }
                 { props.mode==='edit' && addItem &&
                     <button className="foodCalendar"style={{zIndex:3}} id='addFood' onClick={() => setShowList(true)}>add food</button>
                 }
@@ -111,7 +162,7 @@ function DayCalendar(props) {
                             >{category.name} </button>
 
                             {showFoods[category.name] && showFoods[category.name].map((item) =>(
-                                <button className="foodCalendar foodList food" key={item._id} onClick={() => addCalendar(item._id)}>{item.name}</button>)
+                                <button className="foodCalendar foodList food" key={item._id} onClick={() => addCalendar(item._id,category._id,item.name)}>{item.name}</button>)
                             )} 
                         </Fragment>
                     ))}                    

@@ -20,6 +20,7 @@ function FoodCalendar(props) {
     const [firstWeekDay,setFirstWeekDay] = useState(0);
     const [mode, setMode] = useState('view');
     const [foodDB, setFoodDB] = useState([{color:'',name:''}]);
+    const [calendarDB, setCalendarDB] = useState({});
     const [foods, setFoods] = useState({});
     const [colors, setColors] = useState({});
     const { user } = useUser();
@@ -44,39 +45,82 @@ function FoodCalendar(props) {
                 const res = await response.json();
                 if (res.status === "success") {
                 setFoodDB(res.data.FoodsDB);
-                console.log(res.data.FoodsDB);
                 } else {
-                alert(response.message);
+                    alert('something wrong... in getting foodDB');
                 }
         }
         if(mode==='edit') getfoodDB();
         },[mode,setFoodDB])
+
+    // get calendarDB  = { year-month-day : {[foods:{_id,category_id,name},{...}], _id:}}
+    useEffect(() =>{
+        const getCalendarDB = async() => {
+            const api = `${url}api/v1/calendar/?date[gte]=${year}-${month+1}-1&date[lte]=${year}-${month+1}-${monthdays}`;
+            const response = await fetch(api, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                });
+    
+                const res = await response.json();
+                if (res.status === "success") {
+                    const dateBaseket = {};
+                    res.data.date.map( item => {
+                        dateBaseket[item.date.split('T')[0]] = {foods:item.foods, _id:item._id};
+                        return 0;
+                    })
+                    console.log(dateBaseket);
+                    setCalendarDB(dateBaseket);
+                } else {
+                    alert('something wrong... in getting calendarDB');
+                }
+        }
+        if(monthdays!== 0)getCalendarDB();
+        },[mode,setCalendarDB,month,year,monthdays])
     
     // produce a foods map = {categoryName : [foods:{_id,name,...},...]}
     useEffect(() => {
 
         let foodsBaseket = {};
+        let colorBaseket = {};
+
         if(foodDB){
     
         foodDB.map((category) =>{
             foodsBaseket[category.name]=category.foods;
+            colorBaseket[category._id]=category.color;
+            return 0;
         })
     
         setFoods(foodsBaseket);
+        setColors(colorBaseket);
         }
         },[foodDB,setFoods])
     
     // produce a category's color map = {categoryName : colorCode }
-    useEffect(() => {
-            
-        let colorBaseket = {};
-        if(foodDB){
-        foodDB.map((category) =>{
-            colorBaseket[category._id]=category.color;
-        })
-        setColors(colorBaseket);
-        }
-        },[foodDB])
+    useEffect(() => {  
+    const getCategories = async() => {
+        const api = `${url}api/v1/calendar/category`;
+        const response = await fetch(api, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            });
+
+            const res = await response.json();
+            if (res.status === "success") {
+                let colorBaseket = {};
+                res.data.category.map( item => {
+                    colorBaseket[item._id] = item.color;
+                    return 0;
+                })
+                setColors(colorBaseket);
+            } else {
+                alert('something wrong... in getting calendarDB');
+            }
+    }
+    getCategories();
+        },[])
 
     // tables body
     function daily(firstDay, monthdays) {
@@ -87,9 +131,9 @@ function FoodCalendar(props) {
         const firstWeek = [];
         for (let i = 0; i < 7; i++) {
             if (i < firstDay) {
-                firstWeek.push(<DayCalendar foods={foods} foodDB={foodDB} colors={colors} mode={mode} date="" y_m={`${year}-${month+1}`} key={`empty-${i}`} className="foodCalendar"/>);
+                firstWeek.push(<DayCalendar setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB}  mode={mode} date="" year={year} month={month+1} key={`empty-${i}`} className="foodCalendar"/>);
             } else {
-                firstWeek.push(<DayCalendar foods={foods} foodDB={foodDB} colors={colors} mode={mode} date={date++} y_m={`${year}-${month+1}`} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
+                firstWeek.push(<DayCalendar setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB} mode={mode} date={date++} year={year} month={month+1} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
             }
         }
         dailyCalendar.push(<tr key="week-1">{firstWeek}</tr>);
@@ -98,11 +142,11 @@ function FoodCalendar(props) {
         while (date <= monthdays) {
             const week = [];
             for (let i = 0; i < 7 && date <= monthdays; i++) {
-                week.push(<DayCalendar foods={foods} foodDB={foodDB} colors={colors} date={date++} y_m={`${year}-${month+1}`} key={date} mode={mode} className="foodCalendar"/>);
+                week.push(<DayCalendar setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB}  date={date++} year={year} month={month+1} key={date} mode={mode} className="foodCalendar"/>);
             }
             // 補充空白格
             while (week.length < 7) {
-                week.push(<DayCalendar foods={foods} foodDB={foodDB}  colors={colors} date="" y_m={`${year}-${month+1}`} mode={mode}  key={`empty-end-${week.length}`} className="foodCalendar"/>);
+                week.push(<DayCalendar setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB}   date="" year={year} month={month+1} mode={mode}  key={`empty-end-${week.length}`} className="foodCalendar"/>);
             }
             dailyCalendar.push(<tr key={`week-${date}`}>{week}</tr>);
         }

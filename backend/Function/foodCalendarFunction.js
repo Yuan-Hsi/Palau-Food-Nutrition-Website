@@ -70,7 +70,7 @@ exports.createDate = catchAsync(async(req,res,next) => {
     res.status(201).json({
         status:'success',
         message:`The date created successfully`,
-        dateId: newDate.id
+        update: newDate
     });
 });
 
