@@ -237,10 +237,10 @@ const foodSchema = new mongoose.Schema({
 
 // Calendar Schema
 const calendarSchema = new mongoose.Schema({
+  schoolName: { type: String, required: true, unique: true },
   date: { type: Date, required: true },
   foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }] // 用 food_id 來引用 foods
 });
-
 
 categorySchema.virtual("foods", {
   // virtual populate
@@ -249,13 +249,13 @@ categorySchema.virtual("foods", {
   localField: "_id",
 });
 
-// delete related comments
+// delete related foods
 categorySchema.pre(['findOneAndDelete', 'findByIdAndDelete'], async function(next) {
   const categoryId = this.getQuery()["_id"];
   try {
       await mongoose.model("Food", foodSchema).deleteMany({ category_id: categoryId });
   } catch (error) {
-      console.error('Error deleting relavent comments:', error);
+      console.error('Error deleting relavent foods:', error);
   }
   next();
 });

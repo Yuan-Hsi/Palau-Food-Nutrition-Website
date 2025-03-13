@@ -1,7 +1,14 @@
 @import url("https://fonts.googleapis.com/css?family=Jua");
 
+.foodCalendar#schoolSelect{
+    padding:0.5%;
+    letter-spacing: 0.07em;
+    background-color: rgb(255, 217, 0);
+    border: none;
+}
+
 #foodCalendar{
-    margin-top:4%;
+    margin-top:3%;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -13,7 +20,8 @@
 
 #curMonth{
     text-align: right;
-    margin-right: 14%;
+    margin-bottom:1%;
+    margin-right: 20%;
     width:100%;
     color:rgb(255, 217, 0)
 }
@@ -71,11 +79,13 @@
 }
 
 .foodCalendar tr{
-    border-bottom: 0.7px solid #e0e0e0
+    border-bottom: 0.7px solid #e0e0e0;
+    height:10vh;
 }
 
 .foodCalendar td{
     padding:0 3% 0 3%;
+    height:fit-content;
 }
 
 .foodCalendar #date{
@@ -91,8 +101,8 @@
 .foodCalendar#foodList{
     position:absolute;
     z-index:999;
-    width:300%;
-    height:600%;
+    width:100%;
+    height:30vh;
     border-radius: 20px;
     background-color: rgba(255, 217, 0, 0.104);
     backdrop-filter: blur(20px);
@@ -266,4 +276,18 @@ border-radius: 50%;
 
 .categoryView#inputItem::placeholder {
     color: #9b9b9b; /* 設置較明顯的顏色 */
+}
+
+.dayCalendar.delBtn{
+    position:relative;
+    width: 2vw;
+    aspect-ratio: 1/1;
+    border:none;
+    border-radius: 100%;
+    background-color: rgb(1, 1, 1);
+    color:#f80000;
+    box-shadow: none;
+    top:0;
+    left:0;
+    margin-left: 10%;
 }

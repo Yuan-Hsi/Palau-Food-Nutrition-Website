@@ -140,7 +140,7 @@ function CategoryView(props) {
 
 
     return(
-        <div className = 'categoryView' style={{width:"100%",display:"flex",justifyContent:"center",height:"20vh",marginTop:"3%",marginBottom:"-2%"}}>
+        <div className = 'categoryView' style={{width:"100%",display:"flex",justifyContent:"center",height:"20vh",marginTop:"3%"}}>
             <div className = 'categoryView' id='view' >
                 <div  className = 'categoryView' id = 'categoryList' >
                     {

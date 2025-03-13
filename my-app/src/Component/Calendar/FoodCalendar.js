@@ -3,12 +3,13 @@ import "./FoodCalendar.css";
 import SizeHelper from "../Utils/utils.js";
 import CategoryView from "./CategoryView.js";
 import DayCalendar from "./DayCalendar.js";
+import SchoolSelection from "./SchoolSelection.js";
 import { useUser } from "../Utils/UserContext.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
 const months = ["Jan","Feb","Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const weekdays = ["Mon","Tue","Wed","Thu","Fri"];
 
 function FoodCalendar(props) {
     
@@ -19,10 +20,11 @@ function FoodCalendar(props) {
     const [monthdays,setMonthdays] = useState(0);
     const [firstWeekDay,setFirstWeekDay] = useState(0);
     const [mode, setMode] = useState('view');
+    const [school, setSchool] = useState('Aimeliik')
     const [foodDB, setFoodDB] = useState([{color:'',name:''}]);
     const [calendarDB, setCalendarDB] = useState({});
     const [foods, setFoods] = useState({});
-    const [colors, setColors] = useState({});
+    const [colors, setColors] = useState({})
     const { user } = useUser();
 
     // set monthdays and find the weed day of first day
@@ -55,7 +57,7 @@ function FoodCalendar(props) {
     // get calendarDB  = { year-month-day : {[foods:{_id,category_id,name},{...}], _id:}}
     useEffect(() =>{
         const getCalendarDB = async() => {
-            const api = `${url}api/v1/calendar/?date[gte]=${year}-${month+1}-1&date[lte]=${year}-${month+1}-${monthdays}`;
+            const api = `${url}api/v1/calendar/?date[gte]=${year}-${month+1}-1&date[lte]=${year}-${month+1}-${monthdays}&schoolName=${school}`;
             const response = await fetch(api, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
@@ -76,7 +78,7 @@ function FoodCalendar(props) {
                 }
         }
         if(monthdays!== 0)getCalendarDB();
-        },[mode,setCalendarDB,month,year,monthdays])
+        },[mode,setCalendarDB,month,year,monthdays,school])
     
     // produce a foods map = {categoryName : [foods:{_id,name,...},...]}
     useEffect(() => {
@@ -129,25 +131,28 @@ function FoodCalendar(props) {
     
         // 處理第一週
         const firstWeek = [];
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 5; i++) {
             if (i < firstDay) {
-                firstWeek.push(<DayCalendar setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB}  mode={mode} date="" year={year} month={month+1} key={`empty-${i}`} className="foodCalendar"/>);
+                firstWeek.push(<DayCalendar school={school} setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB}  mode={mode} date="" year={year} month={month+1} key={`empty-${i}`} className="foodCalendar"/>);
             } else {
-                firstWeek.push(<DayCalendar setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB} mode={mode} date={date++} year={year} month={month+1} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
+                firstWeek.push(<DayCalendar school={school} setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB} mode={mode} date={date++} year={year} month={month+1} key={date} className="foodCalendar"/>); // date ++ : 先顯示 date 再 +1
             }
         }
+        date+=2
         dailyCalendar.push(<tr key="week-1">{firstWeek}</tr>);
     
         // 處理剩餘的週
         while (date <= monthdays) {
             const week = [];
-            for (let i = 0; i < 7 && date <= monthdays; i++) {
-                week.push(<DayCalendar setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB}  date={date++} year={year} month={month+1} key={date} mode={mode} className="foodCalendar"/>);
+            for (let i = 0; i < 5 && date <= monthdays; i++) {
+                week.push(<DayCalendar school={school} setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB}  date={date++} year={year} month={month+1} key={date} mode={mode} className="foodCalendar"/>);
             }
+
             // 補充空白格
-            while (week.length < 7) {
-                week.push(<DayCalendar setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB}   date="" year={year} month={month+1} mode={mode}  key={`empty-end-${week.length}`} className="foodCalendar"/>);
+            while (week.length < 5) {
+                week.push(<DayCalendar school={school} setCalendarDB={setCalendarDB} size={props.size} calendarDB={calendarDB} colors={colors} foods={foods} foodDB={foodDB}   date="" year={year} month={month+1} mode={mode}  key={`empty-end-${week.length}`} className="foodCalendar"/>);
             }
+            date+=2;
             dailyCalendar.push(<tr key={`week-${date}`}>{week}</tr>);
         }
         return dailyCalendar;
@@ -181,6 +186,7 @@ function FoodCalendar(props) {
             <div style={{width:"80%", position:"relative",zIndex:1,display:"flex",alignItems:"center",marginBottom:"-1.5%"}}>
                 { user.title==='admin' && <button className="foodCalendar" id='editBtn' style={{fontSize:mySize.adjust(0.02)}}onClick={()=>setMode(mode === 'view' ? 'edit': 'view')}>{mode === 'view' ? 'Edit': 'View'}</button>}
                 <button className="foodCalendar" id='goToPreMonth' style={{fontSize:mySize.adjust(0.018),marginLeft:"10%"}} onClick={() => preMonth()}>GOING TO PREVIOUS MONTH</button>
+                <SchoolSelection setSchool={setSchool} cl='foodCalendar' st={{marginLeft:"50%",marginBottom:"1%",fontSize:mySize.adjust(0.02)}} />
             </div>
             <div id="calendar" className="foodCalendar">
             <table id ="weekdays" >
