@@ -139,7 +139,9 @@ function FoodCalendar(props) {
             }
         }
         date+=2
-        dailyCalendar.push(<tr key="week-1">{firstWeek}</tr>);
+        if(firstDay < 5){
+            dailyCalendar.push(<tr key="week-1">{firstWeek}</tr>);
+        }
     
         // 處理剩餘的週
         while (date <= monthdays) {
@@ -200,7 +202,7 @@ function FoodCalendar(props) {
                 {daily(firstWeekDay,monthdays)}
                 </table>
             </div>
-            <div style={{width:"80%", position:"relative",zIndex:1,marginTop:"-32%"}}>
+            <div style={{width:"80%", position:"relative",zIndex:1,marginTop:"-32%",marginBottom:"20%"}}>
                 <button className="foodCalendar" id='goToNextMonth' style={{fontSize:mySize.adjust(0.018)}} onClick={() => nextMonth()}>GOING TO NEXT MONTH</button>
             </div>
         </div>

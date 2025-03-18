@@ -167,10 +167,13 @@ function DayCalendar(props) {
             <div>
                 {   props.calendarDB[theDate] !== undefined && 
                     props.calendarDB[theDate].foods.map((food,idx) => (
-                        <div style={{display:"flex",alignItems:"center"}}  onMouseEnter={()=>setDelBtn({foodId:food._id, date:theDate, listIdx: idx})} onMouseLeave={()=>setDelBtn('')} >
-                        <input type="color" id='inputColor' className="categoryView" disabled value={props.colors[food.category_id]} style={{width:mySize.adjust(0.03),height:mySize.adjust(0.035)}}></input>
-                        <p className="foodCalendar" key={food._id} >{food.name}</p>
-                        { props.mode==='edit' && delBtn.date === theDate && delBtn.listIdx === idx &&  <button className="dayCalendar delBtn" id={food._id} onClick={() => deleteMeal(idx)} style={{width:mySize.adjust((0.025))}}> X </button> }
+                        <div style={{display:"flex",alignItems:"center",marginBottom:"3%"}}  onMouseEnter={()=>setDelBtn({foodId:food._id, date:theDate, listIdx: idx})} onMouseLeave={()=>setDelBtn('')} >
+                            <div style={{minWidth:"15px",marginRight:"3%"}}><input type="color" id='inputColor' className="categoryView" disabled value={props.colors[food.category_id]} style={{width:"100%",height:"20px"}}></input></div>
+
+                        <p className="foodCalendar foodName" key={food._id} title={food.name}>{food.name}</p>
+                        { props.mode==='edit' && delBtn.date === theDate && delBtn.listIdx === idx && 
+                        <div style={{minWidth:"15px"}}>
+                        <button className="dayCalendar delBtn" id={food._id} onClick={() => deleteMeal(idx)} style={{width:"100%"}}> X </button> </div>}
                         </div>
                     ))  
                 }

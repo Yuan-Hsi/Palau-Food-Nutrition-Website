@@ -51,7 +51,7 @@
 }
 
 #calendar{
-    height:100vh;
+    height:auto;
     width: 85vw;
     background-color: #F5F5F5;
     border-radius: 45px;
@@ -111,6 +111,14 @@
     overflow: auto;
 }
 
+.foodCalendar.foodName{
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 限制顯示的行數 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .foodList.category{
     display: block;
     border: none;
@@ -155,6 +163,11 @@
     margin-bottom: 1%;
     display:flex;
     align-items: center;
+    overflow: hidden;
+    overflow-y: hidden;
+}
+
+.categoryView#categoryList:hover{
     overflow: auto;
     overflow-y: hidden;
     scrollbar-width: thin;
@@ -162,7 +175,7 @@
 
 .categoryView.delBtn{
     position:absolute;
-    z-index: 2;
+    z-index: 5;
     margin-top: -1%;
     width: 2vw;
     aspect-ratio: 1/1;
@@ -170,7 +183,6 @@
     border-radius: 100%;
     background-color: rgb(1, 1, 1);
     color:#f80000;
-    position:absolute;
     transform: translateX(-50%);
     top:-20%;
     box-shadow: none;
@@ -247,12 +259,14 @@ border-radius: 50%;
 .categoryView.item{
     border-radius: 20px;
     background-color: white;
-    padding:0.5% 2% 0.5% 2%;
-    width: fit-content;
+    padding:0.5%;
+    width: 10%;
+    text-overflow: ellipsis;
     position:relative;
     z-index: 1;
     white-space:nowrap;
     margin-top:0.5%;
+    margin-left:0.5%;
 }
 
 .categoryView#addItem{
@@ -277,6 +291,8 @@ border-radius: 50%;
 .categoryView#inputItem::placeholder {
     color: #9b9b9b; /* 設置較明顯的顏色 */
 }
+
+
 
 .dayCalendar.delBtn{
     position:relative;

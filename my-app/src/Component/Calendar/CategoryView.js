@@ -91,7 +91,7 @@ function CategoryView(props) {
         objData._id = data.foodId;
         props.setFoods(prev => ({
           ...prev,
-          [curCategory.name]: [...prev[curCategory.name], objData]  
+          [curCategory.name]: prev[curCategory.name] ? [...prev[curCategory.name], objData] : [objData]
       }));
         e.target.reset();
       } else {
@@ -148,7 +148,7 @@ function CategoryView(props) {
                             <Fragment key={category._id}>
    
                             <button className="categoryView categories" style={{backgroundColor:category.color, color:getTextColor(category.color), fontSize:mySize.adjust(0.02), boxShadow:(category.name === curCategory.name)?'rgb(255 188 0) -2px 0px 14px 3px':''}} onMouseEnter={()=>setDelBtn(category._id)} onMouseLeave={()=>setDelBtn('')} onClick={()=>setCurCategory({name:category.name,id:category._id})}>                       
-                                { delBtn === category._id && 
+                                { delBtn === category._id && category._id !== "67d8b49fb95b08e413d20fff" && 
                               <button className="categoryView delBtn" id={category._id} onClick={()=>delCategory(category._id)} style={{width:mySize.adjust((0.025))}}> X </button>
                                 }
                             {category.name} 
@@ -167,19 +167,19 @@ function CategoryView(props) {
                     curFoods && curFoods.map((item) =>(
                       <Fragment key={item._id}>
 
-                      <button className="categoryView item" id='item_1' style={{fontSize:mySize.adjust(0.02)}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')}>          
+                      <button title={item.name} className="categoryView item" id='item_1' style={{fontSize:mySize.adjust(0.015)}} onMouseEnter={()=>setDelBtn(item._id)} onMouseLeave={()=>setDelBtn('')}>          
                       { delBtn === item._id && 
                           <button className="categoryView delBtn" style={{width:mySize.adjust((0.025)),    backgroundColor: "white",
                             color:"black"}} id={item._id}  onClick={()=>delItem(item._id)}> X </button>
                       }
-                      {item.name} 
+                       <span style={{overflow:"hidden",display:"block",width:"100%"}}>{item.name} </span>
                       </button>
                       </Fragment>
                   ))
                   }
                     <form className="categoryView" id='addItem' onSubmit={addItem}>
                         <input type='text' className="categoryView" 
-                        id='inputItem' placeholder="+ new item" style={{fontSize:mySize.adjust(0.02)}} name='name'></input>
+                        id='inputItem' placeholder="+ new item" style={{fontSize:mySize.adjust(0.015)}} name='name'></input>
                     </form>
                 </div>
             </div>
