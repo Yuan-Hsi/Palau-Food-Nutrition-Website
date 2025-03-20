@@ -14,11 +14,12 @@ const filterObj = function (obj, ...allowedFileds) {
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // update their email, name... (but they can not update anythingelse)
-  const filteredBody = filterObj(req.body, "name", "email", "school");
+  const filteredBody = filterObj(req.body, "name", "email", "school", "favorite", "dislike");
   const info = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
-  }); // x: the update info,
+  }).select('+favorite +dislike'); // x: the update info,
+
 
   res.status(200).json({
     status: "success",
@@ -51,6 +52,18 @@ exports.getAUser = catchAsync(async (req, res, next) => {
     status: "success",
     data: {
       user,
+    },
+  });
+});
+
+exports.getPreference = catchAsync(async (req, res, next) => {
+  if (!req.user) throw new AppError("The user is not found.", 404);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      favorite: req.user.favorite,
+      dislike: req.user.dislike,
     },
   });
 });

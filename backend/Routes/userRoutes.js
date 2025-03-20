@@ -15,6 +15,7 @@ const {
   getAUser,
   updateMe,
   deleteMe,
+  getPreference,
 } = require("../Function/userFunction");
 
 const authRouter = express.Router();
@@ -23,6 +24,7 @@ authRouter.post("/signup", signup);
 authRouter.post("/login", login);
 authRouter.get('/logout',logout);
 authRouter.get("/isLoggedin", isLoggedin);
+authRouter.get("/getPreference", loginRequire, getPreference);
 authRouter.post("/forgotPassword", forgotPassword);
 authRouter.patch("/resetPassword/:token", resetPassword);
 authRouter.patch("/updateMyPassword", loginRequire, updatePassword);

@@ -49,10 +49,12 @@ const userSchema = mongoose.Schema({
   favorite:{
     type: Array,
     select: false,
+    default: [],
   },
   dislike:{
     type: Array,
     select: false,
+    default: [],
   }
 });
 
@@ -139,6 +141,64 @@ userSchema.pre("save", function (next) {
   this.pwdChangeAt = Date.now() - 1000; // Prevent the token is create after defining this proprerty
 
   next();
+});
+
+// Update the count of food's like and dislike 
+userSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate();
+  const userId = this.getQuery()._id;
+
+  if (!update.favorite && !update.dislike) return next();
+
+  try{
+    const user = await this.model.findById(userId).select('+favorite +dislike');
+    if(!user) return next();
+
+    const Food = mongoose.model("Food", foodSchema);
+    let setShort, longArr,updateCount;
+
+    if(update.favorite){
+      const originFav = user.favorite || [];
+      const newFav = update.favorite || [];
+
+      if(originFav.length < newFav.length){  // add favorite
+        setShort = new Set(originFav);
+        longArr = newFav;
+        updateCount = 1;
+      }
+      else{  // remove favorite
+        setShort = new Set(newFav);
+        longArr = originFav;
+        updateCount = -1;
+      }
+
+      const updateFood = longArr.filter(name => !setShort.has(name));  // find the difference
+      await Food.updateMany({ name: updateFood },{ $inc: { likes: updateCount } });
+    }
+    else{
+      const originDis = user.dislike || [];
+      const newDis = update.dislike || [];
+
+      if(originDis.length < newDis.length){  // add favorite
+        setShort = new Set(originDis);
+        longArr = newDis;
+        updateCount = 1;
+      }
+      else{  // remove favorite
+        setShort = new Set(newDis);
+        longArr = originDis;
+        updateCount = -1;
+      }
+
+      const updateFood = longArr.filter(name => !setShort.has(name));  // find the difference
+      await Food.updateMany({ name: updateFood },{ $inc: { dislikes: updateCount } });
+    }
+  }
+  catch (error){
+    console.error('Error updating food likes/dislikes:', error);
+    next(error);
+  }
+
 });
 
 userSchema.pre(/^find/, function (next) {
@@ -231,8 +291,8 @@ const categorySchema = new mongoose.Schema({
 const foodSchema = new mongoose.Schema({
   name: { type: String, required: true  },
   category_id: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-  likes:{type:Number},
-  dislikes:{type:Number},
+  likes:{type:Number, default: 0 },
+  dislikes:{type:Number, default: 0 },
 });
 
 // Calendar Schema

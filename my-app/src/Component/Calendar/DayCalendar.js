@@ -1,6 +1,7 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import SizeHelper from "../Utils/utils.js"
 import { produce } from 'immer';
+import { useUser } from "../Utils/UserContext.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -10,7 +11,9 @@ function DayCalendar(props) {
     const [showList, setShowList] = useState(false);
     const [theDate, setTheDate] = useState('');
     const [delBtn, setDelBtn] = useState({foodId:'', date:'',listIdx:''});
+    const [preferenceBtn, setpreferenceBtn] = useState({foodId:'', date:'',listIdx:''});
     const mySize = new SizeHelper(props.size);
+    const { user } = useUser();
 
     // auto floatwindow position
     const listRef = useRef(null);
@@ -43,6 +46,11 @@ function DayCalendar(props) {
         const m = (props.month < 10) ? '0' + props.month : props.month;
         setTheDate(`${props.year}-${m}-${d}`);
     },[props.year,props.month,props.date])
+
+    useEffect(() => {
+
+    }, [])
+
 
     function clickCategory(categoryName) {
         if(showFoods[categoryName]){
@@ -154,8 +162,62 @@ function DayCalendar(props) {
                   })
             );
         } else {
-            alert('Something wrong... in addCalendar');
+            alert('Something wrong... in deleteMeal');
         }
+    }
+
+    const updatePreference = async(preference) => {
+
+        // preference = {favorite: name) or {dislike: name}
+
+        let update;
+        let jsonData;
+
+        // update favorite
+        if(preference.favorite){
+            if(props.favorite.includes(preference.favorite)){
+                update = props.favorite.filter( name => name !== preference.favorite);
+                props.setFavorite(update);
+            }
+            else{
+                update = [...props.favorite,preference.favorite];
+                props.setFavorite(update);
+            }
+            jsonData = JSON.stringify({favorite:update});
+        }
+
+        // updat dislike
+        if(preference.dislike){
+            if(props.dislike.includes(preference.dislike)){
+                update = props.dislike.filter( name => name !== preference.dislike);
+                props.setDislike(update);
+            }
+            else{
+                update = [...props.dislike,preference.dislike];
+                props.setDislike(update);
+            }
+            jsonData = JSON.stringify({dislike:update});
+        }
+        
+        // using put function of user route
+        const response = await fetch(`${url}api/v1/user/updateMe`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: jsonData,
+        });
+        const data = await response.json();
+        
+        if (data.status === "success") {
+            console.log(data);
+        } else {
+            alert('Something wrong... in updatePreference');
+        }
+    }
+
+    function hoverOnMeal(foodId,date,listIdx){
+        setDelBtn({foodId, date, listIdx});
+        setpreferenceBtn({foodId, date, listIdx});
     }
 
     return(
@@ -167,20 +229,45 @@ function DayCalendar(props) {
             <div>
                 {   props.calendarDB[theDate] !== undefined && 
                     props.calendarDB[theDate].foods.map((food,idx) => (
-                        <div style={{display:"flex",alignItems:"center",marginBottom:"3%"}}  onMouseEnter={()=>setDelBtn({foodId:food._id, date:theDate, listIdx: idx})} onMouseLeave={()=>setDelBtn('')} >
-                            <div style={{minWidth:"15px",marginRight:"3%"}}><input type="color" id='inputColor' className="categoryView" disabled value={props.colors[food.category_id]} style={{width:"100%",height:"20px"}}></input></div>
 
-                        <p className="foodCalendar foodName" key={food._id} title={food.name}>{food.name}</p>
-                        { props.mode==='edit' && delBtn.date === theDate && delBtn.listIdx === idx && 
-                        <div style={{minWidth:"15px"}}>
-                        <button className="dayCalendar delBtn" id={food._id} onClick={() => deleteMeal(idx)} style={{width:"100%"}}> X </button> </div>}
+                        <Fragment>
+
+                         {/* Meal item */}
+                        <div style={{display:"flex",alignItems:"center",marginBottom:"3%"}}  onMouseEnter={()=>hoverOnMeal(food._id, theDate, idx)} onMouseLeave={()=>{setDelBtn('');setpreferenceBtn('')}} >
+
+                            {/* Preference button  */}
+                            {user.title && props.mode==='view' && preferenceBtn.date === theDate && preferenceBtn.listIdx === idx && food.category_id !== "67d8b49fb95b08e413d20fff" &&  <div style={{display:"flex",position:"absolute",zIndex:10,right:-50}}> 
+                                <button id='like' className="dayCalendar preferBtn" onClick={() => updatePreference({favorite:food.name})}disabled={props.dislike.includes(food.name)} style={{boxShadow:(props.favorite.includes(food.name))? "inset 1px 2px #999" :""}}>  ❤️ </button> 
+                                <button id='dislike' className="dayCalendar preferBtn" onClick={() => updatePreference({dislike:food.name})} disabled={props.favorite.includes(food.name)} style={{boxShadow:(props.dislike.includes(food.name))? "inset 2px 2px 5px rgba(255, 255, 255, 0.83)" :""}}> 💔 </button>
+                                </div>}
+
+                            {/* Category color icon */}
+                            <div style={{minWidth:"15px",marginRight:"3%"}}>
+                                {props.mode==='view' && props.favorite && props.favorite.includes(food.name) && <p>❤️</p>}
+                                {props.mode==='view' && props.dislike && props.dislike.includes(food.name) && <p>💔</p>}
+                                {props.mode==='edit' && <input type="color" id='inputColor' className="categoryView" disabled value={props.colors[food.category_id]} style={{width:"100%",height:"20px"}}></input>}
+                                </div>
+                        
+                            {/* Meal name */}
+                            <p className="dayCalendar foodName" key={food._id} title={food.name} style={{}} >{food.name}</p>
+                            
+                            {/* Delete button */}
+                            { props.mode==='edit' && delBtn.date === theDate && delBtn.listIdx === idx && 
+                            <div style={{minWidth:"15px"}}>
+                            <button className="dayCalendar delBtn" id={food._id} onClick={() => deleteMeal(idx)} style={{width:"100%"}}> X </button> </div>}
+                            
                         </div>
+
+                        </Fragment>
+
                     ))  
                 }
                 { props.mode==='edit' && addItem &&
                     <button className="foodCalendar"style={{zIndex:3}} id='addFood' onClick={() => setShowList(true)}>add food</button>
                 }
             </div>
+
+            {/* Food selection list */}
             {showList &&
                 <div className="foodCalendar" id='foodList' onMouseLeave={() => setShowList(false)} ref={listRef}                     
                 style={{
@@ -188,13 +275,18 @@ function DayCalendar(props) {
                     left: listPosition === 'left' ? '0' : 'auto'
                 }}>
                     {props.foodDB.map((category) =>(
+
                         <Fragment key={category._id}>
+
+                            {/* Category selection */}
                             <button className="foodCalendar foodList category" style={{backgroundColor: category.color, color:getTextColor(category.color)}} onClick={() => clickCategory(category.name)} key={category._id}
                             >{category.name} </button>
 
+                            {/* Food selection */}
                             {showFoods[category.name] && showFoods[category.name].map((item) =>(
                                 <button className="foodCalendar foodList food" key={item._id} onClick={() => addCalendar(item._id,category._id,item.name)}>{item.name}</button>)
                             )} 
+
                         </Fragment>
                     ))}                    
                 </div>

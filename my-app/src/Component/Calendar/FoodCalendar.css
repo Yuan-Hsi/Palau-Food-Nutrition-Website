@@ -111,7 +111,26 @@
     overflow: auto;
 }
 
-.foodCalendar.foodName{
+.dayCalendar#dislike{
+    background-color: black;
+}
+
+.dayCalendar#like{
+    margin-right:10%;
+}
+
+.dayCalendar.preferBtn:active{
+    box-shadow: 0 2px #666;
+    transform: translateY(4px);
+}
+
+.dayCalendar.preferBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+.dayCalendar.foodName{
+    font-family: "jua";
     display: -webkit-box;
     -webkit-line-clamp: 2; /* 限制顯示的行數 */
     -webkit-box-orient: vertical;

@@ -93,7 +93,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET); // promisify 使其可以 return 一個 promise，而不用再寫回調函數
 
   // check user still exists
-  const userAlive = await User.findById(decoded.id); // also verify the id is valid
+  const userAlive = await User.findById(decoded.id).select("favorite dislike"); // also verify the id is valid
 
   if (!userAlive)
     throw new AppError(
@@ -108,6 +108,10 @@ exports.protect = catchAsync(async (req, res, next) => {
       401
     );
   }
+
+  console.log(userAlive);
+  userAlive.favorite = (userAlive.favorite) ? userAlive.favorite : [];
+  userAlive.dislike = (userAlive.dislike) ? userAlive.dislike : [];
 
   // pass the req to the next middleware
   req.user = userAlive;
@@ -228,7 +232,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
 // To let the webpage show the "login" or "userName"
 exports.isLoggedin = async (req, res, next) => {
-
+    
     // get the token
     if (req.cookies.jwt) {
       try{
@@ -248,13 +252,14 @@ exports.isLoggedin = async (req, res, next) => {
         return next();
       }
 
+
       // pass the req to the next middleware
       res.status(200).json({
         status: "success",
         name: userAlive.name,
         email: userAlive.email,
         title:userAlive.title,
-        _id:userAlive._id
+        _id:userAlive._id,
       });
     } 
       catch(err){
