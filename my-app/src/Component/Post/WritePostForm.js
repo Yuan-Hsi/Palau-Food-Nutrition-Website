@@ -23,6 +23,14 @@ function WritePostForm(props) {
     const [student, setStudent] = useState(false);
     const [content, setContent] = useState("");
     
+    useEffect(() => {
+        if(props.original){
+            setContent(props.original.content);
+            setCooker(props.original.forCooker);
+            setStudent(props.original.forStudent);
+        }
+        
+    }, [props.original]);
 
     const sendPost = async (e) => {
         e.preventDefault();
@@ -37,28 +45,44 @@ function WritePostForm(props) {
             return ;
         }
 
-        const response = await fetch(`${url}api/v1/post`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: jsonData,
-          credentials: "include",
-        });
+        let response;
+        let id = props.original._id || undefined;
+        if(props.original.title !== ''){
+            response = await fetch(`${url}api/v1/post/${props.original._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: jsonData,
+                credentials: "include",
+              });
+        }
+        else{
+            response = await fetch(`${url}api/v1/post`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: jsonData,
+                credentials: "include",
+              }); 
+        }
 
+              
         const data = await response.json();
         if (data.status === "success") {
-            navigate(`/post/${data.postId}`);
+            id = id || data.postId;
+            navigate(`/post/${id}`);
         } else {
           alert(data.message);
-        }
+        }     
 
       };
     
+
+
     return(
         <Fragment>
           <form id="WritePostForm" style={{flexDirection:"column",...centerStyle}} onSubmit={sendPost}>
             <div style={{width:"60%",...centerStyle,justifyContent:"flex-start"}}>
-                <label className="leftLabel" style={{width:"20%",fontSize:mySize.adjust(0.03)}}>TITLE</label>
-                <input name='title' id="titleBox" style={{fontSize: mySize.adjust(0.03)}} type="text">
+                <label className="leftLabel" style={{width:"20%",fontSize:mySize.adjust(0.03)}} >TITLE</label>
+                <input name='title' id="titleBox" style={{fontSize: mySize.adjust(0.03)}} type="text" value={(props.original.title || undefined)}>
                 </input>
             </div>
             <div style={{width:"60%",marginTop:"3%",...centerStyle,justifyContent:"flex-start"}}>
@@ -72,10 +96,10 @@ function WritePostForm(props) {
             </div>
             <div style={{marginTop:"5%",width:"100%",...centerStyle,flexDirection:"column"}}>
                 <h1 id='contextLabel' style={{fontSize: mySize.adjust(0.04)}}>CONTEXT</h1>
-                <Tiptap size={props.size}  setContent={setContent}/>
+                <Tiptap size={props.size}  setContent={setContent} content={content}/>
             </div>
             <div style={{display:"flex",marginTop:mySize.adjust(-0.04),alignItems:"center",justifyItems:"flex-start",width:"65%"}}>
-                <input type='checkBox' id='setNotice' name="setNotice" value='true' style={{fontSize: mySize.adjust(0.03),width: mySize.adjust(0.02)}}/>
+                <input type='checkBox' id='setNotice' name="setNotice" value='true' style={{fontSize: mySize.adjust(0.03),width: mySize.adjust(0.02)}} checked={props.original.setNotice || false}/>
                 <p style={{fontSize: mySize.adjust(0.025),marginLeft:mySize.adjust(0.005)}}>Set as an announcement</p>
             </div>
             <div style={{display:"flex",justifyContent:"flex-end",width:"80%"}}>

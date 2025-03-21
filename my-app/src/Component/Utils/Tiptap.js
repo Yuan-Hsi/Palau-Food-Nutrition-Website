@@ -8,6 +8,7 @@ import SizeHelper from "./utils.js";
 import FileHandler from '@tiptap-pro/extension-file-handler'
 import Image from '@tiptap/extension-image'
 import { Node, mergeAttributes,findParentNode } from "@tiptap/core";
+import he from "he";
 
 
 import "./Tiptap.css";
@@ -15,6 +16,7 @@ import "./Tiptap.css";
 // Create a CustomImage to add the style attribute
 const CustomImage = Image.configure({
   inline: true,
+  allowBase64: true,
 }).extend({
   addAttributes() {
     return {
@@ -80,6 +82,20 @@ const Tiptap = (props) => {
   const [selected, setSelected] = useState("Font");
   const [initializing,setInitializing] = useState(true);
   const [imageSize, setImageSize] = useState("medium");
+
+
+  useEffect(() => {
+    if (editor && props.content && props.content !== "") {
+      try {
+        // 解碼 HTML 實體
+        const decodedContent = he.decode(props.content);
+        editor.commands.setContent(decodedContent);
+        setInitializing(false);
+      } catch (error) {
+        console.error("設置內容時出錯:", error);
+      }
+    }
+  }, [editor, props.content]);
 
   useEffect(() => {
     if (editor) {

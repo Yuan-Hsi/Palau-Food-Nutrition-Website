@@ -1,8 +1,9 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import Menu from "../Component/Utils/Menu";
 import WritePostForm from "../Component/Post/WritePostForm";
+import { useParams } from "react-router-dom";
 
-const url = "http://localhost:3005/";
+const url = process.env.REACT_APP_BACKEND_URL;
 
 const vlStyle={
     borderLeft: "2px solid black",
@@ -14,6 +15,8 @@ function WriteAPost() {
     const [size, setSize] = useState("90vh");
     const [isVertical, setIsVertical] = useState(false);
     const [userInfo, setUserInfo] = useState({name:'',id:'',title:''});
+    const [original, setOriginal] = useState({content:'',setNotice:'',title:'',forCooker:false,forSudent:false});
+    const { id } = useParams();
     
     // UI Size Initilization
     useEffect(() => {
@@ -38,6 +41,25 @@ function WriteAPost() {
       };
     }, []);
 
+    // if is for edit
+    useEffect(() =>{
+      const getPost = async () => {
+          let api = `${url}api/v1/post/${id}`;
+              
+          const response = await fetch(api, {
+              method:"GET",
+              credentials:"include"
+          });
+          
+          const data = await response.json();
+
+          if (data.status === "success") {
+              setOriginal(data.data.post);
+          }
+      }
+      if (id) getPost();
+    },[])
+
     /*
     // Authorization
     useEffect(() => {
@@ -45,14 +67,14 @@ function WriteAPost() {
             alert('Please Login to continue...');
         }
     }, [userInfo]);
-*/
+    */
 
     return (
       <Fragment>
         <Menu size = {size} setUserInfo = {setUserInfo}/>
         <div style={{display:"flex",height:"80vh",marginLeft:"5%",width:"90vw",justifyContent:"center"}}>
           <div className='vl' style={{marginTop:"20%", borderColor:"#50B6F9",...vlStyle}}></div>
-          <WritePostForm size={size}/>
+          <WritePostForm size={size} original={original}/>
           <div className='vl' style={{marginTop:"10%",borderColor:"#FFDD31",...vlStyle}}></div>
         </div> 
 

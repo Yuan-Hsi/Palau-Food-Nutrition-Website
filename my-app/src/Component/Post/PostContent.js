@@ -55,7 +55,11 @@ function PostContent(props) {
             </div>
             }
             <h1 id='postTitle' style={{fontSize: mySize.adjust(0.07)}} > {onePost.title} </h1>
-            <p id='postDate' style={{fontSize: mySize.adjust(0.02)}} > {transformDate(onePost.timestamp)} </p>
+            <div style={{display:"flex",alignItems:"center",marginTop:"2%",justifyContent:"center"}}>
+                <p id='postDate' style={{fontSize: mySize.adjust(0.02)}} > {transformDate(onePost.timestamp)} </p>
+                {onePost.author && onePost.author[0]._id === user.id && 
+                <button id='editBtn' className="onePost" style={{width:"3%",height:"3%"}} onClick={props.editFunction}> ✎ </button>}
+            </div>
             <div id='postContent' style={{fontSize: mySize.adjust(0.03)}} dangerouslySetInnerHTML={{ __html: contentHTML }} />
         </div>
     )

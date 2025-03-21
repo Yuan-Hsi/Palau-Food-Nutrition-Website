@@ -86,11 +86,29 @@ h1,p{
 }
 
 #postDate{
-    margin-top: 2%;
+    width:20%;
     font-family: "Inria Sans";
     text-align: center;
     letter-spacing: 0.2em;
     color:#616161;
+}
+
+.onePost#editBtn{
+  position:relative;
+  border: none;
+  padding: 0.2%;
+  border-radius: 100%;
+  background-color: #bbbbbb;
+  color:#584f3d;
+  letter-spacing: 0.07em;
+  z-index: 1;
+  margin-left:0;
+  transition: 0.5s;
+}
+
+.onePost#editBtn:hover{
+  background-color: #ffe600;
+  color:#bb7e02;
 }
 
 #postContent{

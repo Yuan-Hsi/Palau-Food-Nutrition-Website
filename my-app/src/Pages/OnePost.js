@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import Menu from "../Component/Utils/Menu";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import PostContent from "../Component/Post/PostContent";
 import CommentSection from "../Component/Post/CommentSection";
 import {chunkArray} from "../Component/Utils/utils";
@@ -18,6 +18,7 @@ function OnePost() {
     const [isVertical, setIsVertical] = useState(false);
     const [post, setPost] = useState({comments:[]});
     const [commentChunk, setCommentChunk]= useState([[]]);
+    const navigate = useNavigate();
     const { id } = useParams();
     
     // UI Size Initilization
@@ -66,13 +67,18 @@ function OnePost() {
       getOnePost(id);
     },[id]);
 
+     //  Go to the post
+    const goToEdit = () => {
+      navigate(`/writeapost/${id}`);
+    };
+
 
     return (
       <Fragment>
         <Menu size = {size} />
         <div style={{display:"flex",height:"100%",marginLeft:"3%"}}>
         <div className='vl' style={{marginTop:"20%", borderColor:"#50B6F9",...vlStyle}}></div>
-        <PostContent size = {size} post = {post} />
+        <PostContent size = {size} post = {post} editFunction = {() => goToEdit()}/>
         <div className='vl' style={{marginTop:"10%",borderColor:"#FFDD31",...vlStyle}}></div>
         </div>
         <CommentSection post={post} size = {size} commentChunk={commentChunk} setCommentChunk = {setCommentChunk}/>

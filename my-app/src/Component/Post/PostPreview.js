@@ -86,13 +86,15 @@ function PostPreview(props) {
 
   return (
     <div className="preSection" style={{ margin: props.margin, width: "130%" }}>
+
+      {/* Post list */}
       { posts.map((post, idx) => {
 
         let postContent = "";
         let firstImageBase64 = null;
 
         if(post.content!==undefined){
-
+          // Decode HTML entities
           const htmlContent = he.decode(post.content);
 
           // Drop the decoration of the content
@@ -106,17 +108,32 @@ function PostPreview(props) {
 
 
         return (
+
           <div className="prePost" key={`prePost${idx}`}>
-            { (user.title === 'admin' || (post.author && user.id === post.author[0]._id)) && <button className='delBtn' style={{height:mySize.adjust(0.045),width:mySize.adjust(0.045)}} onClick={() => delPost(post.id)}>✖︎</button>}
+
+            {/* Delete button - only visible for admin or post author */}
+            { (user.title === 'admin' || (post.author && user.id === post.author[0]._id)) && 
+              <button className='delBtn' style={{height:mySize.adjust(0.045),width:mySize.adjust(0.045)}} onClick={() => delPost(post.id)}> ✖︎ </button>
+            }
+            
+            {/* Post thumbnail image */}
             <img className="prePhoto" src={firstImageBase64} alt=""></img>
+            
             <div style={{ width: "100%" }}>
+
+              {/* Post title section */}
               <div className="preTitleSection">
-                <h1 className="preTitle" style={{ fontSize: mySize.adjust(0.04) }} > {post.title} </h1>
+                <h1  className="preTitle"  style={{ fontSize: mySize.adjust(0.04) }} > {post.title} </h1>
+                
+                {/* Target audience indicator */}
                 <div className="forWho">
-                  <p style={{  fontSize: mySize.adjust(0.018), letterSpacing: "0.1em", overflow: "hidden", textOverflow: "clip", whiteSpace: "nowrap", }} >
-                    {forwho(post)}</p>
+                  <p style={{  fontSize: mySize.adjust(0.018), letterSpacing: "0.1em", overflow: "hidden", textOverflow: "clip", whiteSpace: "nowrap", }}>
+                    {forwho(post)}
+                  </p>
                 </div>
-              </div>
+             </div>
+              
+              {/* Post content preview - limited to 3 lines */}
               <div
                 className="preContext"
                 style={{
@@ -132,6 +149,8 @@ function PostPreview(props) {
                 </p>
               </div>
             </div>
+            
+            {/* Read more button */}
             <button
               className="forMore"
               onClick={() => goToPost(post._id)}
@@ -143,6 +162,7 @@ function PostPreview(props) {
         );
       })}
 
+      {/* Pagination component */}
       <PageSection totalPage={totalPage} setPage={setPage} page={page} />
     </div>
   );

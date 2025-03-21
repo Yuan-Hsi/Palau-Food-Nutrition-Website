@@ -20,6 +20,7 @@ root.render(
         <Route path="/posts" element={<UserProvider><Posts /></UserProvider>} />
         <Route path="/post/:id" element={<UserProvider><OnePost /></UserProvider>} />
         <Route path="/writeapost" element={<UserProvider><WriteAPost /></UserProvider>} />
+        <Route path="/writeapost/:id" element={<UserProvider><WriteAPost /></UserProvider>} />
         <Route path="/calendar" element={<UserProvider><Calendar /></UserProvider>} />
       </Routes>
     </Router>
