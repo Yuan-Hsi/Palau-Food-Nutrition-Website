@@ -1,0 +1,13 @@
+From node:20-bullseye-slim
+
+WORKDIR /app
+
+COPY package.json .
+
+Run npm install
+
+COPY . .
+
+EXPOSE 3005
+
+CMD ["npm","start"]

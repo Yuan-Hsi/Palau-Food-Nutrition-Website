@@ -99,7 +99,7 @@ function WritePostForm(props) {
                 <Tiptap size={props.size}  setContent={setContent} content={content}/>
             </div>
             <div style={{display:"flex",marginTop:mySize.adjust(-0.04),alignItems:"center",justifyItems:"flex-start",width:"65%"}}>
-                <input type='checkBox' id='setNotice' name="setNotice" value='true' style={{fontSize: mySize.adjust(0.03),width: mySize.adjust(0.02)}} checked={props.original.setNotice || false}/>
+                <input type='checkBox' id='setNotice' name="setNotice" value='true' style={{fontSize: mySize.adjust(0.03),width: mySize.adjust(0.02)}} checked={props.original.setNotice || undefined}/>
                 <p style={{fontSize: mySize.adjust(0.025),marginLeft:mySize.adjust(0.005)}}>Set as an announcement</p>
             </div>
             <div style={{display:"flex",justifyContent:"flex-end",width:"80%"}}>

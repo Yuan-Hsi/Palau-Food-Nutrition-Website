@@ -249,7 +249,7 @@ function DayCalendar(props) {
                                 </div>
                         
                             {/* Meal name */}
-                            <p className="dayCalendar foodName" key={food._id} title={food.name} style={{color: (food.category_id === "67d8b49fb95b08e413d20fff")?"rgb(201, 44, 219)":"black"}} >{food.name}</p>
+                            <p className="dayCalendar foodName" key={food._id} title={food.name} style={{color: (food.category_id === "67dd6acc1a713300eb4b4ef9")?"rgb(201, 44, 219)":"black"}} >{food.name}</p>
                             
                             {/* Delete button */}
                             { props.mode==='edit' && delBtn.date === theDate && delBtn.listIdx === idx && 

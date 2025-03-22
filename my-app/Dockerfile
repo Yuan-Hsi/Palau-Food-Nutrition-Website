@@ -1,14 +1,16 @@
-From node:20-bullseye-slim
+FROM node:20-bullseye-slim
 
 WORKDIR /app
 
-COPY package.json .
+# Copy package.json AND .npmrc first
+COPY package.json .npmrc ./
 
-Run npm install
+# Then run npm install
+RUN npm install
 
+# Copy the rest of the files
 COPY . .
 
 EXPOSE 3000
 
 CMD ["npm","start"]
-
