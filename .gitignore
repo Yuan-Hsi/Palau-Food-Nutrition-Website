@@ -1,4 +1,5 @@
 
 *.key
 backend/config.env
+backend/db/data/*
 *.npmrc
