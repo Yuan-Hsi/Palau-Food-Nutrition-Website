@@ -86,7 +86,7 @@ function DayCalendar(props) {
     
     const addCalendar = async(foodId,categoryId,foodName) => {
         
-        if(props.calendarDB[theDate] === undefined){ // create the day
+        if(props.calendarDB[theDate] === undefined || props.calendarDB[theDate].foods.length === 0){ // create the day
             
             const jsonData = JSON.stringify({schoolName:props.school, date:theDate, foods:[foodId]});
             const response = await fetch(`${url}api/v1/calendar`, {
@@ -143,27 +143,43 @@ function DayCalendar(props) {
         const foodsBaseket =[...props.calendarDB[theDate].foods];
         foodsBaseket.splice(idx, 1);  // remove that
         const update = foodsBaseket.map( food => food._id);
-        const jsonData = JSON.stringify({foods:update});
-        const response = await fetch(`${url}api/v1/calendar/${props.calendarDB[theDate]._id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: jsonData,
-        });
-        const data = await response.json();
         
-        if (data.status === "success") {
+        let response;
+
+        if(update.length === 0){   // remove 整個 date
+            response = await fetch(`${url}api/v1/calendar/?schoolName=${props.school}&date=${theDate}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+            });
+        }
+        else{
+            const jsonData = JSON.stringify({foods:update});
+            response = await fetch(`${url}api/v1/calendar/${props.calendarDB[theDate]._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: jsonData,
+            });
+
+            
+        }
+
+
+        const data = await response;
+        if (data.status === 204 || data.status === 200) {
             props.setCalendarDB(
                 produce(prevCalendarDB => {
                     prevCalendarDB[theDate] = {
                       foods:foodsBaseket,
-                      _id: data.update._id,
+                      _id: props.calendarDB[theDate]._id,
                     };
                   })
             );
         } else {
             alert('Something wrong... in deleteMeal');
         }
+
     }
 
     const updatePreference = async(preference) => {
@@ -236,7 +252,7 @@ function DayCalendar(props) {
                         <div style={{display:"flex",alignItems:"center",marginBottom:"3%"}}  onMouseEnter={()=>hoverOnMeal(food._id, theDate, idx)} onMouseLeave={()=>{setDelBtn('');setpreferenceBtn('')}} >
 
                             {/* Preference button  */}
-                            {user.title && props.mode==='view' && preferenceBtn.date === theDate && preferenceBtn.listIdx === idx && food.category_id !== "67d8b49fb95b08e413d20fff" &&  <div style={{display:"flex",position:"absolute",zIndex:10,right:-50}}> 
+                            {user.title && props.mode==='view' && preferenceBtn.date === theDate && preferenceBtn.listIdx === idx && food.category_id !== "67dd6acc1a713300eb4b4ef9" &&  <div style={{display:"flex",position:"absolute",zIndex:10,right:-50}}> 
                                 <button id='like' className="dayCalendar preferBtn" onClick={() => updatePreference({favorite:food.name})}disabled={props.dislike.includes(food.name)} style={{boxShadow:(props.favorite.includes(food.name))? "inset 1px 2px #999" :""}}>  ❤️ </button> 
                                 <button id='dislike' className="dayCalendar preferBtn" onClick={() => updatePreference({dislike:food.name})} disabled={props.favorite.includes(food.name)} style={{boxShadow:(props.dislike.includes(food.name))? "inset 2px 2px 5px rgba(255, 255, 255, 0.83)" :""}}> 💔 </button>
                                 </div>}

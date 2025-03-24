@@ -3,7 +3,7 @@ import "./Menu.css";
 import Login from "./Login";
 import SizeHelper from "./utils.js"
 
-const options = ["RECIPE", "NEWS", "WASTE & MEALS COUNT", "INVENTORY FORM"];
+const options = ["CALENDAR", "NEWS", "WASTE & MEALS COUNT", "INVENTORY FORM"];
 const hrefs = [
   "/calendar",
   "/Posts",

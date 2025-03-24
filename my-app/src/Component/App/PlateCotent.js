@@ -5,20 +5,32 @@ function PlateContent(props) {
     <Fragment>
       <div id="leftSide" style={{ width: "50%", height: "90%" }}>
         <div id="recipe" style={{ height: "58%", position: "relative" }}>
-          <a
-            href="calendar"
-            style={{
-              position: "absolute",
-              right: "8%",
-              bottom: "0px",
-              marginBottom: "10%",
-              fontSize: `${
-                parseFloat(props.plateSize) * 0.07
-              }${props.plateSize.slice(-2)}`,
-            }}
-          >
-            MENU
-          </a>
+          <div style ={{position:"absolute",right:"8%",bottom:"20px", textAlign:"right",}}>
+            <a
+              href="calendar"
+              style={{
+                marginBottom: "10%",
+                fontSize: `${
+                  parseFloat(props.plateSize) * 0.05
+                }${props.plateSize.slice(-2)}`,
+              }}
+            >
+              FOOD
+            </a>
+            <br></br>
+            <a
+              href="calendar"
+              style={{
+                marginBottom: "10%",
+                fontSize: `${
+                  parseFloat(props.plateSize) * 0.05
+                }${props.plateSize.slice(-2)}`,
+              }}
+            >
+              CALENDAR
+            </a>
+          </div>
+
         </div>
         <hr
           id="leftHR"
