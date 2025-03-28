@@ -11,12 +11,13 @@ import { UserProvider } from "./Component/Utils/UserContext.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-
 root.render(
   <React.StrictMode>
+    {/* prettier-ignore */}
     <Router>
       <Routes>
         <Route path="/" element={<UserProvider><App /></UserProvider>}/>
+        <Route path="/:isNewUser" element={<UserProvider><App /></UserProvider>}/>
         <Route path="/posts" element={<UserProvider><Posts /></UserProvider>} />
         <Route path="/post/:id" element={<UserProvider><OnePost /></UserProvider>} />
         <Route path="/writeapost" element={<UserProvider><WriteAPost /></UserProvider>} />
@@ -24,7 +25,7 @@ root.render(
         <Route path="/calendar" element={<UserProvider><Calendar /></UserProvider>} />
       </Routes>
     </Router>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

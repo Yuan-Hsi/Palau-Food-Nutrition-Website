@@ -26,9 +26,16 @@ const userSchema = mongoose.Schema({
     select: false,
     validate: [validator.isEmail, "Please provide a valid email "],
   },
+  authType: {
+    type: String,
+    enum: ["local", "google"],
+    default: "local",
+  },
   pwd: {
     type: String,
-    required: [true, "The pwd field can not be blank."],
+    required: function () {
+      return this.authType === "local"; // Only required for local authentication
+    },
     minlength: 8,
     select: false,
   },
@@ -46,16 +53,16 @@ const userSchema = mongoose.Schema({
     default: true,
     select: false,
   },
-  favorite:{
+  favorite: {
     type: Array,
     select: false,
     default: [],
   },
-  dislike:{
+  dislike: {
     type: Array,
     select: false,
     default: [],
-  }
+  },
 });
 
 const commentSchema = mongoose.Schema(
@@ -128,7 +135,7 @@ const postSchema = mongoose.Schema(
 
 // pre middleware - the middleware between the require and stroing the document! (but when you using "update" than "save" this will not work!!)
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("pwd")) return next();
+  if (this.authType !== "local" || !this.isModified("pwd")) return next();
 
   this.pwd = await bcrypt.hash(this.pwd, 14);
 
@@ -143,62 +150,61 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-// Update the count of food's like and dislike 
+// Update the count of food's like and dislike
 userSchema.pre("findOneAndUpdate", async function (next) {
   const update = this.getUpdate();
   const userId = this.getQuery()._id;
 
   if (!update.favorite && !update.dislike) return next();
 
-  try{
-    const user = await this.model.findById(userId).select('+favorite +dislike');
-    if(!user) return next();
+  try {
+    const user = await this.model.findById(userId).select("+favorite +dislike");
+    if (!user) return next();
 
     const Food = mongoose.model("Food", foodSchema);
-    let setShort, longArr,updateCount;
+    let setShort, longArr, updateCount;
 
-    if(update.favorite){
+    if (update.favorite) {
       const originFav = user.favorite || [];
       const newFav = update.favorite || [];
 
-      if(originFav.length < newFav.length){  // add favorite
+      if (originFav.length < newFav.length) {
+        // add favorite
         setShort = new Set(originFav);
         longArr = newFav;
         updateCount = 1;
-      }
-      else{  // remove favorite
+      } else {
+        // remove favorite
         setShort = new Set(newFav);
         longArr = originFav;
         updateCount = -1;
       }
 
-      const updateFood = longArr.filter(name => !setShort.has(name));  // find the difference
-      await Food.updateMany({ name: updateFood },{ $inc: { likes: updateCount } });
-    }
-    else{
+      const updateFood = longArr.filter((name) => !setShort.has(name)); // find the difference
+      await Food.updateMany({ name: updateFood }, { $inc: { likes: updateCount } });
+    } else {
       const originDis = user.dislike || [];
       const newDis = update.dislike || [];
 
-      if(originDis.length < newDis.length){  // add favorite
+      if (originDis.length < newDis.length) {
+        // add favorite
         setShort = new Set(originDis);
         longArr = newDis;
         updateCount = 1;
-      }
-      else{  // remove favorite
+      } else {
+        // remove favorite
         setShort = new Set(newDis);
         longArr = originDis;
         updateCount = -1;
       }
 
-      const updateFood = longArr.filter(name => !setShort.has(name));  // find the difference
-      await Food.updateMany({ name: updateFood },{ $inc: { dislikes: updateCount } });
+      const updateFood = longArr.filter((name) => !setShort.has(name)); // find the difference
+      await Food.updateMany({ name: updateFood }, { $inc: { dislikes: updateCount } });
     }
-  }
-  catch (error){
-    console.error('Error updating food likes/dislikes:', error);
+  } catch (error) {
+    console.error("Error updating food likes/dislikes:", error);
     next(error);
   }
-
 });
 
 userSchema.pre(/^find/, function (next) {
@@ -215,10 +221,8 @@ postSchema.virtual("comments", {
 });
 
 // using the instance method (which can be used by the all 'users' documents)
-userSchema.methods.correctPassword = async function (
-  candidatePassword,
-  userPassword
-) {
+userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
+  if (this.authType !== "local") return false;
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
@@ -257,14 +261,25 @@ postSchema.pre("save", async function (next) {
 
   next();
 });
+postSchema.pre("findOneAndUpdate", async function (next) {
+  const userModel = mongoose.model("User", userSchema);
+  const post = await this.model.findById(this.getQuery()["_id"]);
+
+  if (post && post.author) {
+    const authorInfo = await userModel.findById(post.author[0]).select("-__v -email");
+    this._update.author = [authorInfo];
+  }
+
+  next();
+});
 
 // delete related comments
-postSchema.pre(['findOneAndDelete', 'findByIdAndDelete'], async function(next) {
+postSchema.pre(["findOneAndDelete", "findByIdAndDelete"], async function (next) {
   const postId = this.getQuery()["_id"];
   try {
-      await mongoose.model('Comment', commentSchema).deleteMany({ post: postId });
+    await mongoose.model("Comment", commentSchema).deleteMany({ post: postId });
   } catch (error) {
-      console.error('Error deleting relavent comments:', error);
+    console.error("Error deleting relavent comments:", error);
   }
   next();
 });
@@ -273,33 +288,33 @@ postSchema.index({ title: "text", content: "text" });
 
 exports.Post = mongoose.model("Post", postSchema);
 
-
-
 // ------------ FOR MENU CALEDAR ---------------
 
 // Category Schema
-const categorySchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
-  color: { type: String, required: true }
-}, {
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true }
-});
-
+const categorySchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, unique: true },
+    color: { type: String, required: true },
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
 
 // Food Schema
 const foodSchema = new mongoose.Schema({
-  name: { type: String, required: true  },
+  name: { type: String, required: true },
   category_id: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-  likes:{type:Number, default: 0 },
-  dislikes:{type:Number, default: 0 },
+  likes: { type: Number, default: 0 },
+  dislikes: { type: Number, default: 0 },
 });
 
 // Calendar Schema
 const calendarSchema = new mongoose.Schema({
-  schoolName: { type: String, required: true},
+  schoolName: { type: String, required: true },
   date: { type: Date, required: true },
-  foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }] // 用 food_id 來引用 foods
+  foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }], // 用 food_id 來引用 foods
 });
 
 categorySchema.virtual("foods", {
@@ -310,12 +325,12 @@ categorySchema.virtual("foods", {
 });
 
 // delete related foods
-categorySchema.pre(['findOneAndDelete', 'findByIdAndDelete'], async function(next) {
+categorySchema.pre(["findOneAndDelete", "findByIdAndDelete"], async function (next) {
   const categoryId = this.getQuery()["_id"];
   try {
-      await mongoose.model("Food", foodSchema).deleteMany({ category_id: categoryId });
+    await mongoose.model("Food", foodSchema).deleteMany({ category_id: categoryId });
   } catch (error) {
-      console.error('Error deleting relavent foods:', error);
+    console.error("Error deleting relavent foods:", error);
   }
   next();
 });
@@ -323,3 +338,26 @@ categorySchema.pre(['findOneAndDelete', 'findByIdAndDelete'], async function(nex
 exports.Category = mongoose.model("Category", categorySchema);
 exports.Food = mongoose.model("Food", foodSchema);
 exports.Calendar = mongoose.model("Calendar", calendarSchema);
+
+// ------------ FOR THE FORM AUTHORIZATION ---------------
+const schoolSchema = mongoose.Schema(
+  {
+    school: {
+      type: String,
+      required: [true, "The school name can not be blank."],
+      unique: true,
+    },
+    cooker: {
+      type: Array,
+    },
+    inventoryLink: {
+      type: String,
+    },
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+exports.School = mongoose.model("School", schoolSchema);

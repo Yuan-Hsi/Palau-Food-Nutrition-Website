@@ -18,8 +18,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const info = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
-  }).select('+favorite +dislike'); // x: the update info,
-
+  }).select("+favorite +dislike"); // x: the update info,
 
   res.status(200).json({
     status: "success",
@@ -70,6 +69,16 @@ exports.getPreference = catchAsync(async (req, res, next) => {
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});
+
+exports.eraseUser = catchAsync(async (req, res, next) => {
+  console.log(req.params.id);
+  await User.deleteOne({ _id: req.params.id });
 
   res.status(204).json({
     status: "success",

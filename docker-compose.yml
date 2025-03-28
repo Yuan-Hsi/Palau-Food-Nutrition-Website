@@ -1,7 +1,7 @@
-version: '3.8'
+version: "3.8"
 services:
   frontend:
-    build: 
+    build:
       context: ./my-app
     container_name: mern-frontend
     ports:
@@ -9,13 +9,15 @@ services:
     volumes:
       - ./my-app:/app
       - /app/node_modules
+    env_file:
+      - ./my-app/.env
     environment:
       - REACT_APP_BACKEND_URL=http://localhost:3005/
     depends_on:
       - backend
 
   backend:
-    build: 
+    build:
       context: ./backend
     container_name: mern-backend
     ports:
@@ -23,8 +25,12 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
+    env_file:
+      - ./backend/config.env
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/MOE
+      - HOST=http://localhost:3005
+      - FRONTEND_URL=http://localhost:3000
     depends_on:
       - mongodb
 

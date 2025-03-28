@@ -1,5 +1,11 @@
 const { promisify } = require("util");
 const { Post, User } = require("../db/dbSchema.js");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client({
+  clientId: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_SECRET_KEY,
+  redirectUri: `${process.env.HOST}/api/v1/user/googleValidate`,
+});
 const jwt = require("jsonwebtoken");
 const catchAsync = require("./utils/catchAsync.js");
 const AppError = require("./utils/appError.js");
@@ -17,9 +23,7 @@ const createSendToken = (user, statusCode, res) => {
   token = signToken(user._id);
 
   res.cookie("jwt", token, {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
     httpOnly: true,
     sameSite: "None",
     secure: true,
@@ -59,35 +63,74 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-exports.logout = (req,res) => {
-  res.cookie(
-    'jwt', 'logged out' ,{
-      expires: new Date(Date.now() + 10 * 1000),
-      httpOnly: true 
-    }
-  );
+exports.googleLogin = catchAsync(async (req, res, next) => {
+  const authorizeURL = client.generateAuthUrl({
+    access_type: "offline",
+    scope: ["email", "profile"],
+  });
+
   res.status(200).json({
-    status: 'success',
-  })
-}
+    status: "success",
+    url: authorizeURL,
+  });
+});
+
+exports.googleValidate = catchAsync(async (req, res, next) => {
+  const { code } = req.query;
+  const { tokens } = await client.getToken(code);
+  client.setCredentials(tokens);
+
+  const userInfo = await client.request({
+    url: "https://www.googleapis.com/oauth2/v3/userinfo",
+  });
+
+  let isNewUser = false;
+  let user = await User.findOne({ email: userInfo.data.email }).select("email");
+
+  if (!user) {
+    isNewUser = true;
+    user = await User.create({
+      email: userInfo.data.email,
+      name: userInfo.data.given_name,
+      title: "student",
+      school: "",
+      authType: "google",
+    });
+  }
+
+  const token = signToken(user._id);
+
+  res.cookie("jwt", token, {
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
+
+  // 使用HTML頁面中的腳本將資訊存到localStorage，然後重定向
+  res.redirect(`${process.env.FRONTEND_URL}?isNewUser=${isNewUser}`);
+});
+
+exports.logout = (req, res) => {
+  res.cookie("jwt", "logged out", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({
+    status: "success",
+  });
+};
 
 exports.protect = catchAsync(async (req, res, next) => {
   // get the token
   let token = null;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
     token = req.headers.authorization.split(" ")[1];
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
   }
 
-  if (!token)
-    throw new AppError(
-      "You are not logged in! Please log in to get access.",
-      401
-    );
+  if (!token) throw new AppError("You are not logged in! Please log in to get access.", 401);
 
   // verify the token (the error message is handled in ./errorFunction.js)
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET); // promisify 使其可以 return 一個 promise，而不用再寫回調函數
@@ -95,22 +138,15 @@ exports.protect = catchAsync(async (req, res, next) => {
   // check user still exists
   const userAlive = await User.findById(decoded.id).select("favorite dislik title"); // also verify the id is valid
 
-  if (!userAlive)
-    throw new AppError(
-      "Your id is not in the database. Are you sure your user profile is still alive?",
-      401
-    );
+  if (!userAlive) throw new AppError("Your id is not in the database. Are you sure your user profile is still alive?", 401);
 
   // check user change the password after the JWT was issued
   if (userAlive.changePasswordAfter()) {
-    throw new AppError(
-      "You recently change the password, please login again!",
-      401
-    );
+    throw new AppError("You recently change the password, please login again!", 401);
   }
 
-  userAlive.favorite = (userAlive.favorite) ? userAlive.favorite : [];
-  userAlive.dislike = (userAlive.dislike) ? userAlive.dislike : [];
+  userAlive.favorite = userAlive.favorite ? userAlive.favorite : [];
+  userAlive.dislike = userAlive.dislike ? userAlive.dislike : [];
 
   // pass the req to the next middleware
   req.user = userAlive;
@@ -120,16 +156,11 @@ exports.protect = catchAsync(async (req, res, next) => {
 exports.restrictTo = (...args) => {
   // 回傳一個函式
   return catchAsync(async (req, res, next) => {
-
-
     const post = await Post.findById(req.params.id);
 
     if (!args.includes(req.user.title)) {
-        if( post && !(req.user._id == post.author[0]._id))throw new AppError(
-          "You do not have permission to perform this action.",
-          403
-        )
-      }
+      if (post && !(req.user._id == post.author[0]._id)) throw new AppError("You do not have permission to perform this action.", 403);
+    }
 
     next();
   });
@@ -169,9 +200,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
     await user.save({ validateBeforeSave: false });
 
-    throw new AppError(
-      "There was an error sending the email, please contact the maintainer."
-    );
+    throw new AppError("There was an error sending the email, please contact the maintainer.");
   }
 });
 
@@ -188,10 +217,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // if token has not expired and there is user, set the new password
   if (!user) {
-    throw new AppError(
-      "Invalid access: your resetToken is wrong or expired.",
-      400
-    );
+    throw new AppError("Invalid access: your resetToken is wrong or expired.", 400);
   }
 
   // using middleware in dbSchema to update changePasswordAt property for the current user
@@ -211,14 +237,8 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("+pwd");
 
   // check if POSTed correct password is correct
-  if (
-    !user ||
-    !(await user.correctPassword(req.body.currentPassword, user.pwd))
-  ) {
-    throw new AppError(
-      "the old password is not correct, please try again",
-      401
-    );
+  if (!user || !(await user.correctPassword(req.body.currentPassword, user.pwd))) {
+    throw new AppError("the old password is not correct, please try again", 401);
   }
 
   // if the password is correct, update the password
@@ -231,20 +251,18 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
 // To let the webpage show the "login" or "userName"
 exports.isLoggedin = async (req, res, next) => {
-
-    // get the token
-    if (req.cookies.jwt) {
-      try{
+  // get the token
+  if (req.cookies.jwt) {
+    try {
       // verify the token (the error message is handled in ./errorFunction.js)
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt,
-        process.env.JWT_SECRET
-      ); // promisify 使其可以 return 一個 promise，而不用再寫回調函數
+      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET); // promisify 使其可以 return 一個 promise，而不用再寫回調函數
 
       // check user still exists
       const userAlive = await User.findById(decoded.id); // also verify the id is valid
 
-      if (!userAlive){return next();}
+      if (!userAlive) {
+        return next();
+      }
 
       // check user change the password after the JWT was issued
       if (userAlive.changePasswordAfter()) {
@@ -256,13 +274,12 @@ exports.isLoggedin = async (req, res, next) => {
         status: "success",
         name: userAlive.name,
         email: userAlive.email,
-        title:userAlive.title,
-        _id:userAlive._id,
+        title: userAlive.title,
+        _id: userAlive._id,
       });
-    } 
-      catch(err){
-        return next();
-      }
+    } catch (err) {
+      return next();
     }
-next();
+  }
+  next();
 };

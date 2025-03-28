@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useEffect, Fragment, useState } from "react";
-
+import { useSearchParams } from "react-router-dom";
 import Login from "../Component/Utils/Login";
 import PlateContent from "../Component/App/PlateCotent";
 import Notice from "../Component/App/Notice";
@@ -22,7 +22,11 @@ const lineStyle = {
 };
 
 function App() {
-  const [userInfo, setUserInfo] = useState({name:'',id:'',title:''});
+  const [userInfo, setUserInfo] = useState({ name: "", id: "", title: "" });
+  const [newUser, setNewUser] = useState(false);
+  const [searchParams] = useSearchParams();
+  const isNewUser = searchParams.get("isNewUser");
+
   // initialize UIsize
   const [plateSize, setplateSize] = useState("90vh");
   useEffect(() => {
@@ -44,29 +48,24 @@ function App() {
     return () => {
       window.removeEventListener("resize", updateSize);
     };
+    console.log(isNewUser);
   }, []);
+
+  // isnewuser?
+  useEffect(() => {
+    if (isNewUser === "true") {
+      setNewUser(true);
+    }
+  }, [isNewUser]);
 
   return (
     <Fragment>
-      <Login plateSize={plateSize} setUserInfo={setUserInfo} />
-      <div
-        id="menu"
-        style={{ height: "100vh", position: "relative", ...centerStyle }}
-      >
+      <Login plateSize={plateSize} setUserInfo={setUserInfo} googleSignup={newUser} />
+      <div id='menu' style={{ height: "100vh", position: "relative", ...centerStyle }}>
         <Notice plateSize={plateSize} />
+        <div id='plateBack' style={{ width: plateSize, height: plateSize, boxShadow: "6px 4px 23.3px rgba(0, 0, 0, 0.25)", position: "absolute", zIndex: 0, ...plateStyle }}></div>
         <div
-          id="plateBack"
-          style={{
-            width: plateSize,
-            height: plateSize,
-            boxShadow: "6px 4px 23.3px rgba(0, 0, 0, 0.25)",
-            position: "absolute",
-            zIndex: 0,
-            ...plateStyle,
-          }}
-        ></div>
-        <div
-          id="platefront"
+          id='platefront'
           style={{
             width: `${parseFloat(plateSize) * 0.85}${plateSize.slice(-2)}`, // slice 的部分是看 vw 還是 vh
             height: `${parseFloat(plateSize) * 0.85}${plateSize.slice(-2)}`,
@@ -79,7 +78,7 @@ function App() {
         >
           <PlateContent plateSize={plateSize} lineStyle={lineStyle} />
         </div>
-        <div id="blueLine"></div>
+        <div id='blueLine'></div>
       </div>
     </Fragment>
   );

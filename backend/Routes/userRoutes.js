@@ -1,7 +1,10 @@
 const express = require("express");
+// prettier-ignore
 const {
   signup,
   login,
+  googleLogin,
+  googleValidate,
   forgotPassword,
   resetPassword,
   protect: loginRequire,
@@ -10,21 +13,17 @@ const {
   isLoggedin,
   logout
 } = require("../Function/authorizingFunction");
-const {
-  getUsers,
-  getAUser,
-  updateMe,
-  deleteMe,
-  getPreference,
-} = require("../Function/userFunction");
+const { getUsers, getAUser, updateMe, deleteMe, getPreference, eraseUser } = require("../Function/userFunction");
 
 const authRouter = express.Router();
 
 authRouter.post("/signup", signup);
 authRouter.post("/login", login);
-authRouter.get('/logout',logout);
+authRouter.post("/googleLogin", googleLogin);
+authRouter.get("/logout", logout);
 authRouter.get("/isLoggedin", isLoggedin);
 authRouter.get("/getPreference", loginRequire, getPreference);
+authRouter.get("/googleValidate", googleValidate);
 authRouter.post("/forgotPassword", forgotPassword);
 authRouter.patch("/resetPassword/:token", resetPassword);
 authRouter.patch("/updateMyPassword", loginRequire, updatePassword);
@@ -32,6 +31,7 @@ authRouter.patch("/updateMyPassword", loginRequire, updatePassword);
 authRouter.get("/", loginRequire, restrictTo("admin"), getUsers);
 authRouter.get("/:id", loginRequire, restrictTo("admin"), getAUser);
 authRouter.patch("/updateMe", loginRequire, updateMe);
+authRouter.delete("/eraseUser/:id", loginRequire, restrictTo("admin"), eraseUser);
 authRouter.delete("/deleteMe", loginRequire, deleteMe);
 
 module.exports = authRouter;

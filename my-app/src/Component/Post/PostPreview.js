@@ -3,7 +3,7 @@ import PageSection from "../Utils/PageSection";
 import "./PostPreview.css";
 import SizeHelper from "../Utils/utils.js";
 import { useNavigate } from "react-router-dom";
-import he from "he"
+import he from "he";
 import { useUser } from "../Utils/UserContext.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
@@ -22,12 +22,10 @@ function PostPreview(props) {
     async function getPost(args) {
       let api = `${url}api/v1/post?page=${page}&`;
 
-      if (props.clickFilter) {
-        if (args.q !== "") api += `q=${args.q}&`;
-        if (!(args.whoFilter.forCooker && args.whoFilter.forStudent)) {
-          if (args.whoFilter.forCooker) api += "forCooker=true&";
-          if (args.whoFilter.forStudent) api += "forStudent=true&";
-        }
+      if (args.q !== "") api += `q=${args.q}&`;
+      if (!(args.whoFilter.forCooker && args.whoFilter.forStudent)) {
+        if (args.whoFilter.forCooker) api += "forCooker=true&";
+        if (args.whoFilter.forStudent) api += "forStudent=true&";
       }
 
       const response = await fetch(api, {
@@ -63,8 +61,7 @@ function PostPreview(props) {
 
   // Delete post API
   const delPost = async (postId) => {
-    
-    if(!window.confirm("Are you sure to delete the post?")){
+    if (!window.confirm("Are you sure to delete the post?")) {
       return;
     }
 
@@ -75,67 +72,62 @@ function PostPreview(props) {
 
     const data = await response;
     if (data.status === 204) {
-      const updatePosts = posts.filter(item => item.id !== postId);
+      const updatePosts = posts.filter((item) => item.id !== postId);
       setPosts(updatePosts);
+    } else {
+      alert("something wrong...");
     }
-    else{
-      alert('something wrong...')
-    }
-
-  }
+  };
 
   return (
-    <div className="preSection" style={{ margin: props.margin, width: "130%" }}>
-
+    <div className='preSection' style={{ margin: props.margin, width: "130%" }}>
       {/* Post list */}
-      { posts.map((post, idx) => {
-
+      {posts.map((post, idx) => {
         let postContent = "";
         let firstImageBase64 = null;
 
-        if(post.content!==undefined){
+        if (post.content !== undefined) {
           // Decode HTML entities
           const htmlContent = he.decode(post.content);
 
           // Drop the decoration of the content
           postContent = htmlContent.replace(/<[^>]+>/g, "");
-  
+
           // Read the imgfile (only first one)
           const imgRegex = /<img[^>]+src="([^">]+)"/g;
           const match = imgRegex.exec(htmlContent);
-          firstImageBase64 = match ? match[1] : null; 
+          firstImageBase64 = match ? match[1] : null;
         }
 
-
         return (
-
-          <div className="prePost" key={`prePost${idx}`}>
-
+          <div className='prePost' key={`prePost${idx}`}>
             {/* Delete button - only visible for admin or post author */}
-            { (user.title === 'admin' || (post.author && user.id === post.author[0]._id)) && 
-              <button className='delBtn' style={{height:mySize.adjust(0.045),width:mySize.adjust(0.045)}} onClick={() => delPost(post.id)}> ✖︎ </button>
-            }
-            
-            {/* Post thumbnail image */}
-            <img className="prePhoto" src={firstImageBase64} alt=""></img>
-            
-            <div style={{ width: "100%" }}>
+            {(user.title === "admin" || (post.author && user.id === post.author[0]._id)) && (
+              <button className='delBtn' style={{ height: mySize.adjust(0.045), width: mySize.adjust(0.045) }} onClick={() => delPost(post.id)}>
+                ✖
+              </button>
+            )}
 
+            {/* Post thumbnail image */}
+            <img className='prePhoto' src={firstImageBase64} alt=''></img>
+
+            <div style={{ width: "100%" }}>
               {/* Post title section */}
-              <div className="preTitleSection">
-                <h1  className="preTitle"  style={{ fontSize: mySize.adjust(0.04) }} > {post.title} </h1>
-                
+              <div className='preTitleSection'>
+                <h1 className='preTitle' style={{ fontSize: mySize.adjust(0.04) }}>
+                  {" "}
+                  {post.title}{" "}
+                </h1>
+
                 {/* Target audience indicator */}
-                <div className="forWho">
-                  <p style={{  fontSize: mySize.adjust(0.018), letterSpacing: "0.1em", overflow: "hidden", textOverflow: "clip", whiteSpace: "nowrap", }}>
-                    {forwho(post)}
-                  </p>
+                <div className='forWho'>
+                  <p style={{ fontSize: mySize.adjust(0.018), letterSpacing: "0.1em", overflow: "hidden", textOverflow: "clip", whiteSpace: "nowrap" }}>{forwho(post)}</p>
                 </div>
-             </div>
-              
+              </div>
+
               {/* Post content preview - limited to 3 lines */}
               <div
-                className="preContext"
+                className='preContext'
                 style={{
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -144,18 +136,12 @@ function PostPreview(props) {
                   WebkitLineClamp: 3,
                 }}
               >
-                <p style={{ fontSize: mySize.adjust(0.022), marginTop: "2%" }}>
-                  {postContent}
-                </p>
+                <p style={{ fontSize: mySize.adjust(0.022), marginTop: "2%" }}>{postContent}</p>
               </div>
             </div>
-            
+
             {/* Read more button */}
-            <button
-              className="forMore"
-              onClick={() => goToPost(post._id)}
-              style={{ fontSize: mySize.adjust(0.02), letterSpacing: "0.3em" }}
-            >
+            <button className='forMore' onClick={() => goToPost(post._id)} style={{ fontSize: mySize.adjust(0.02), letterSpacing: "0.3em" }}>
               More...
             </button>
           </div>

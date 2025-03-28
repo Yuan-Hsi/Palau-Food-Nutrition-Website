@@ -11,7 +11,8 @@ const cookieParser = require("cookie-parser");
 const postRouter = require("./Routes/postRoutes");
 const userRouter = require("./Routes/userRoutes");
 const commentRouter = require("./Routes/commentRoutes");
-const foodCalendarRouter = require("./Routes/calendarRoutes")
+const foodCalendarRouter = require("./Routes/calendarRoutes");
+const schoolRouter = require("./Routes/schoolRoutes");
 const appError = require("./Function/utils/appError");
 const errorHandler = require("./Function/errorFunction");
 
@@ -21,24 +22,26 @@ const app = express();
 app.use(cors({ origin: "http://localhost:3000", credentials: true })); // 允許前端的 localhost:3000
 
 // middleware
-app.use(helmet({
-  frameguard: { action: "deny" }, // 禁止 iframe 內嵌
-  contentSecurityPolicy: {
-    directives: {
-      frameAncestors: ["'none'"], // 禁止網站被嵌入 iframe
-    },
+app.use(
+  helmet({
+    frameguard: { action: "deny" }, // 禁止 iframe 內嵌
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"], // 只允許來自信任來源的 script
-        objectSrc: ["'none'"], // 禁止加載 Flash 等
-        upgradeInsecureRequests: [],
+        frameAncestors: ["'none'"], // 禁止網站被嵌入 iframe
       },
-    }
-  }
-})); // set security HTTP headers
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"], // 只允許來自信任來源的 script
+          objectSrc: ["'none'"], // 禁止加載 Flash 等
+          upgradeInsecureRequests: [],
+        },
+      },
+    },
+  })
+); // set security HTTP headers
 app.use(morgan("dev"));
-app.use(express.json({ limit: '5mb' }));
+app.use(express.json({ limit: "5mb" }));
 app.use(cookieParser());
 
 const limiter = rateLimit({
@@ -64,7 +67,8 @@ app.use(
 app.use("/api/v1/post", postRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/comment", commentRouter);
-app.use("/api/v1/calendar",foodCalendarRouter);
+app.use("/api/v1/calendar", foodCalendarRouter);
+app.use("/api/v1/school", schoolRouter);
 
 // global error handle middleware
 app.all("*", (req, res, next) => {
