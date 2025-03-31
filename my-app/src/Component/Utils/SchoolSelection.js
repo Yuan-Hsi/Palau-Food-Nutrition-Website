@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import SizeHelper from "../Utils/utils.js";
+import SizeHelper from "./utils.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
 function SchoolSelection(props) {
-  const [schools, setSchools] = useState([]);
+  const [schoolData, setSchoolData] = useState([{ name: "", id: "" }]);
 
   useEffect(() => {
     const getSchools = async () => {
@@ -15,8 +15,11 @@ function SchoolSelection(props) {
       });
       const res = await response.json();
       if (res.status === "success") {
-        const schoolArr = res.data.schools.map((item) => item.school);
-        setSchools(schoolArr);
+        const data = res.data.schools.map((item) => ({
+          name: item.school,
+          id: item._id,
+        }));
+        setSchoolData(data);
       } else {
         console.log("Something wrong... in getSchools");
       }
@@ -27,10 +30,10 @@ function SchoolSelection(props) {
 
   return (
     <select name='school' id='schoolSelect' className={props.cl} style={props.st} onChange={(event) => props.setSchool(event.target.value)}>
-      {schools.map((school, index) => {
+      {schoolData.map((school) => {
         return (
-          <option key={index} value={school}>
-            {school}
+          <option key={school.id} value={school.id}>
+            {school.name}
           </option>
         );
       })}

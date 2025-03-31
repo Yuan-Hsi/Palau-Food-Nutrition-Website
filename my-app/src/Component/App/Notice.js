@@ -1,22 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 import "./Notice.css";
-import {transformDate} from "../Utils/utils.js";
+import { transformDate } from "../Utils/utils.js";
 import he from "he";
 
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -49,55 +36,33 @@ function Notice(props) {
   }, []);
 
   useEffect(() => {
-  // Notice content
-  const noticeContent = async (e) => {
-    const response = await fetch(`${url}api/v1/post?setNotice=true`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
+    // Notice content
+    const noticeContent = async (e) => {
+      const response = await fetch(`${url}api/v1/post?setNotice=true`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
 
-    const data = await response.json();
-    if (data.status === "success") {
-      setPosts(data.data.posts);
-    } else {
-      alert(data.message);
-    }
-  };
-  
-  noticeContent();
+      const data = await response.json();
+      if (data.status === "success") {
+        setPosts(data.data.posts);
+      } else {
+        alert(data.message);
+      }
+    };
+
+    noticeContent();
   }, [setPosts]);
-
-  // Date
-  const time_stamp = [1737605433150, 1737605433150]; // 透過 Date.now() 拿
-  const dayArr = [];
-  const monthArr = [];
-  time_stamp.map((item) => {
-    const time = new Date();
-    time.setTime(item); // 轉成標準 Thu Jan 23 2025 13:10:33 GMT+0900 (Palau Time)
-    dayArr.push(time.getDate());
-    monthArr.push(months[time.getMonth()]);
-  });
-  // Title
-  const titelArr = ["Title", "Title"];
-  // context
-  const contextArr = [
-    "Lorem ipsum dolor sit amet consectetur. Mauris quam sed euismod sed maecenas amet euismod. Facilisi dui erat ut velit facilisis facilisi. Justo urna amet sit amet faucibus. Enim eget integer tempor pharetra.",
-    "Lorem ipsum dolor sit amet consectetur. Mauris quam sed euismod sed maecenas amet euismod. Facilisi dui erat ut velit facilisis facilisi. Justo urna amet sit amet faucibus. Enim eget integer tempor pharetra.",
-  ];
 
   return (
     <Fragment>
       {!closeNotice && (
         <div
-          id="noticeBack"
+          id='noticeBack'
           style={{
-            width: `${
-              parseFloat(props.plateSize) * 0.65
-            }${props.plateSize.slice(-2)}`, // slice 的部分是看 vw 還是 vh
-            height: `${
-              parseFloat(props.plateSize) * 0.9
-            }${props.plateSize.slice(-2)}`,
+            width: `${parseFloat(props.plateSize) * 0.65}${props.plateSize.slice(-2)}`, // slice 的部分是看 vw 還是 vh
+            height: `${parseFloat(props.plateSize) * 0.9}${props.plateSize.slice(-2)}`,
             backgroundColor: "white",
             position: "fixed",
             zIndex: 50,
@@ -105,55 +70,45 @@ function Notice(props) {
             boxShadow: "8px 5px 20.6px rgba(0, 0, 0, 0.25)",
           }}
         >
-          <div className="content" style={{ overflow: "auto", height: "100%" }}>
-            {
-              posts && 
-              posts.map( (post) => (
+          <div className='content' style={{ overflow: "auto", height: "100%" }}>
+            {posts &&
+              posts.map((post) => (
                 <>
-                <h1
-                className="contentDate"
-                style={{
-                  fontSize: `${
-                    parseFloat(props.plateSize) * 0.055
-                  }${props.plateSize.slice(-2)}`,
-                }}
-              >
-                {transformDate(post.timestamp).split(' / ')[0] + " " + months[transformDate(post.timestamp).split(' / ')[1]-1]}
-              </h1>
                   <h1
-                  className="contentTitle"
-                  style={{
-                    fontSize: `${
-                      parseFloat(props.plateSize) * 0.055
-                    }${props.plateSize.slice(-2)}`,
-                  }}
-                >
-                  {post.title}
-                </h1>
-                <p
-                    className="contentText"
+                    className='contentDate'
                     style={{
-                      fontSize: `${
-                        parseFloat(props.plateSize) * 0.035
-                      }${props.plateSize.slice(-2)}`,
+                      fontSize: `${parseFloat(props.plateSize) * 0.055}${props.plateSize.slice(-2)}`,
                     }}
-                    dangerouslySetInnerHTML={{ __html: he.decode(post.content) }} 
                   >
-                  </p>
+                    {transformDate(post.timestamp).split(" / ")[0] + " " + months[transformDate(post.timestamp).split(" / ")[1] - 1]}
+                  </h1>
+                  <h1
+                    className='contentTitle'
+                    style={{
+                      fontSize: `${parseFloat(props.plateSize) * 0.055}${props.plateSize.slice(-2)}`,
+                    }}
+                  >
+                    {post.title}
+                  </h1>
+                  <p
+                    className='contentText'
+                    style={{
+                      fontSize: `${parseFloat(props.plateSize) * 0.035}${props.plateSize.slice(-2)}`,
+                    }}
+                    dangerouslySetInnerHTML={{ __html: he.decode(post.content) }}
+                  ></p>
                 </>
-              ))
-            }
+              ))}
           </div>
           {openNotice && (
             <div
-              id="noticeCover"
+              id='noticeCover'
               style={{
                 position: "absolute",
                 bottom: "0",
                 width: "100%",
                 height: "85%",
-                background:
-                  "linear-gradient(#FFFFFF 15%, #0099ff 37%,#0099ff 45% , #FFFFFF 86%)",
+                background: "linear-gradient(#FFFFFF 15%, #0099ff 37%,#0099ff 45% , #FFFFFF 86%)",
                 borderRadius: "5%",
                 boxShadow: "1px -3px 15.5px rgba(0, 0, 0, 0.25)",
                 transition: "0.5s",
@@ -162,9 +117,7 @@ function Notice(props) {
               <h1
                 style={{
                   fontFamily: "Metal",
-                  fontSize: `${
-                    parseFloat(props.plateSize) * 0.14
-                  }${props.plateSize.slice(-2)}`,
+                  fontSize: `${parseFloat(props.plateSize) * 0.14}${props.plateSize.slice(-2)}`,
                   letterSpacing: "0.15em",
                   marginTop: "30%",
                   textAlign: "center",

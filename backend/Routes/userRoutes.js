@@ -11,9 +11,11 @@ const {
   updatePassword,
   restrictTo,
   isLoggedin,
-  logout
+  logout,
+  formAccess
 } = require("../Function/authorizingFunction");
 const { getUsers, getAUser, updateMe, deleteMe, getPreference, eraseUser } = require("../Function/userFunction");
+const { auth } = require("google-auth-library");
 
 const authRouter = express.Router();
 
@@ -27,6 +29,7 @@ authRouter.get("/googleValidate", googleValidate);
 authRouter.post("/forgotPassword", forgotPassword);
 authRouter.patch("/resetPassword/:token", resetPassword);
 authRouter.patch("/updateMyPassword", loginRequire, updatePassword);
+authRouter.post("/formAccess/:formType", loginRequire, formAccess);
 
 authRouter.get("/", loginRequire, restrictTo("admin"), getUsers);
 authRouter.get("/:id", loginRequire, restrictTo("admin"), getAUser);

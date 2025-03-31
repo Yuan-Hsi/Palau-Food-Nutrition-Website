@@ -1,5 +1,5 @@
 const { promisify } = require("util");
-const { Post, User } = require("../db/dbSchema.js");
+const { Post, User, School } = require("../db/dbSchema.js");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client({
   clientId: process.env.GOOGLE_CLIENT_ID,
@@ -283,3 +283,23 @@ exports.isLoggedin = async (req, res, next) => {
   }
   next();
 };
+
+exports.formAccess = catchAsync(async (req, res, next) => {
+  const school = await School.findOne(req.body).select("+cooker +inventoryLink");
+
+  if ((school.cooker && school.cooker.includes(req.user._id)) || req.user.title == "admin") {
+    let url = "";
+
+    if (req.params.formType == "wmcount") {
+      url = process.env.WM_COUNT_URL;
+    } else if (req.params.formType == "inventory") {
+      url = school.inventoryLink;
+    }
+    res.status(200).json({
+      status: "success",
+      url,
+    });
+  } else {
+    throw new AppError("You seems not authorizing to access, please contact the admin.", 401);
+  }
+});
