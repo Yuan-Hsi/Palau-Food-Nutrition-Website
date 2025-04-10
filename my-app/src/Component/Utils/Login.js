@@ -16,27 +16,6 @@ const inputFontSize = 0.02;
 function Login(props) {
   // For initializing
   const mySize = new SizeHelper(props.plateSize);
-  const [isHorizon, setisHorizon] = useState(true);
-  useEffect(() => {
-    function screenDetect() {
-      if (window.innerWidth > window.innerHeight) {
-        // 橫 > 直
-        setisHorizon(true);
-      } // 直 > 橫
-      else {
-        setisHorizon(false);
-      }
-    }
-
-    screenDetect();
-
-    window.addEventListener("resize", screenDetect);
-
-    // 清理函數
-    return () => {
-      window.removeEventListener("resize", screenDetect);
-    };
-  }, []);
 
   // For open the login window
   const [openLogin, setOpenLogin] = useState(false);
@@ -132,7 +111,7 @@ function Login(props) {
 
   return (
     <Fragment>
-      {isHorizon && ( // 橫向的 Login text
+      {props.position === "rightCorner" && ( // 橫向的 Login text
         <div id='Login_text' style={{ position: "absolute", right: 30, zIndex: 3, whiteSpace: "nowrap" }}>
           <button
             onClick={() => {
@@ -168,10 +147,10 @@ function Login(props) {
           )}
         </div>
       )}
-      {!isHorizon && ( // 直向的 Login text
-        <div id='Login_text' style={{ position: "absolute", width: "100%", top: "50%", transform: "translateY(-470%)", textAlign: "center", zIndex: 99 }}>
-          <button id='loginButton' type='submit' onClick={() => setOpenLogin(true)} style={{ fontSize: mySize.adjust(0.04) }}>
-            - LOGIN -
+      {props.position === "upperCenter" && ( // 直向的 Login text
+        <div id='Login_text' style={{ position: "absolute", width: "100%", top: "50%", transform: "translateY(-50vw)", textAlign: "center", zIndex: 99 }}>
+          <button id='loginButton' type='submit' onClick={() => setOpenLogin(true)} style={{ fontSize: mySize.adjust(0.04), color: "black" }}>
+            {user.name}
           </button>
         </div>
       )}
@@ -190,13 +169,13 @@ function Login(props) {
                   <h2 className='accText' style={{ fontSize: mySize.adjust(0.035), textAlign: "center" }}>
                     User
                   </h2>
-                  <input id='accInput' className='inputArea' name='email' style={{ fontSize: mySize.adjust(0.025), height: "5vh" }}></input>
+                  <input id='accInput' className='inputArea' name='email' style={{ fontSize: mySize.adjust(0.025), height: props.position === "upperCenter" ? "2vh" : "5vh" }}></input>
                 </div>
                 <div className='loginInfo' style={{ marginTop: "5%" }}>
                   <h2 className='accText' style={{ fontSize: mySize.adjust(0.035), textAlign: "center" }}>
                     Password
                   </h2>
-                  <input type='password' id='pwdInput' className='inputArea' name='pwd' style={{ fontSize: mySize.adjust(0.025), height: "5vh" }}></input>
+                  <input type='password' id='pwdInput' className='inputArea' name='pwd' style={{ fontSize: mySize.adjust(0.025), height: props.position === "upperCenter" ? "2vh" : "5vh" }}></input>
                 </div>
                 <div id='loginBtnSet'>
                   <button

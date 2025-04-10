@@ -114,9 +114,12 @@ function PostPreview(props) {
             <div style={{ width: "100%" }}>
               {/* Post title section */}
               <div className='preTitleSection'>
-                <h1 className='preTitle' style={{ fontSize: mySize.adjust(0.04) }}>
-                  {" "}
-                  {post.title}{" "}
+                <h1
+                  className='preTitle'
+                  title={post.title}
+                  style={{ fontSize: mySize.adjust(0.04), overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2 }}
+                >
+                  {post.title}
                 </h1>
 
                 {/* Target audience indicator */}
@@ -136,7 +139,7 @@ function PostPreview(props) {
                   WebkitLineClamp: 3,
                 }}
               >
-                <p style={{ fontSize: mySize.adjust(0.022), marginTop: "2%" }}>{postContent}</p>
+                <p style={{ fontSize: mySize.adjust(0.022), marginTop: "0.5%" }}>{postContent}</p>
               </div>
             </div>
 

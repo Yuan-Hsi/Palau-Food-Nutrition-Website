@@ -85,7 +85,7 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  margin-top: 5%;
+  margin-top: 7%;
 }
 
 .signupBtn {
@@ -121,8 +121,8 @@
 
 #closeBtn {
   position: absolute;
-  width: 17%;
-  height: 12%;
+  width: 14%;
+  height: 10%;
   border-radius: 100%;
   background-color: rgba(0, 94, 221, 0.8);
   backdrop-filter: blur(1.5px);

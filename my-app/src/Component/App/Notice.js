@@ -95,7 +95,9 @@ function Notice(props) {
                     style={{
                       fontSize: `${parseFloat(props.plateSize) * 0.035}${props.plateSize.slice(-2)}`,
                     }}
-                    dangerouslySetInnerHTML={{ __html: he.decode(post.content) }}
+                    dangerouslySetInnerHTML={{
+                      __html: he.decode(post.content).replace(/<img/g, `<img style="max-width: 100%; max-height: ${parseFloat(props.plateSize) * 0.7}${props.plateSize.slice(-2)}"`),
+                    }}
                   ></p>
                 </>
               ))}

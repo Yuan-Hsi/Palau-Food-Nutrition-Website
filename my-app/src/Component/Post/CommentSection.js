@@ -50,6 +50,8 @@ function CommentSection(props) {
       if (formRef.current) {
         formRef.current.reset(); // 重置表單
       }
+    } else {
+      alert(data.message);
     }
   };
 

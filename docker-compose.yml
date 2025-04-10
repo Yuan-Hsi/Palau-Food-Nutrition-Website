@@ -12,7 +12,7 @@ services:
     env_file:
       - ./my-app/.env
     environment:
-      - REACT_APP_BACKEND_URL=http://localhost:3005/
+      - REACT_APP_BACKEND_URL=http://192.168.0.9:3005/
     depends_on:
       - backend
 
@@ -21,7 +21,7 @@ services:
       context: ./backend
     container_name: mern-backend
     ports:
-      - "3005:3005"
+      - "3005:3005" # 修改這裡，明確綁定到所有網絡接口
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -29,8 +29,8 @@ services:
       - ./backend/config.env
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/MOE
-      - HOST=http://localhost:3005
-      - FRONTEND_URL=http://localhost:3000
+      - HOST=http://192.168.0.9:3005
+      - FRONTEND_URL=http://192.168.0.9:3000
     depends_on:
       - mongodb
 

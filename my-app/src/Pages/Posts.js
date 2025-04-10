@@ -44,7 +44,7 @@ function Post() {
 
   return (
     <Fragment>
-      <Menu size={size} />
+      <Menu size={size} isVertical={isVertical} />
       <div style={{ display: "flex", marginTop: "3%" }}>
         <SearchBar margin='2vh 0% 0% 3vw' size={size} setQ={setQ} setClickFilter={setClickFilter} />
         {user.title && user.title === "admin" && <WritePostBtn margin='2.5vh 0 0 7vw' size={size} />}

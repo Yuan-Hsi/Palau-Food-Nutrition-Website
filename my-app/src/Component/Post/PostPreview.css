@@ -1,89 +1,88 @@
 @import url("https://fonts.googleapis.com/css?family=Niramit");
 
-.prePost{
-    position:relative;
-    width:70vw;
-    height:25vh;
-    background-color: #FFEA00;
-    border-radius: 20px;
-    display:flex;
-    align-items: center;
-    margin-bottom: 2.5%;
-    box-shadow: 4px 3px 5px rgb(233, 233, 233);
+.prePost {
+  position: relative;
+  width: 70vw;
+  height: 25vh;
+  background-color: #ffea00;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2.5%;
+  box-shadow: 4px 3px 5px rgb(233, 233, 233);
 }
 
-.delBtn{
-    position:absolute;
-    border-radius: 100%;
-    left:96%;
-    top:-5%;
-    border:2px solid black;
-    box-shadow: 4px 3px 5px rgb(233, 233, 233);
-    margin:0;
-    padding:0;
+.delBtn {
+  position: absolute;
+  border-radius: 100%;
+  left: 96%;
+  top: -5%;
+  border: 2px solid black;
+  box-shadow: 4px 3px 5px rgb(233, 233, 233);
+  margin: 0;
+  padding: 0;
 }
 
-.delBtn:hover{
-    cursor: pointer;
+.delBtn:hover {
+  cursor: pointer;
 }
 
-.prePhoto{
-    max-height:70%;
-    width:20%;
-    margin: 0 3vw 0 3vw;
-    object-fit: contain;
+.prePhoto {
+  max-height: 70%;
+  width: 20%;
+  margin: 0 3vw 0 3vw;
+  object-fit: contain;
 }
 
-.preTitleSection{
-    display:flex;
-    align-items: center;
-    justify-content:space-between;
-    width:95%;
+.preTitleSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 95%;
 }
 
-.preTitle{ 
-    color:#8F610C;
-    font-family: "Niramit";
-    letter-spacing: 0.05em;
-    margin-right: 5%;
-    margin-top:2%;
-    margin-bottom:1%;
-    line-height: 120%;
+.preTitle {
+  color: #8f610c;
+  font-family: "Niramit";
+  letter-spacing: 0.05em;
+  margin-right: 5%;
+  margin-top: 2%;
+  padding-bottom: 1%;
+  line-height: 120%;
 }
 
-.preContext{
-    color:#83672A;
-    font-family: "Niramit";
-    letter-spacing: 0.02em;
-    padding-right: 10%;
-
+.preContext {
+  color: #83672a;
+  font-family: "Niramit";
+  letter-spacing: 0.02em;
+  padding-right: 10%;
 }
 
-.forWho{
-    background-color: white;
-    border-radius: 10px;
-    width:30%;
-    height:4vh;
-    display:flex;
-    align-items: center;
-    justify-content: center;
+.forWho {
+  background-color: white;
+  border-radius: 10px;
+  width: 30%;
+  height: 4vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.forMore{
-    position: absolute;
-    top:94%;
-    left:41%;
-    width:20%;
-    height:20%;
-    background-color: white;
-    border:none;
-    border-radius: 20px;
-    font-family: "Niramit";
-    padding-top:0%;
-    text-align: center;
-    padding-bottom: 1.5%;
+.forMore {
+  position: absolute;
+  top: 94%;
+  left: 41%;
+  width: 20%;
+  height: 20%;
+  background-color: white;
+  border: none;
+  border-radius: 20px;
+  font-family: "Niramit";
+  padding-top: 0%;
+  text-align: center;
+  padding-bottom: 1.5%;
 }
 
-.forMore:hover{
-    cursor:pointer;
+.forMore:hover {
+  cursor: pointer;
 }

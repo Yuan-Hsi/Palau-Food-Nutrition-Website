@@ -60,7 +60,7 @@ function App() {
 
   return (
     <Fragment>
-      <Login plateSize={plateSize} setUserInfo={setUserInfo} googleSignup={newUser} />
+      <Login plateSize={plateSize} setUserInfo={setUserInfo} googleSignup={newUser} position={plateSize === "90vh" ? "rightCorner" : "upperCenter"} />
       <div id='menu' style={{ height: "100vh", position: "relative", ...centerStyle }}>
         <Notice plateSize={plateSize} />
         <div id='plateBack' style={{ width: plateSize, height: plateSize, boxShadow: "6px 4px 23.3px rgba(0, 0, 0, 0.25)", position: "absolute", zIndex: 0, ...plateStyle }}></div>

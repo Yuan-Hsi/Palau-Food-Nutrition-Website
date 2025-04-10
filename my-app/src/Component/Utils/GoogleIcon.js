@@ -40,7 +40,7 @@ function GoogleIcon(props) {
             <path fill='none' d='M0 0h48v48H0z'></path>
           </svg>
         </div>
-        <span className='gsi-material-button-contents' style={{ fontSize: mySize.adjust(0.022) }}>
+        <span className='gsi-material-button-contents' style={{ fontSize: mySize.adjust(0.02) }}>
           Sign in with Google
         </span>
         <span style={{ display: "none" }}>Sign in with Google</span>
