@@ -1,11 +1,11 @@
-.menuItem{
-    margin-left:2pt;
-    display:flex;
-    align-items: center;
+.menuItem {
+  margin-left: 2pt;
+  display: flex;
+  align-items: center;
 }
-#menu{
-    display:flex;
-    align-items: center;
-    margin-top:2vh;
-    margin-left:2vw;
+#menu {
+  display: flex;
+  align-items: center;
+  margin-top: 2vh;
+  margin-left: 2vw;
 }

@@ -1,7 +1,9 @@
 #Login_text {
   position: absolute;
-  right: 30;
+  right: 2%;
+  z-index: 3;
   display: flex;
+  white-space: nowrap;
   flex-direction: column;
   height: 20%;
 }

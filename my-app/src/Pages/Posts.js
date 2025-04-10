@@ -5,14 +5,14 @@ import PostPreview from "../Component/Post/PostPreview";
 import WritePostBtn from "../Component/Post/WritePostBtn";
 import ForwhoFilter from "../Component/Post/ForwhoFilter";
 import { useUser } from "../Component/Utils/UserContext.js";
+import { useSize } from "../Utils/SizeContext.js";
 
 function Post() {
   // initialize UIsize
-  const [size, setSize] = useState("90vh");
-  const [isVertical, setIsVertical] = useState(false);
   const [clickFilter, setClickFilter] = useState(false);
   const [q, setQ] = useState("");
   const { user } = useUser();
+  const { size, isVertical } = useSize();
   const [whoFilter, setWhoFilter] = useState({ forCooker: 0, forStudent: 0 });
 
   useEffect(() => {
@@ -44,15 +44,31 @@ function Post() {
 
   return (
     <Fragment>
-      <Menu size={size} isVertical={isVertical} />
-      <div style={{ display: "flex", marginTop: "3%" }}>
-        <SearchBar margin='2vh 0% 0% 3vw' size={size} setQ={setQ} setClickFilter={setClickFilter} />
-        {user.title && user.title === "admin" && <WritePostBtn margin='2.5vh 0 0 7vw' size={size} />}
-      </div>
-      <div style={{ display: "flex", height: "100vh" }}>
-        <PostPreview margin='4vh 0% 0% 3vw' size={size} whoFilter={whoFilter} clickFilter={clickFilter} q={q} />
-        <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} margin='10vh 0% 0% 0' size={size} />
-      </div>
+      <Menu />
+      {!isVertical && (
+        <Fragment>
+          <div style={{ display: "flex", marginTop: "3%" }}>
+            <SearchBar margin='2vh 0% 0% 3vw' size={size} setQ={setQ} setClickFilter={setClickFilter} />
+            {user.title && user.title === "admin" && <WritePostBtn margin='2.5vh 0 0 7vw' size={size} />}
+          </div>
+          <div style={{ display: "flex", height: "100vh" }}>
+            <PostPreview margin='4vh 0% 0% 3vw' size={size} whoFilter={whoFilter} clickFilter={clickFilter} q={q} />
+            <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} margin='10vh 0% 0% 0' size={size} />
+          </div>
+        </Fragment>
+      )}
+      {isVertical && (
+        <Fragment>
+          <div style={{ display: "flex", marginTop: "3%" }}>
+            <SearchBar margin='2vh 0% 0% 3vw' size={size} setQ={setQ} setClickFilter={setClickFilter} />
+            {user.title && user.title === "admin" && <WritePostBtn margin='2.5vh 0 0 7vw' size={size} />}
+          </div>
+          <div style={{ display: "flex", height: "100vh" }}>
+            <PostPreview margin='4vh 0% 0% 3vw' size={size} whoFilter={whoFilter} clickFilter={clickFilter} q={q} />
+            <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} margin='10vh 0% 0% 0' size={size} />
+          </div>
+        </Fragment>
+      )}
     </Fragment>
   );
 }

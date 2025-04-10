@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import SchoolSelection from "../Utils/SchoolSelection.js";
-import { useUser } from "../Utils/UserContext.js";
 import SizeHelper from "../Utils/utils.js";
+import { useSize } from "../Utils/SizeContext.js";
 import "./FormAccess.css";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
 function FormAccess(props) {
   const [school, setSchool] = useState("67e63350944e3010a95752b5");
-  const mySize = new SizeHelper(props.size);
-  const { user } = useUser();
+  const { size, isVertical } = useSize();
+  const mySize = new SizeHelper(size);
 
   const redirection = async (e) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ function FormAccess(props) {
           Your School:
         </h1>
         <div style={{ display: "flex", width: "100%", height: "25%", justifyContent: "center", alignItems: "center" }}>
-          <SchoolSelection cl='formAccess' size={props.size} setSchool={setSchool} />
+          <SchoolSelection cl='formAccess' setSchool={setSchool} />
           <button type='submit' className='formAccess' id='submitBtn' style={{ fontSize: mySize.adjust(0.045) }}>
             ➭
           </button>

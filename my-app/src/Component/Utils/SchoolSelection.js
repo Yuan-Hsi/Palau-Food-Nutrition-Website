@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import SizeHelper from "./utils.js";
-
 const url = process.env.REACT_APP_BACKEND_URL;
 
 function SchoolSelection(props) {

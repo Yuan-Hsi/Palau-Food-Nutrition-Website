@@ -3,12 +3,14 @@ import "./Menu.css";
 import Login from "./Login";
 import FormAccess from "./FormAccess";
 import SizeHelper from "./utils.js";
+import { useSize } from "../Utils/SizeContext.js";
 
 const options = ["CALENDAR", "NEWS", "WASTE & MEALS COUNT", "INVENTORY FORM"];
 const hrefs = ["/calendar", "/Posts", "#", "#"];
 
 function Menu(props) {
-  const mySize = new SizeHelper(props.size);
+  const { size, isVertical } = useSize();
+  const mySize = new SizeHelper(size);
   const [access, setAccess] = useState(false);
   const [formType, setFormType] = useState("wmcount");
 
@@ -29,42 +31,20 @@ function Menu(props) {
 
   return (
     <Fragment>
-      {!props.isVertical && (
-        <Fragment>
-          <Login plateSize={props.size} />
-          <div id='menu'>
-            {options.map((item, idx) => {
-              return (
-                <div className='menuItem' key={`menu-item-${idx}`}>
-                  <a href={hrefs[idx]} style={{ marginLeft: "1vw", marginRight: "1vw", fontSize: mySize.adjust(0.025) }} onClick={(e) => handleClick(e, item)}>
-                    {item}
-                  </a>
-                  <p>|</p>
-                </div>
-              );
-            })}
-          </div>
-          {access && <FormAccess size={props.size} setAccess={setAccess} formType={formType} />}
-        </Fragment>
-      )}
-      {!props.isVertical && (
-        <Fragment>
-          <Login plateSize={props.size} />
-          <div id='menu'>
-            {options.map((item, idx) => {
-              return (
-                <div className='menuItem' key={`menu-item-${idx}`}>
-                  <a href={hrefs[idx]} style={{ marginLeft: "1vw", marginRight: "1vw", fontSize: mySize.adjust(0.025) }} onClick={(e) => handleClick(e, item)}>
-                    {item}
-                  </a>
-                  <p>|</p>
-                </div>
-              );
-            })}
-          </div>
-          {access && <FormAccess size={props.size} setAccess={setAccess} formType={formType} />}
-        </Fragment>
-      )}
+      <Login position='rightCorner' />
+      <div id='menu'>
+        {options.map((item, idx) => {
+          return (
+            <div className='menuItem' key={`menu-item-${idx}`}>
+              <a href={hrefs[idx]} style={{ marginLeft: "1vw", marginRight: "1vw", fontSize: mySize.adjust(0.025) }} onClick={(e) => handleClick(e, item)}>
+                {item}
+              </a>
+              <p>|</p>
+            </div>
+          );
+        })}
+      </div>
+      {access && <FormAccess size={props.size} setAccess={setAccess} formType={formType} />}
     </Fragment>
   );
 }

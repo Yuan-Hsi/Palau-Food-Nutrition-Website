@@ -8,6 +8,7 @@ import OnePost from "./Pages/OnePost.js";
 import WriteAPost from "./Pages/WriteAPost.js";
 import Calendar from "./Pages/Calendar.js";
 import { UserProvider } from "./Component/Utils/UserContext.js";
+import { SizeProvider } from "./Component/Utils/SizeContext.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -16,13 +17,13 @@ root.render(
     {/* prettier-ignore */}
     <Router>
       <Routes>
-        <Route path="/" element={<UserProvider><App /></UserProvider>}/>
-        <Route path="/:isNewUser" element={<UserProvider><App /></UserProvider>}/>
-        <Route path="/posts" element={<UserProvider><Posts /></UserProvider>} />
-        <Route path="/post/:id" element={<UserProvider><OnePost /></UserProvider>} />
-        <Route path="/writeapost" element={<UserProvider><WriteAPost /></UserProvider>} />
-        <Route path="/writeapost/:id" element={<UserProvider><WriteAPost /></UserProvider>} />
-        <Route path="/calendar" element={<UserProvider><Calendar /></UserProvider>} />
+        <Route path="/" element={<UserProvider><SizeProvider><App /></SizeProvider></UserProvider>}/>
+        <Route path="/:isNewUser" element={<UserProvider><SizeProvider><App /></SizeProvider></UserProvider>}/>
+        <Route path="/posts" element={<UserProvider><SizeProvider><Posts /></SizeProvider></UserProvider>} />
+        <Route path="/post/:id" element={<UserProvider><SizeProvider><OnePost /></SizeProvider></UserProvider>} />
+        <Route path="/writeapost" element={<UserProvider><SizeProvider><WriteAPost /></SizeProvider></UserProvider>} />
+        <Route path="/writeapost/:id" element={<UserProvider><SizeProvider><WriteAPost /></SizeProvider></UserProvider>} />
+        <Route path="/calendar" element={<UserProvider><SizeProvider><Calendar /></SizeProvider></UserProvider>} />
       </Routes>
     </Router>
   </React.StrictMode>,

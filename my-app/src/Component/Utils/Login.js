@@ -2,6 +2,7 @@ import React, { useEffect, Fragment, useState } from "react";
 import "./Login.css";
 import SizeHelper from "./utils.js";
 import { useUser } from "../Utils/UserContext.js";
+import { useSize } from "../Utils/SizeContext.js";
 import GoogleIcon from "./GoogleIcon.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
@@ -15,7 +16,8 @@ const inputFontSize = 0.02;
 
 function Login(props) {
   // For initializing
-  const mySize = new SizeHelper(props.plateSize);
+  const { size, isVertical } = useSize();
+  const mySize = new SizeHelper(size);
 
   // For open the login window
   const [openLogin, setOpenLogin] = useState(false);
@@ -112,7 +114,7 @@ function Login(props) {
   return (
     <Fragment>
       {props.position === "rightCorner" && ( // 橫向的 Login text
-        <div id='Login_text' style={{ position: "absolute", right: 30, zIndex: 3, whiteSpace: "nowrap" }}>
+        <div id='Login_text'>
           <button
             onClick={() => {
               if (user.name === "Login") {
@@ -147,7 +149,7 @@ function Login(props) {
           )}
         </div>
       )}
-      {props.position === "upperCenter" && ( // 直向的 Login text
+      {props.position === "upperCenter" && ( // 在中間 Login text
         <div id='Login_text' style={{ position: "absolute", width: "100%", top: "50%", transform: "translateY(-50vw)", textAlign: "center", zIndex: 99 }}>
           <button id='loginButton' type='submit' onClick={() => setOpenLogin(true)} style={{ fontSize: mySize.adjust(0.04), color: "black" }}>
             {user.name}
@@ -169,13 +171,13 @@ function Login(props) {
                   <h2 className='accText' style={{ fontSize: mySize.adjust(0.035), textAlign: "center" }}>
                     User
                   </h2>
-                  <input id='accInput' className='inputArea' name='email' style={{ fontSize: mySize.adjust(0.025), height: props.position === "upperCenter" ? "2vh" : "5vh" }}></input>
+                  <input id='accInput' className='inputArea' name='email' style={{ fontSize: mySize.adjust(0.025), height: isVertical ? "2vh" : "5vh" }}></input>
                 </div>
                 <div className='loginInfo' style={{ marginTop: "5%" }}>
                   <h2 className='accText' style={{ fontSize: mySize.adjust(0.035), textAlign: "center" }}>
                     Password
                   </h2>
-                  <input type='password' id='pwdInput' className='inputArea' name='pwd' style={{ fontSize: mySize.adjust(0.025), height: props.position === "upperCenter" ? "2vh" : "5vh" }}></input>
+                  <input type='password' id='pwdInput' className='inputArea' name='pwd' style={{ fontSize: mySize.adjust(0.025), height: isVertical ? "2vh" : "5vh" }}></input>
                 </div>
                 <div id='loginBtnSet'>
                   <button
