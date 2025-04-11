@@ -1,7 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
 
-const url = process.env.REACT_APP_BACKEND_URL;
-
 // 1. 建立 Context
 const SizeContext = createContext(null);
 
@@ -38,5 +36,5 @@ export const SizeProvider = ({ children }) => {
 
 // 4. 自訂 hook 讓其他元件更容易取用 `user`
 export const useSize = () => {
-  return SizeProvider(SizeContext);
+  return useContext(SizeContext);
 };

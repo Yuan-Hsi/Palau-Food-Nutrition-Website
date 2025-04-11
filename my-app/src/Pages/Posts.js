@@ -5,7 +5,7 @@ import PostPreview from "../Component/Post/PostPreview";
 import WritePostBtn from "../Component/Post/WritePostBtn";
 import ForwhoFilter from "../Component/Post/ForwhoFilter";
 import { useUser } from "../Component/Utils/UserContext.js";
-import { useSize } from "../Utils/SizeContext.js";
+import { useSize } from "../Component/Utils/SizeContext.js";
 
 function Post() {
   // initialize UIsize
@@ -14,28 +14,6 @@ function Post() {
   const { user } = useUser();
   const { size, isVertical } = useSize();
   const [whoFilter, setWhoFilter] = useState({ forCooker: 0, forStudent: 0 });
-
-  useEffect(() => {
-    function updateSize() {
-      if (window.innerWidth > window.innerHeight) {
-        // 橫 > 直
-        setSize("90vh");
-      } // 直 > 橫
-      else {
-        setSize("90vw"); // 直向
-        setIsVertical(true); // 直向
-      }
-    }
-
-    updateSize();
-
-    window.addEventListener("resize", updateSize);
-
-    // 清理函數
-    return () => {
-      window.removeEventListener("resize", updateSize);
-    };
-  }, []);
 
   useEffect(() => {
     if (user.title === "student") setWhoFilter({ forCooker: 0, forStudent: 1 });
