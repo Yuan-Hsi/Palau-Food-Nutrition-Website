@@ -5,11 +5,13 @@ import { transformDate, chunkArray } from "../Utils/utils.js";
 import PageSection from "../Utils/PageSection.js";
 import "./CommentSection.css";
 import { useUser } from "../Utils/UserContext.js";
+import { useSize } from "../Utils/SizeContext.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
 function CommentSection(props) {
-  const mySize = new SizeHelper(props.size);
+  const { size, isVertical } = useSize();
+  const mySize = new SizeHelper(size);
   const [page, setPage] = useState(1);
   const { user } = useUser();
   const formRef = useRef(null); // using for reset the form after submit
@@ -103,27 +105,30 @@ function CommentSection(props) {
 
   return (
     <div id='commentSection'>
-      <div style={{ display: "flex", height: "20%", alignItems: "center" }}>
-        <form id='postComment' onSubmit={sentComment} ref={formRef}>
+      {user.title && user.title === "admin" && isVertical && (
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "3%" }}>
+          <WritePostBtn margin='0 0 0 1vw' />
+        </div>
+      )}
+      <div style={{ display: "flex", height: "20%", alignItems: "center", marginLeft: isVertical ? "5%" : "" }}>
+        <form id='postComment' onSubmit={sentComment} ref={formRef} style={{ width: isVertical ? "85%" : "" }}>
           <p id='inputUser' style={{ fontSize: mySize.adjust(0.025) }}>{`${user.name} :`}</p>
-          <textarea id='inputComment' name='comment' disabled={props.userName === "Please Log in"} style={{ fontSize: mySize.adjust(0.02) }}></textarea>
+          <textarea id='inputComment' name='comment' disabled={props.userName === "Please Log in"} style={{ fontSize: mySize.adjust(0.02), height: isVertical ? "6vh" : "" }}></textarea>
           <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", paddingRight: "2%" }}>
             <div style={{ display: "flex", alignItems: "center", marginTop: "-3%" }}>
-              <input type='checkbox' id='privateBtn' name='visibility' value='false'></input>
-              <label for='privateBtn' style={{ fontSize: mySize.adjust(0.015), marginLeft: "5%", whiteSpace: "nowrap" }}>
-                {" "}
-                ONLY BE SEEN BY ADMIN{" "}
+              <input type='checkbox' id='privateBtn' name='visibility' value='false' style={{ height: isVertical ? "20%" : "" }}></input>
+              <label for='privateBtn' style={{ fontSize: mySize.adjust(isVertical ? "0.02" : "0.015"), marginLeft: isVertical ? "0" : "5%", whiteSpace: "nowrap" }}>
+                ONLY BE SEEN BY ADMIN
               </label>
             </div>
-            <button type='submit' id='sentBtn' style={{ fontSize: mySize.adjust(0.03) }}>
-              {" "}
-              SENT{" "}
+            <button type='submit' id='sentBtn' style={{ fontSize: mySize.adjust(0.03), height: isVertical ? "3vh" : "" }}>
+              SENT
             </button>
           </div>
         </form>
-        {user.title && user.title === "admin" && <WritePostBtn margin='0 0 0 1vw' size={props.size} />}
+        {user.title && user.title === "admin" && !isVertical && <WritePostBtn margin='0 0 0 1vw' />}
       </div>
-      <div id='commentView' style={{ height: "100%" }}>
+      <div id='commentView' style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
         {props.commentChunk[page - 1] &&
           props.commentChunk[page - 1].map((item, idx) => (
             <div className='comments' id={`comment_${idx + 1}`} key={`comment_${idx + 1}`}>

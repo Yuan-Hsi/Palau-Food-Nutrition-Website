@@ -26,24 +26,24 @@ function Post() {
       {!isVertical && (
         <Fragment>
           <div style={{ display: "flex", marginTop: "3%" }}>
-            <SearchBar margin='2vh 0% 0% 3vw' size={size} setQ={setQ} setClickFilter={setClickFilter} />
-            {user.title && user.title === "admin" && <WritePostBtn margin='2.5vh 0 0 7vw' size={size} />}
+            <SearchBar margin='2vh 0% 0% 3vw' setQ={setQ} setClickFilter={setClickFilter} />
+            {user.title && user.title === "admin" && <WritePostBtn margin='2.5vh 0 0 7vw' />}
           </div>
           <div style={{ display: "flex", height: "100vh" }}>
-            <PostPreview margin='4vh 0% 0% 3vw' size={size} whoFilter={whoFilter} clickFilter={clickFilter} q={q} />
-            <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} margin='10vh 0% 0% 0' size={size} />
+            <PostPreview margin='4vh 0% 0% 3vw' whoFilter={whoFilter} clickFilter={clickFilter} q={q} />
+            <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} margin='10vh 0% 0% 0' />
           </div>
         </Fragment>
       )}
       {isVertical && (
         <Fragment>
-          <div style={{ display: "flex", marginTop: "3%" }}>
-            <SearchBar margin='2vh 0% 0% 3vw' size={size} setQ={setQ} setClickFilter={setClickFilter} />
-            {user.title && user.title === "admin" && <WritePostBtn margin='2.5vh 0 0 7vw' size={size} />}
+          <div style={{ display: "flex", marginTop: "3%", alignItems: "center" }}>
+            <SearchBar margin={user.title && user.title === "admin" ? "0 0% 0% 3vw" : "0 0% 0% 17vw"} setQ={setQ} setClickFilter={setClickFilter} />
+            {user.title && user.title === "admin" && <WritePostBtn margin='0 0 0 7vw' />}
           </div>
+          <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} />
           <div style={{ display: "flex", height: "100vh" }}>
-            <PostPreview margin='4vh 0% 0% 3vw' size={size} whoFilter={whoFilter} clickFilter={clickFilter} q={q} />
-            <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} margin='10vh 0% 0% 0' size={size} />
+            <PostPreview margin='0 0% 0% 15vw' whoFilter={whoFilter} clickFilter={clickFilter} q={q} />
           </div>
         </Fragment>
       )}

@@ -152,7 +152,7 @@ function Login(props) {
       {props.position === "upperCenter" && ( // 在中間 Login text
         <div id='Login_text' style={{ position: "absolute", width: "100%", top: "50%", transform: "translateY(-50vw)", textAlign: "center", zIndex: 99 }}>
           <button id='loginButton' type='submit' onClick={() => setOpenLogin(true)} style={{ fontSize: mySize.adjust(0.04), color: "black" }}>
-            {user.name}
+            {user.name === "Login" ? " - Login - " : user.name}
           </button>
         </div>
       )}

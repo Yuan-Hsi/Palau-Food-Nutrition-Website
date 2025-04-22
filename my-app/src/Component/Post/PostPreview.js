@@ -5,8 +5,23 @@ import SizeHelper from "../Utils/utils.js";
 import { useNavigate } from "react-router-dom";
 import he from "he";
 import { useUser } from "../Utils/UserContext.js";
+import { useSize } from "../Utils/SizeContext.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
+
+const verticalPostStyle = {
+  height: "15vh",
+  marginBottom: "3vh",
+};
+
+const verticalForWhoStyle = {
+  height: "2vh",
+  padding: "0 2% 0 2%",
+};
+
+const verticalMoreStyle = {
+  paddingBottom: "3.5%",
+};
 
 function PostPreview(props) {
   const [posts, setPosts] = useState([1, 2, 3, 4]);
@@ -15,7 +30,8 @@ function PostPreview(props) {
   const navigate = useNavigate();
   const { user } = useUser();
 
-  const mySize = new SizeHelper(props.size);
+  const { size, isVertical } = useSize();
+  const mySize = new SizeHelper(size);
 
   // Get all post API
   useEffect(() => {
@@ -100,10 +116,10 @@ function PostPreview(props) {
         }
 
         return (
-          <div className='prePost' key={`prePost${idx}`}>
+          <div className='prePost' key={`prePost${idx}`} style={isVertical ? verticalPostStyle : {}}>
             {/* Delete button - only visible for admin or post author */}
             {(user.title === "admin" || (post.author && user.id === post.author[0]._id)) && (
-              <button className='delBtn' style={{ height: mySize.adjust(0.045), width: mySize.adjust(0.045) }} onClick={() => delPost(post.id)}>
+              <button className='delBtn' onClick={() => delPost(post.id)}>
                 ✖
               </button>
             )}
@@ -117,13 +133,13 @@ function PostPreview(props) {
                 <h1
                   className='preTitle'
                   title={post.title}
-                  style={{ fontSize: mySize.adjust(0.04), overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2 }}
+                  style={{ fontSize: mySize.adjust(isVertical ? 0.03 : 0.04), overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2 }}
                 >
                   {post.title}
                 </h1>
 
                 {/* Target audience indicator */}
-                <div className='forWho'>
+                <div className='forWho' style={isVertical ? verticalForWhoStyle : {}}>
                   <p style={{ fontSize: mySize.adjust(0.018), letterSpacing: "0.1em", overflow: "hidden", textOverflow: "clip", whiteSpace: "nowrap" }}>{forwho(post)}</p>
                 </div>
               </div>
@@ -144,7 +160,7 @@ function PostPreview(props) {
             </div>
 
             {/* Read more button */}
-            <button className='forMore' onClick={() => goToPost(post._id)} style={{ fontSize: mySize.adjust(0.02), letterSpacing: "0.3em" }}>
+            <button className='forMore' onClick={() => goToPost(post._id)} style={{ fontSize: mySize.adjust(0.02), letterSpacing: "0.3em", ...(isVertical ? verticalMoreStyle : {}) }}>
               More...
             </button>
           </div>
@@ -152,7 +168,12 @@ function PostPreview(props) {
       })}
 
       {/* Pagination component */}
-      <PageSection totalPage={totalPage} setPage={setPage} page={page} />
+      {isVertical && (
+        <div style={{ marginLeft: "-15%" }}>
+          <PageSection totalPage={totalPage} setPage={setPage} page={page} />
+        </div>
+      )}
+      {!isVertical && <PageSection totalPage={totalPage} setPage={setPage} page={page} />}
     </div>
   );
 }

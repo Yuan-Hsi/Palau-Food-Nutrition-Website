@@ -1,328 +1,341 @@
 @import url("https://fonts.googleapis.com/css?family=Jua");
 
-.foodCalendar#schoolSelect{
-    padding:0.5%;
-    letter-spacing: 0.07em;
-    background-color: rgb(255, 217, 0);
-    border: none;
+.foodCalendar#schoolSelect {
+  padding: 0.5%;
+  letter-spacing: 0.07em;
+  background-color: rgb(255, 217, 0);
+  border: none;
 }
 
-#foodCalendar{
-    margin-top:3%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+#foodCalendar {
+  margin-top: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.foodCalendar{
-    font-family: "jua";
+.foodCalendar {
+  font-family: "jua";
 }
 
-#curMonth{
-    text-align: right;
-    margin-bottom:1%;
-    margin-right: 20%;
-    width:100%;
-    color:rgb(255, 217, 0)
+#curMonth {
+  text-align: right;
+  margin-bottom: 1%;
+  margin-right: 20%;
+  width: 100%;
+  color: rgb(255, 217, 0);
 }
 
 #editBtn {
-    border: none;
-    padding:1.5%;
-    border-radius: 100%;
-    background-color: #ffc61d;
-    letter-spacing: 0.07em;
-    position: absolute;
-    z-index: 1;
+  border: none;
+  padding: 1.5%;
+  border-radius: 100%;
+  background-color: #ffc61d;
+  letter-spacing: 0.07em;
+  position: absolute;
+  z-index: 1;
 }
 
 #editBtn:hover {
-    cursor:pointer;
+  cursor: pointer;
 }
 
 #goToPreMonth {
-    width:25%;
-    padding: 1%;
-    margin-left:0%;
-    color:white;
-    background-color: #d93417;
-    margin-left:103%;
-    border: none;
+  width: 25%;
+  padding: 1%;
+  margin-left: 0%;
+  color: white;
+  background-color: #d93417;
+  margin-left: 103%;
+  border: none;
 }
 
-#calendar{
-    height:auto;
-    width: 85vw;
-    background-color: #F5F5F5;
-    border-radius: 45px;
-    margin-top: 1%;
-    margin-bottom: 6%;
-    box-shadow: 4px 6px 12px 0px #bababa;
-    position: relative;
-    z-index: 2;
+#calendar {
+  height: auto;
+  width: 85vw;
+  background-color: #f5f5f5;
+  border-radius: 45px;
+  margin-top: 1%;
+  margin-bottom: 6%;
+  box-shadow: 4px 6px 12px 0px #bababa;
+  position: relative;
+  z-index: 2;
 }
 
-#weekdays{
-    width:100%;
-    height:92%; 
-    border-collapse: collapse;
+#weekdays {
+  width: 100%;
+  height: 92%;
+  border-collapse: collapse;
 }
 
-.foodCalendar thead{
-    height: 13%;
-
+.foodCalendar thead {
+  height: 13%;
 }
 
-.foodCalendar th{
-    width:10%;
-    color:rgb(0, 157, 255);
+.foodCalendar th {
+  width: 10%;
+  color: rgb(0, 157, 255);
 }
 
-.foodCalendar tr{
-    border-bottom: 0.7px solid #e0e0e0;
-    height:10vh;
+.foodCalendar tr {
+  border-bottom: 0.7px solid #e0e0e0;
+  height: 10vh;
 }
 
-.foodCalendar td{
-    padding:0 3% 0 3%;
-    height:fit-content;
+.foodCalendar td {
+  padding: 0 3% 0 3%;
+  height: fit-content;
 }
 
-.foodCalendar #date{
-    color:rgb(231, 85, 0);
+.foodCalendar #date {
+  color: rgb(231, 85, 0);
 }
 
-#addFood{
-    border: none;
-    border-radius: 20px;
-    background-color: #cfcfcf;
+#addFood {
+  border: none;
+  border-radius: 20px;
+  background-color: #cfcfcf;
 }
 
-.foodCalendar#foodList{
-    position:absolute;
-    z-index:999;
-    width:100%;
-    height:30vh;
-    border-radius: 20px;
-    background-color: rgba(255, 217, 0, 0.104);
-    backdrop-filter: blur(20px);
-    left:0;
-    padding:20% 20% 0 20%;
-    overflow: auto;
+.foodCalendar#foodList {
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  height: 30vh;
+  border-radius: 20px;
+  background-color: rgba(255, 217, 0, 0.104);
+  backdrop-filter: blur(20px);
+  left: 0;
+  padding: 20% 20% 0 20%;
+  overflow: auto;
 }
 
-.dayCalendar#dislike{
-    background-color: black;
+.dayCalendar#dislike {
+  background-color: black;
 }
 
-.dayCalendar#like{
-    margin-right:10%;
+.dayCalendar#like {
+  margin-right: 10%;
 }
 
-.dayCalendar.preferBtn:active{
-    box-shadow: 0 2px #666;
-    transform: translateY(4px);
+.dayCalendar.preferBtn:active {
+  box-shadow: 0 2px #666;
+  transform: translateY(4px);
 }
 
 .dayCalendar.preferBtn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-.dayCalendar.foodName{
-    font-family: "jua";
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* 限制顯示的行數 */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.foodList.category{
-    display: block;
-    border: none;
-    width:100%;
-    padding:2% 0 2% 0;
-    margin-bottom: 4%;
-    margin-top:3%;
+.dayCalendar.foodName {
+  font-family: "jua";
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 限制顯示的行數 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.foodList.food{
-    display: block;
-    width:100%;
-    padding:2% 0 2% 0;
-    margin-bottom: 1%;
+.foodList.category {
+  display: block;
+  border: none;
+  width: 100%;
+  padding: 2% 0 2% 0;
+  margin-bottom: 4%;
+  margin-top: 3%;
 }
 
+.foodList.food {
+  display: block;
+  width: 100%;
+  padding: 2% 0 2% 0;
+  margin-bottom: 1%;
+}
 
 #goToNextMonth {
-    width:3%;
-    height:100%;
-    padding: 5% 7% 5% 2%;
-    margin-left:0%;
-    line-height: 150%;
-    color:white;
-    background-color: #0070f0;
-    margin-left:103%;
-    border-radius: 10px;
+  width: 3%;
+  height: 100%;
+  padding: 5% 7% 5% 2%;
+  margin-left: 0%;
+  line-height: 150%;
+  color: white;
+  background-color: #0070f0;
+  margin-left: 103%;
+  border-radius: 10px;
 }
 
-.categoryView#view{
-    background-color: rgb(212, 210, 210);
-    width:80%;
-    border-radius: 20px;
-    box-shadow: 4px 6px 12px 0px #bababa;
-    padding:1.5% 2%;
+.categoryView#view {
+  background-color: rgb(212, 210, 210);
+  width: 80%;
+  border-radius: 20px;
+  box-shadow: 4px 6px 12px 0px #bababa;
+  padding: 1.5% 2%;
 }
 
-.categoryView#categoryList{
-    width:100%;
-    height:40%;
-    display: flex;
-    margin-bottom: 1%;
-    display:flex;
-    align-items: center;
-    overflow: hidden;
-    overflow-y: hidden;
+.categoryView#categoryList {
+  width: 100%;
+  height: 40%;
+  display: flex;
+  margin-bottom: 1%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  overflow-y: hidden;
 }
 
-.categoryView#categoryList:hover{
-    overflow: auto;
-    overflow-y: hidden;
-    scrollbar-width: thin;
+.categoryView#categoryList:hover {
+  overflow: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
 }
 
-.categoryView.delBtn{
-    position:absolute;
-    z-index: 5;
-    margin-top: -1%;
-    width: 2vw;
-    aspect-ratio: 1/1;
-    border:none;
-    border-radius: 100%;
-    background-color: rgb(1, 1, 1);
-    color:#f80000;
-    transform: translateX(-50%);
-    top:-20%;
-    box-shadow: none;
+.categoryView.delBtn {
+  position: absolute;
+  z-index: 5;
+  margin-top: -1%;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 100%;
+  background-color: rgb(1, 1, 1);
+  color: #f80000;
+  transform: translateX(-50%);
+  top: -20%;
+  box-shadow: none;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.categoryView.categories{
-    border: none;
-    border-radius: 30px;
-    padding: 0% 1.5% 0% 1.5%;
-    margin-right: 0.5%;
-    height:65%;
-    width:fit-content;
-    position:relative;
-    z-index: 1;
-    white-space:nowrap;
+.categoryView.delBtn:hover {
+  background-color: #333;
 }
 
-.categoryView#addCategory{
-    border-radius: 20px;
-    background-color: white;
-    padding:1% 0 1% 1%;
-    min-width:18%;
-    height:40%;
-    display:flex;
-    align-items: center;
+.categoryView.categories {
+  border: none;
+  border-radius: 30px;
+  padding: 0% 1.5% 0% 1.5%;
+  margin-right: 0.5%;
+  height: 65%;
+  width: fit-content;
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
 }
 
-.categoryView#inputColor{
-    border-radius: 10px;
-    border: none;
-    padding: 0%;
-    cursor: pointer;
-    margin-right:3%;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+.categoryView#addCategory {
+  border-radius: 20px;
+  background-color: white;
+  padding: 1% 0 1% 1%;
+  min-width: 18%;
+  height: 40%;
+  display: flex;
+  align-items: center;
+}
+
+.categoryView#inputColor {
+  border-radius: 10px;
+  border: none;
+  padding: 0%;
+  cursor: pointer;
+  margin-right: 3%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 /* 讓 input[type="color"] 看起來像圓形按鈕 */
 .categoryView#inputColor:-webkit-color-swatch-wrapper {
-padding: 0;
-border-radius: 50%;
+  padding: 0;
+  border-radius: 50%;
 }
 
 .categoryView#inputColor::-webkit-color-swatch {
-border: none;
-border-radius: 50%;
+  border: none;
+  border-radius: 50%;
 }
 
 .categoryView#inputColor::-moz-color-swatch {
-border: none;
-border-radius: 50%;
+  border: none;
+  border-radius: 50%;
 }
 
-
-.categoryView#inputCategory{
-    width:70%;
-    height:100%;
-    border:none;
+.categoryView#inputCategory {
+  width: 70%;
+  height: 100%;
+  border: none;
 }
 
 .categoryView#inputCategory::placeholder {
-    color: #9b9b9b; /* 設置較明顯的顏色 */
+  color: #9b9b9b; /* 設置較明顯的顏色 */
 }
 
-.categoryView#itemList{
-    display:block;
-    /*align-items: flex-start;*/
-    height:10vh;
-    overflow: auto;
-    scrollbar-width: thin;;
+.categoryView#itemList {
+  display: block;
+  /*align-items: flex-start;*/
+  height: 10vh;
+  overflow: auto;
+  scrollbar-width: thin;
 }
 
-.categoryView.item{
-    border-radius: 20px;
-    background-color: white;
-    padding:0.5%;
-    width: 10%;
-    text-overflow: ellipsis;
-    position:relative;
-    z-index: 1;
-    white-space:nowrap;
-    margin-top:0.5%;
-    margin-left:0.5%;
+.categoryView.item {
+  border-radius: 20px;
+  background-color: white;
+  padding: 0.5%;
+  width: 10%;
+  text-overflow: ellipsis;
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+  margin-top: 0.5%;
+  margin-left: 0.5%;
 }
 
-.categoryView#addItem{
-    margin-top:0.5%;
-    border-radius: 20px;
-    background-color: white;
-    padding:0% 0 0% 2%;
-    min-width:12%;
-    width:12%;
-    height:35%;
-    display: inline-flex;
-    align-items: center;
-    margin-left: 0.5%;
+.categoryView#addItem {
+  margin-top: 0.5%;
+  border-radius: 20px;
+  background-color: white;
+  padding: 0% 0 0% 2%;
+  min-width: 12%;
+  width: 12%;
+  height: 35%;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.5%;
 }
 
-.categoryView#inputItem{
-    width:80%;
-    height:70%;
-    border:none;
+.categoryView#inputItem {
+  width: 80%;
+  height: 70%;
+  border: none;
 }
 
 .categoryView#inputItem::placeholder {
-    color: #9b9b9b; /* 設置較明顯的顏色 */
+  color: #9b9b9b; /* 設置較明顯的顏色 */
 }
 
+.dayCalendar.delBtn {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 100%;
+  background-color: rgb(1, 1, 1);
+  color: #f80000;
+  box-shadow: none;
+  top: 0;
+  left: 0;
+  margin-left: 10%;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
 
-
-.dayCalendar.delBtn{
-    position:relative;
-    width: 2vw;
-    aspect-ratio: 1/1;
-    border:none;
-    border-radius: 100%;
-    background-color: rgb(1, 1, 1);
-    color:#f80000;
-    box-shadow: none;
-    top:0;
-    left:0;
-    margin-left: 10%;
+.dayCalendar.delBtn:hover {
+  background-color: #333;
 }

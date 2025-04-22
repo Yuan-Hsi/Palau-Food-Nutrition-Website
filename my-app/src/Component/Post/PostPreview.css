@@ -14,17 +14,29 @@
 
 .delBtn {
   position: absolute;
-  border-radius: 100%;
-  left: 96%;
-  top: -5%;
-  border: 2px solid black;
-  box-shadow: 4px 3px 5px rgb(233, 233, 233);
-  margin: 0;
+  width: 28px;
+  height: 28px;
+  right: -10px;
+  top: -10px;
+  background-color: #a5a5a5;
+  color: white;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
   padding: 0;
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
 .delBtn:hover {
   cursor: pointer;
+  background-color: #d60c0c;
+  transform: scale(1.1);
 }
 
 .prePhoto {

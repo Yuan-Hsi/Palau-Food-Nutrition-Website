@@ -31,20 +31,43 @@ function Menu(props) {
 
   return (
     <Fragment>
-      <Login position='rightCorner' />
-      <div id='menu'>
-        {options.map((item, idx) => {
-          return (
-            <div className='menuItem' key={`menu-item-${idx}`}>
-              <a href={hrefs[idx]} style={{ marginLeft: "1vw", marginRight: "1vw", fontSize: mySize.adjust(0.025) }} onClick={(e) => handleClick(e, item)}>
-                {item}
-              </a>
-              <p>|</p>
-            </div>
-          );
-        })}
-      </div>
-      {access && <FormAccess size={props.size} setAccess={setAccess} formType={formType} />}
+      {!isVertical && (
+        <Fragment>
+          <Login position='rightCorner' />
+          <div id='menu'>
+            {options.map((item, idx) => {
+              return (
+                <div className='menuItem' key={`menu-item-${idx}`}>
+                  <a href={hrefs[idx]} style={{ marginLeft: "1vw", marginRight: "1vw", fontSize: mySize.adjust(0.025) }} onClick={(e) => handleClick(e, item)}>
+                    {item}
+                  </a>
+                  <p>|</p>
+                </div>
+              );
+            })}
+          </div>
+          {access && <FormAccess size={props.size} setAccess={setAccess} formType={formType} />}
+        </Fragment>
+      )}
+      {isVertical && (
+        <Fragment>
+          <Login position='rightCorner' />
+          <div id='menu'>
+            <ul>
+              {options.map((item, idx) => {
+                return (
+                  <li className='menuItem' key={`menu-item-${idx}`}>
+                    <a href={hrefs[idx]} style={{ margin: "0 1vw 1vw 1vw", fontSize: mySize.adjust(0.025) }} onClick={(e) => handleClick(e, item)}>
+                      {item}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          {access && <FormAccess size={props.size} setAccess={setAccess} formType={formType} />}
+        </Fragment>
+      )}
     </Fragment>
   );
 }

@@ -1,89 +1,61 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import Menu from "../Component/Utils/Menu";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import PostContent from "../Component/Post/PostContent";
 import CommentSection from "../Component/Post/CommentSection";
-import {chunkArray} from "../Component/Utils/utils";
+import { chunkArray } from "../Component/Utils/utils";
 
-const url = "http://localhost:3005/";
+const url = process.env.REACT_APP_BACKEND_URL;
 
-const vlStyle={
-    borderLeft: "2px solid black",
-    height: "30vh",
-}
+const vlStyle = {
+  borderLeft: "2px solid black",
+  height: "30vh",
+};
 
 function OnePost() {
-    // initialize UIsize
-    const [size, setSize] = useState("90vh");
-    const [isVertical, setIsVertical] = useState(false);
-    const [post, setPost] = useState({comments:[]});
-    const [commentChunk, setCommentChunk]= useState([[]]);
-    const navigate = useNavigate();
-    const { id } = useParams();
-    
-    // UI Size Initilization
-    useEffect(() => {
-      function updateSize() {
-        if (window.innerWidth > window.innerHeight) {
-          // 橫 > 直
-          setSize("90vh");
-        } // 直 > 橫
-        else {
-          setSize("90vw"); // 直向
-          setIsVertical(true); // 直向
-        }
+  const [post, setPost] = useState({ comments: [] });
+  const [commentChunk, setCommentChunk] = useState([[]]);
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  // Connect to GetPost API
+  useEffect(() => {
+    async function getOnePost(postId) {
+      let api = `${url}api/v1/post/${postId}`;
+
+      const response = await fetch(api, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (data.status === "success") {
+        setPost(data.data.post);
+        // Chunk the comment to the size for 'one' page of comment section
+        setCommentChunk(chunkArray(data.data.post.comments));
       }
-  
-      updateSize();
-  
-      window.addEventListener("resize", updateSize);
-  
-      // 清理函數
-      return () => {
-        window.removeEventListener("resize", updateSize);
-      };
-    }, []);
-    
-    // Connect to GetPost API
-    useEffect( () => {
-        async function getOnePost(postId) {
-          
-            let api = `${url}api/v1/post/${postId}`;
-            
-            const response = await fetch(api, {
-                method:"GET",
-                credentials:"include"
-            });
-            
-            const data = await response.json();
+    }
 
-            if (data.status === "success") {
-                setPost(data.data.post);
-                // Chunk the comment to the size for 'one' page of comment section
-                setCommentChunk(chunkArray(data.data.post.comments));
-            }
-        }
-  
-      getOnePost(id);
-    },[id]);
+    getOnePost(id);
+  }, [id]);
 
-     //  Go to the post
-    const goToEdit = () => {
-      navigate(`/writeapost/${id}`);
-    };
+  //  Go to the post
+  const goToEdit = () => {
+    navigate(`/writeapost/${id}`);
+  };
 
+  return (
+    <Fragment>
+      <Menu />
+      <div style={{ display: "flex", height: "100%", marginLeft: "3%" }}>
+        <div className='vl' style={{ marginTop: "20%", borderColor: "#50B6F9", ...vlStyle }}></div>
+        <PostContent post={post} editFunction={() => goToEdit()} />
+        <div className='vl' style={{ marginTop: "10%", borderColor: "#FFDD31", ...vlStyle }}></div>
+      </div>
+      <CommentSection post={post} commentChunk={commentChunk} setCommentChunk={setCommentChunk} />
+    </Fragment>
+  );
+}
 
-    return (
-      <Fragment>
-        <Menu size = {size} />
-        <div style={{display:"flex",height:"100%",marginLeft:"3%"}}>
-        <div className='vl' style={{marginTop:"20%", borderColor:"#50B6F9",...vlStyle}}></div>
-        <PostContent size = {size} post = {post} editFunction = {() => goToEdit()}/>
-        <div className='vl' style={{marginTop:"10%",borderColor:"#FFDD31",...vlStyle}}></div>
-        </div>
-        <CommentSection post={post} size = {size} commentChunk={commentChunk} setCommentChunk = {setCommentChunk}/>
-      </Fragment>
-    );
-  }
-  
-  export default OnePost;
+export default OnePost;

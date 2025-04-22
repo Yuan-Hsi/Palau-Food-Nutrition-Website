@@ -4,12 +4,14 @@ import "./PostContent.css";
 import { transformDate } from "../Utils/utils.js";
 import he from "he";
 import { useUser } from "../Utils/UserContext.js";
+import { useSize } from "../Utils/SizeContext.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
 function PostContent(props) {
   const onePost = props.post;
-  const mySize = new SizeHelper(props.size);
+  const { size, isVertical } = useSize();
+  const mySize = new SizeHelper(size);
   const contentHTML = onePost.content ? he.decode(onePost.content) : "";
   const { user } = useUser();
   // 使用 useState 來管理勾選框的狀態
@@ -40,7 +42,7 @@ function PostContent(props) {
   };
 
   return (
-    <div id='postColumn'>
+    <div id='postColumn' style={{ width: isVertical ? "96%" : "" }}>
       {user.title === "admin" && (
         <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
           <label className='container' style={{ fontSize: mySize.adjust(0.02), paddingLeft: "3.5%", fontWeight: "bold" }}>
@@ -55,13 +57,11 @@ function PostContent(props) {
         </div>
       )}
       <h1 id='postTitle' style={{ fontSize: mySize.adjust(0.05) }}>
-        {" "}
-        {onePost.title}{" "}
+        {onePost.title}
       </h1>
       <div style={{ display: "flex", alignItems: "center", marginTop: "2%", justifyContent: "center" }}>
         <p id='postDate' style={{ fontSize: mySize.adjust(0.02) }}>
-          {" "}
-          {transformDate(onePost.timestamp)}{" "}
+          {transformDate(onePost.timestamp)}
         </p>
         {onePost.author && onePost.author[0]._id === user.id && (
           <button id='editBtn' className='onePost' style={{ width: "3%", height: "3%" }} onClick={props.editFunction}>

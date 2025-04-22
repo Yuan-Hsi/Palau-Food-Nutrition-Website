@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import "./GoogleIcon.css";
 import { useUser } from "../Utils/UserContext.js";
+import { useSize } from "../Utils/SizeContext.js";
 import SizeHelper from "./utils.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
 function GoogleIcon(props) {
-  const mySize = new SizeHelper(props.size);
+  const { size, isVertical } = useSize();
+  const mySize = new SizeHelper(size);
 
   const { user, setUser } = useUser();
 

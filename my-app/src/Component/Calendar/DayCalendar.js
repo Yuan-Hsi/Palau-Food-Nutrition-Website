@@ -287,8 +287,8 @@ function DayCalendar(props) {
 
                       {/* Delete button */}
                       {props.mode === "edit" && delBtn.date === theDate && delBtn.listIdx === idx && (
-                        <div style={{ minWidth: "15px" }}>
-                          <button className='dayCalendar delBtn' id={food._id} onClick={() => deleteMeal(idx)} style={{ width: "100%" }}>
+                        <div style={{ minWidth: "20px" }}>
+                          <button className='dayCalendar delBtn' id={food._id} onClick={() => deleteMeal(idx)} style={{ width: "20px" }}>
                             {" "}
                             X{" "}
                           </button>{" "}
