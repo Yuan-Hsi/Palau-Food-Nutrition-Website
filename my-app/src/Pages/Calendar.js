@@ -1,45 +1,22 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import Menu from "../Component/Utils/Menu";
 import FoodCalendar from "../Component/Calendar/FoodCalendar";
+import FoodCalendarVertical from "../Component/Calendar/FoodCalendarVertical";
+import { useSize } from "../Component/Utils/SizeContext.js";
 
-const url = "http://localhost:3005/";
+const url = process.env.REACT_APP_BACKEND_URL;
 
 function Calendar() {
-    // initialize UIsize
-    const [size, setSize] = useState("90vh");
-    const [isVertical, setIsVertical] = useState(false);
-    const [userInfo, setUserInfo] = useState({name:'',id:'',title:''});
-    
-    // UI Size Initilization
-    useEffect(() => {
-      function updateSize() {
-        if (window.innerWidth > window.innerHeight) {
-          // 橫 > 直
-          setSize("90vh");
-        } // 直 > 橫
-        else {
-          setSize("90vw"); // 直向
-          setIsVertical(true); // 直向
-        }
-      }
-  
-      updateSize();
-  
-      window.addEventListener("resize", updateSize);
-  
-      // 清理函數
-      return () => {
-        window.removeEventListener("resize", updateSize);
-      };
-    }, []);
+  const { size, isVertical } = useSize();
+  const [userInfo, setUserInfo] = useState({ name: "", id: "", title: "" });
 
+  return (
+    <Fragment>
+      <Menu setUserInfo={setUserInfo} />
+      {!isVertical && <FoodCalendar />}
+      {isVertical && <FoodCalendarVertical />}
+    </Fragment>
+  );
+}
 
-    return (
-      <Fragment>
-        <Menu size = {size} setUserInfo = {setUserInfo}/>
-        <FoodCalendar size = {size}/>
-      </Fragment>
-    );
-  }
-  
-  export default Calendar;
+export default Calendar;

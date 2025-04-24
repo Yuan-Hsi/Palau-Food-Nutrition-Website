@@ -255,8 +255,7 @@ function DayCalendar(props) {
                             disabled={props.dislike.includes(food.name)}
                             style={{ boxShadow: props.favorite.includes(food.name) ? "inset 1px 2px #999" : "" }}
                           >
-                            {" "}
-                            ❤️{" "}
+                            ❤️
                           </button>
                           <button
                             id='dislike'
@@ -289,9 +288,8 @@ function DayCalendar(props) {
                       {props.mode === "edit" && delBtn.date === theDate && delBtn.listIdx === idx && (
                         <div style={{ minWidth: "20px" }}>
                           <button className='dayCalendar delBtn' id={food._id} onClick={() => deleteMeal(idx)} style={{ width: "20px" }}>
-                            {" "}
-                            X{" "}
-                          </button>{" "}
+                            X
+                          </button>
                         </div>
                       )}
                     </div>

@@ -5,6 +5,7 @@ import CategoryView from "./CategoryView.js";
 import DayCalendar from "./DayCalendar.js";
 import SchoolSelection from "../Utils/SchoolSelection.js";
 import { useUser } from "../Utils/UserContext.js";
+import { useSize } from "../Utils/SizeContext.js";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -12,7 +13,8 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
 function FoodCalendar(props) {
-  const mySize = new SizeHelper(props.size);
+  const { size, isVertical } = useSize();
+  const mySize = new SizeHelper(size);
   const today = new Date(Date.now());
   const [month, setMonth] = useState(today.getMonth());
   const [year, setYear] = useState(today.getFullYear());
@@ -154,7 +156,7 @@ function FoodCalendar(props) {
       setDislike,
       school,
       setCalendarDB,
-      size: props.size,
+      size: size,
       calendarDB,
       colors,
       foods,
@@ -168,6 +170,11 @@ function FoodCalendar(props) {
     // 處理第一週
     const firstWeek = [];
     for (let i = 0; i < 5; i++) {
+      if (firstDay === 0 && i === 0) {
+        date++;
+        firstWeek.push(<DayCalendar {...calendarProps} date={date++} key={date} />);
+        continue;
+      }
       if (i < firstDay) {
         firstWeek.push(<DayCalendar {...calendarProps} date='' key={`empty-${i}`} />);
       } else {
@@ -219,7 +226,7 @@ function FoodCalendar(props) {
   return (
     <Fragment>
       {/* edit pannel */}
-      {mode === "edit" && <CategoryView foods={foods} setFoods={setFoods} foodDB={foodDB} setFoodDB={setFoodDB} size={props.size} />}
+      {mode === "edit" && <CategoryView foods={foods} setFoods={setFoods} foodDB={foodDB} setFoodDB={setFoodDB} size={size} />}
 
       {/* whole calendar */}
       <div id='foodCalendar'>
