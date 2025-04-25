@@ -1,6 +1,7 @@
 import React, { useEffect, Fragment, useState, useRef } from "react";
 import SizeHelper from "../Utils/utils.js";
 import "./FoodCalendarVertical.css";
+import { useUser } from "../Utils/UserContext.js";
 import { useSize } from "../Utils/SizeContext.js";
 import SchoolSelection from "../Utils/SchoolSelection.js";
 
@@ -12,6 +13,7 @@ const url = process.env.REACT_APP_BACKEND_URL;
 
 function FoodCalendarVertical(props) {
   const { size, isVertical } = useSize();
+  const { user } = useUser();
   const mySize = new SizeHelper(size);
   const today = new Date(Date.now());
   const [month, setMonth] = useState(today.getMonth());
@@ -20,6 +22,8 @@ function FoodCalendarVertical(props) {
   const [firstWeekDay, setFirstWeekDay] = useState(0);
   const [calendarDB, setCalendarDB] = useState({});
   const [school, setSchool] = useState("67e63350944e3010a95752b5");
+  const [favorite, setFavorite] = useState([]);
+  const [dislike, setDislike] = useState([]);
   const todayRef = useRef(null);
 
   // set monthdays and find the weed day of first day
@@ -46,8 +50,8 @@ function FoodCalendarVertical(props) {
     return () => clearTimeout(timer);
   }, [month]);
 
+  // get calendarDB  = { year-month-day : {[foods:{_id,category_id,name},{...}], _id:}}
   useEffect(() => {
-    // get calendarDB  = { year-month-day : {[foods:{_id,category_id,name},{...}], _id:}}
     const getCalendarDB = async () => {
       const api = `${url}api/v1/calendar/?date[gte]=${year}-${month + 1}-1&date[lte]=${year}-${month + 1}-${monthdays}&schoolId=${school}`;
       const response = await fetch(api, {
@@ -70,6 +74,32 @@ function FoodCalendarVertical(props) {
     };
     if (monthdays !== 0) getCalendarDB();
   }, [setCalendarDB, month, year, monthdays, school]);
+
+  // get userData to get the favorite and dislike
+  useEffect(() => {
+    const getPreferences = async () => {
+      const response = await fetch(`${url}api/v1/user/getPreference`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const data = await response.json();
+
+      if (data.status === "success") {
+        setFavorite(data.data.favorite);
+        setDislike(data.data.dislike);
+      } else {
+        console.log("Something wrong... in getPreferences");
+      }
+    };
+    if (user.title) getPreferences();
+  }, [user]);
+
+  function setFoodName(name) {
+    if (favorite.includes(name)) name = "❤️ " + name;
+    if (dislike.includes(name)) name = "💔 " + name;
+    return name;
+  }
 
   function daily(firstDay, monthdays) {
     const dailyCalendar = [];
@@ -118,7 +148,7 @@ function FoodCalendarVertical(props) {
                 calendarDB[ymd].foods.map((item) => {
                   return (
                     <p className='cardFoods' key={item._id} style={{ fontSize: mySize.adjust(0.035) }}>
-                      {item.name}
+                      {setFoodName(item.name)}
                     </p>
                   );
                 })
