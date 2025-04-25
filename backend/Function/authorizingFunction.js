@@ -25,8 +25,6 @@ const createSendToken = (user, statusCode, res) => {
   res.cookie("jwt", token, {
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    sameSite: "None",
-    secure: true,
   });
 
   res.status(statusCode).json({
@@ -103,8 +101,6 @@ exports.googleValidate = catchAsync(async (req, res, next) => {
   res.cookie("jwt", token, {
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    sameSite: "None",
-    secure: true,
   });
 
   // 使用HTML頁面中的腳本將資訊存到localStorage，然後重定向
