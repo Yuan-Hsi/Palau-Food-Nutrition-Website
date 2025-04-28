@@ -65,7 +65,7 @@
 
 .formAccess h1 {
   display: block;
-  margin-bottom: 2%;
+  margin-bottom: 3%;
   letter-spacing: 0.2em;
   color: rgb(46, 103, 146);
 }
@@ -77,6 +77,7 @@
   font-size: 12pt;
   letter-spacing: 0.2em;
   text-align: center;
+  border-radius: 3px;
 }
 
 .formAccess#submitBtn {

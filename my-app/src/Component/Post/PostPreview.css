@@ -98,3 +98,42 @@
 .forMore:hover {
   cursor: pointer;
 }
+
+/* loading style*/
+.loadingImg::before,
+.loadingTitle::before,
+.loadingContext::before {
+  position: absolute;
+  content: "";
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(to right, #f2c700 0%, rgba(255, 255, 255, 0.552) 20%, #f2c700 40%, #f2c700 100%);
+  background-repeat: no-repeat;
+  background-size: 450px 400px;
+  animation: shimmer 2s linear infinite;
+}
+
+.loadingWho {
+  position: relative;
+  overflow: hidden;
+}
+
+.loadingWho::before {
+  position: absolute;
+  content: "";
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(to right, #ffffff 0%, rgba(255, 221, 3, 0.668) 20%, #ffffff 40%, #ffffff 100%);
+  background-repeat: no-repeat;
+  background-size: 450px 400px;
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
