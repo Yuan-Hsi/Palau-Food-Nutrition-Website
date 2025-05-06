@@ -225,8 +225,8 @@ function DayCalendar(props) {
   }
 
   return (
-    <td className='foodCalendar' onMouseEnter={() => setAddItem(true)} onMouseLeave={() => setAddItem(false)}>
-      <div style={{ position: "relative" }}>
+    <td className='foodCalendar' onMouseEnter={() => setAddItem(true)} onMouseLeave={() => setAddItem(false)} style={{ verticalAlign: "top" }}>
+      <div style={{ position: "relative", paddingTop: "10px" }}>
         <div id='date' style={{ textAlign: "right" }}>
           {props.date}{" "}
         </div>

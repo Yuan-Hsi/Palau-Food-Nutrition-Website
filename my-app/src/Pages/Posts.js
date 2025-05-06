@@ -38,8 +38,7 @@ function Post() {
       {isVertical && (
         <Fragment>
           <div style={{ display: "flex", marginTop: "3%", alignItems: "center" }}>
-            <SearchBar margin={user.title && user.title === "admin" ? "0 0% 0% 3vw" : "0 0% 0% 17vw"} setQ={setQ} setClickFilter={setClickFilter} />
-            {user.title && user.title === "admin" && <WritePostBtn margin='0 0 0 7vw' />}
+            <SearchBar margin='0 0% 0% 17vw' setQ={setQ} setClickFilter={setClickFilter} />
           </div>
           <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} />
           <div style={{ display: "flex", height: "100vh" }}>

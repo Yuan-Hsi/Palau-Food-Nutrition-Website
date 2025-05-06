@@ -63,10 +63,9 @@ function PostContent(props) {
         <p id='postDate' style={{ fontSize: mySize.adjust(0.02) }}>
           {transformDate(onePost.timestamp)}
         </p>
-        {onePost.author && onePost.author[0]._id === user.id && (
+        {onePost.author && onePost.author[0]._id === user.id && !isVertical && (
           <button id='editBtn' className='onePost' style={{ width: "3%", height: "3%" }} onClick={props.editFunction}>
-            {" "}
-            ✎{" "}
+            ✎
           </button>
         )}
       </div>

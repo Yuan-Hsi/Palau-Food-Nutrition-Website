@@ -20,7 +20,7 @@ const app = express();
 
 // IMPORTANT: set what website can send the require
 app.use(cors({ origin: [process.env.FRONTEND_URL, "http://localhost:3000"], credentials: true })); // 允許前端的 localhost:3000
-/*
+
 // middleware
 app.use(
   helmet({
@@ -40,14 +40,14 @@ app.use(
     },
   })
 ); // set security HTTP headers
-*/
+
 app.use(morgan("dev"));
 app.use(express.json({ limit: "5mb" }));
 app.use(cookieParser());
 
 const limiter = rateLimit({
   max: 300, // max require amount for same IP
-  windowMs: 60 * 60 * 1000, // for how long
+  windowMs: 5 * 60 * 1000, // for how long
   message: "To many requests from the IP, please try again in an hour!",
 });
 app.use("/api", limiter);

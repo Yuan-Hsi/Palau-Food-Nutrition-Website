@@ -15,6 +15,7 @@ const userSchema = mongoose.Schema({
     require: [true, "Are you a MOE admin/Cooker/Student ?"],
   },
   school: {
+    default: "",
     type: String,
     require: [true, "Please input the school you are in."],
   },

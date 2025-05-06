@@ -32,6 +32,7 @@ const createSendToken = (user, statusCode, res) => {
     token,
     user: user.name,
     title: user.title,
+    school: user.school,
     _id: user._id,
   });
 };
@@ -271,6 +272,7 @@ exports.isLoggedin = async (req, res, next) => {
         name: userAlive.name,
         email: userAlive.email,
         title: userAlive.title,
+        school: userAlive.school,
         _id: userAlive._id,
       });
     } catch (err) {

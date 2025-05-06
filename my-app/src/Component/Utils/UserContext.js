@@ -7,7 +7,7 @@ const UserContext = createContext(null);
 
 // 2. Provider 負責管理 `user`
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState({name: 'Login'});
+  const [user, setUser] = useState({ name: "Login" });
 
   // 3. 在 useEffect 內部發 API 確保 `user` 狀態能保留
   useEffect(() => {
@@ -20,7 +20,7 @@ export const UserProvider = ({ children }) => {
 
         const data = await response.json();
         if (data.status === "success") {
-          setUser({name:data.name,id:data._id,title:data.title}); // 設置用戶狀態
+          setUser({ name: data.name, id: data._id, title: data.title, school: data.school }); // 設置用戶狀態
         }
       } catch (error) {
         console.error("Error checking login status:", error);
@@ -30,11 +30,7 @@ export const UserProvider = ({ children }) => {
     checkLoginStatus();
   }, []); // 依賴陣列為空，表示只在組件掛載時執行一次
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 };
 
 // 4. 自訂 hook 讓其他元件更容易取用 `user`

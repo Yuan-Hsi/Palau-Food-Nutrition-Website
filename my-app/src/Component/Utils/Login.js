@@ -222,8 +222,8 @@ function Login(props) {
                     <option value='' disabled>
                       Please choose your title
                     </option>
-                    <option value='MOE' disabled>
-                      MOE (Contact the admin)
+                    <option value='admin' disabled={user.title === "admin" ? false : true}>
+                      {user.title === "admin" ? "admin" : "MOE (Contact the admin)"}
                     </option>
                     <option value='cooker'>Cooker</option>
                     <option value='student'>Student</option>

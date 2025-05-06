@@ -105,11 +105,6 @@ function CommentSection(props) {
 
   return (
     <div id='commentSection'>
-      {user.title && user.title === "admin" && isVertical && (
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: "3%" }}>
-          <WritePostBtn margin='0 0 0 1vw' />
-        </div>
-      )}
       <div style={{ display: "flex", height: "20%", alignItems: "center", marginLeft: isVertical ? "5%" : "" }}>
         <form id='postComment' onSubmit={sentComment} ref={formRef} style={{ width: isVertical ? "85%" : "" }}>
           <p id='inputUser' style={{ fontSize: mySize.adjust(0.025) }}>{`${user.name} :`}</p>

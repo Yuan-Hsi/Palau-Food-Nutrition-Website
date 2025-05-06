@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useUser } from "./UserContext.js";
+
 const url = process.env.REACT_APP_BACKEND_URL;
 
 function SchoolSelection(props) {
   const [schoolData, setSchoolData] = useState([{ name: "", id: "" }]);
+  const { user, setUser } = useUser();
+  const [userSchool, setUserSchool] = useState(user.school);
 
   useEffect(() => {
     const getSchools = async () => {
@@ -26,11 +30,21 @@ function SchoolSelection(props) {
     getSchools();
   }, []);
 
+  useEffect(() => {
+    setUserSchool(user.school);
+  }, [user]);
+
+  const sentSchool = (schoolName) => {
+    setUserSchool(schoolName);
+    const school = schoolData.find((school) => school.name === schoolName);
+    props.setSchool(school.id);
+  };
+
   return (
-    <select name='school' id='schoolSelect' className={props.cl} style={props.st} onChange={(event) => props.setSchool(event.target.value)}>
+    <select name='school' id='schoolSelect' className={props.cl} style={props.st} value={userSchool || ""} onChange={(event) => sentSchool(event.target.value)}>
       {schoolData.map((school) => {
         return (
-          <option key={school.id} value={school.id}>
+          <option key={school.id} value={school.name}>
             {school.name}
           </option>
         );
