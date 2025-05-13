@@ -123,7 +123,7 @@ function CommentSection(props) {
         </form>
         {user.title && user.title === "admin" && !isVertical && <WritePostBtn margin='0 0 0 1vw' />}
       </div>
-      <div id='commentView' style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div id='commentView' style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: isVertical ? "center" : "flex-start" }}>
         {props.commentChunk[page - 1] &&
           props.commentChunk[page - 1].map((item, idx) => (
             <div className='comments' id={`comment_${idx + 1}`} key={`comment_${idx + 1}`}>

@@ -167,15 +167,21 @@ const Tiptap = (props) => {
     if (!editor) return;
 
     const { state } = editor;
-    //find the selected image
     const { from, to } = state.selection;
-    const image = state.doc.nodesBetween(from, to, (node, pos) => {
+
+    // 創建一個數組來存儲找到的圖片節點和位置
+    const foundImages = [];
+
+    // 在選中範圍內查找圖片節點
+    state.doc.nodesBetween(from, to, (node, pos) => {
       if (node.type.name === "image") {
-        return { node, pos };
+        foundImages.push({ node, pos });
       }
     });
-    if (image.length > 0) {
-      const { node, pos } = image[0];
+
+    // 如果找到了圖片節點
+    if (foundImages.length > 0) {
+      const { node, pos } = foundImages[0];
       editor
         .chain()
         .focus()
@@ -187,6 +193,24 @@ const Tiptap = (props) => {
           return true;
         })
         .run();
+    } else {
+      // 如果沒有選中圖片，嘗試在當前位置查找最近的圖片節點
+      const imageNode = findParentNode((node) => node.type.name === "image")(state.selection);
+
+      if (imageNode) {
+        const { node, pos } = imageNode;
+        editor
+          .chain()
+          .focus()
+          .command(({ tr }) => {
+            tr.setNodeMarkup(pos, undefined, {
+              ...node.attrs,
+              style: `width: ${size}; height: auto; max-width:450px;`,
+            });
+            return true;
+          })
+          .run();
+      }
     }
   };
 

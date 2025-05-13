@@ -42,8 +42,8 @@ services:
       - ./backend/config.env
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/MOE
-      - HOST=/api/
-      - FRONTEND_URL=http://${HOST_IP}
+      - HOST=http://localhost/api # for the redirection back to the backend
+      - FRONTEND_URL=http://${HOST_IP} # for the redirection to the frontend
     depends_on:
       - mongodb
 

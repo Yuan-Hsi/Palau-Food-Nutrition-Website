@@ -31,8 +31,10 @@ function SchoolSelection(props) {
   }, []);
 
   useEffect(() => {
-    setUserSchool(user.school);
-  }, [user]);
+    if (schoolData.find((school) => school.name === user.school)) {
+      setUserSchool(user.school);
+    }
+  }, [user, schoolData]);
 
   const sentSchool = (schoolName) => {
     setUserSchool(schoolName);
