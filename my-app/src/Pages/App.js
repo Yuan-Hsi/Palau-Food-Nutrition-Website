@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import Login from "../Component/Utils/Login";
 import PlateContent from "../Component/App/PlateCotent";
 import Notice from "../Component/App/Notice";
+import Credit from "../Component/Utils/Credit";
 
 const plateStyle = {
   borderRadius: "50%",
@@ -80,9 +81,7 @@ function App() {
         </div>
         <div id='blueLine'></div>
       </div>
-      <p style={{ margin: "-4% 1% 0 0 ", color: "#cfcfcf", float: "right", textAlign: "right" }}>
-        © Copyright <span style={{ fontWeight: "bold" }}>Taiwan ICDF</span>. All Rights Reserved.<br></br> Developed by Yuan-Hsi Chen.
-      </p>
+      <Credit color={plateSize === "90vw" ? "white" : ""} />
     </Fragment>
   );
 }

@@ -4,6 +4,7 @@ import SearchBar from "../Component/Post/SearchBar";
 import PostPreview from "../Component/Post/PostPreview";
 import WritePostBtn from "../Component/Post/WritePostBtn";
 import ForwhoFilter from "../Component/Post/ForwhoFilter";
+import Credit from "../Component/Utils/Credit";
 import { useUser } from "../Component/Utils/UserContext.js";
 import { useSize } from "../Component/Utils/SizeContext.js";
 
@@ -29,7 +30,7 @@ function Post() {
             <SearchBar margin='2vh 0% 0% 3vw' setQ={setQ} setClickFilter={setClickFilter} />
             {user.title && user.title === "admin" && <WritePostBtn margin='2.5vh 0 0 7vw' />}
           </div>
-          <div style={{ display: "flex", height: "100vh" }}>
+          <div style={{ display: "flex", minHeight: "80vh" }}>
             <PostPreview margin='4vh 0% 0% 3vw' whoFilter={whoFilter} clickFilter={clickFilter} q={q} />
             <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} margin='10vh 0% 0% 0' />
           </div>
@@ -41,11 +42,12 @@ function Post() {
             <SearchBar margin='0 0% 0% 17vw' setQ={setQ} setClickFilter={setClickFilter} />
           </div>
           <ForwhoFilter whoFilter={whoFilter} setWhoFilter={setWhoFilter} setClickFilter={setClickFilter} />
-          <div style={{ display: "flex", height: "100vh" }}>
+          <div style={{ display: "flex", minHeight: "50vh" }}>
             <PostPreview margin='0 0% 0% 15vw' whoFilter={whoFilter} clickFilter={clickFilter} q={q} />
           </div>
         </Fragment>
       )}
+      <Credit />
     </Fragment>
   );
 }

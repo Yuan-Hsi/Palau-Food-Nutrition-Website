@@ -1,35 +1,35 @@
 #pageSection {
-    display:flex;
-    width:100%;
-    justify-content:center;
-    align-items:center;
-    margin-top:6%;
-    padding-bottom:5%
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-top: 6%;
+  padding-bottom: 5%;
 }
 
-.pageBtn{
-    margin-left:2%;
-    border:none;
-    background-color:rgba(0, 0, 0, 0)
+.pageBtn {
+  margin-left: 2%;
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
 }
 
-.pageBtn:hover{
-    cursor:pointer;
-    color:#8F610C;
+.pageBtn:hover {
+  cursor: pointer;
+  color: #8f610c;
 }
 
-.goBtn{
-    background-color: #0c98fc;
-    font-weight: bold;
-    color:rgb(233, 206, 31);
-    border: 1px solid rgb(255, 183, 0);
+.goBtn {
+  background-color: #0c98fc;
+  font-weight: bold;
+  color: rgb(233, 206, 31);
+  border: 1px solid rgb(255, 183, 0);
 }
 
-.goBtn:hover{
-    cursor:pointer;
+.goBtn:hover {
+  cursor: pointer;
 }
 
-#curPage:hover{
-    color:#c0c0c0;
-    cursor:default;
+#curPage:hover {
+  color: #c0c0c0;
+  cursor: default;
 }

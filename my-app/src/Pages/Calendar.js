@@ -3,6 +3,7 @@ import Menu from "../Component/Utils/Menu";
 import FoodCalendar from "../Component/Calendar/FoodCalendar";
 import FoodCalendarVertical from "../Component/Calendar/FoodCalendarVertical";
 import { useSize } from "../Component/Utils/SizeContext.js";
+import Credit from "../Component/Utils/Credit";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -15,6 +16,7 @@ function Calendar() {
       <Menu setUserInfo={setUserInfo} />
       {!isVertical && <FoodCalendar />}
       {isVertical && <FoodCalendarVertical />}
+      <Credit />
     </Fragment>
   );
 }

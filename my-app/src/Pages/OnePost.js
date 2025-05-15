@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import PostContent from "../Component/Post/PostContent";
 import CommentSection from "../Component/Post/CommentSection";
 import { chunkArray } from "../Component/Utils/utils";
+import Credit from "../Component/Utils/Credit";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -54,6 +55,7 @@ function OnePost() {
         <div className='vl' style={{ marginTop: "10%", borderColor: "#FFDD31", ...vlStyle }}></div>
       </div>
       <CommentSection post={post} commentChunk={commentChunk} setCommentChunk={setCommentChunk} />
+      <Credit />
     </Fragment>
   );
 }
