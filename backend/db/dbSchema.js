@@ -313,7 +313,11 @@ const foodSchema = new mongoose.Schema({
 
 // Calendar Schema
 const calendarSchema = new mongoose.Schema({
-  schoolId: { type: mongoose.Schema.Types.ObjectId, ref: "School" },
+  schoolType: {
+    type: String,
+    enum: ["Elementary School", "High School", "Others"],
+    default: "Elementary School",
+  },
   date: { type: Date, required: true },
   foods: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }], // 用 food_id 來引用 foods
 });

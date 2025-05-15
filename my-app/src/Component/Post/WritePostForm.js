@@ -66,6 +66,11 @@ function WritePostForm(props) {
       });
     }
 
+    if (response.status === 413) {
+      alert("The post content is too large, maybe too many images");
+      return;
+    }
+
     const data = await response.json();
     if (data.status === "success") {
       id = id || data.postId;

@@ -83,13 +83,16 @@ function DayCalendar(props) {
     if (props.calendarDB[theDate] === undefined || props.calendarDB[theDate].foods.length === 0) {
       // create the day
 
-      const jsonData = JSON.stringify({ schoolId: props.school, date: theDate, foods: [foodId] });
+      const jsonData = JSON.stringify({ schoolType: props.school, date: theDate, foods: [foodId] });
+
+      console.log(props.school);
       const response = await fetch(`${url}api/v1/calendar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: jsonData,
       });
+
       const data = await response.json();
 
       if (data.status === "success") {
@@ -143,7 +146,7 @@ function DayCalendar(props) {
 
     if (update.length === 0) {
       // remove 整個 date
-      response = await fetch(`${url}api/v1/calendar/?schoolId=${props.school}&date=${theDate}`, {
+      response = await fetch(`${url}api/v1/calendar/?schoolType=${props.school}&date=${theDate}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -21,7 +21,7 @@ function FoodCalendar(props) {
   const [monthdays, setMonthdays] = useState(0);
   const [firstWeekDay, setFirstWeekDay] = useState(0);
   const [mode, setMode] = useState("view");
-  const [school, setSchool] = useState("67e63350944e3010a95752b5");
+  const [school, setSchool] = useState("Elementary School");
   const [foodDB, setFoodDB] = useState([{ color: "", name: "" }]);
   const [calendarDB, setCalendarDB] = useState({});
   const [foods, setFoods] = useState({});
@@ -60,7 +60,7 @@ function FoodCalendar(props) {
   // get calendarDB  = { year-month-day : {[foods:{_id,category_id,name},{...}], _id:}}
   useEffect(() => {
     const getCalendarDB = async () => {
-      const api = `${url}api/v1/calendar/?date[gte]=${year}-${month + 1}-1&date[lte]=${year}-${month + 1}-${monthdays}&schoolId=${school}`;
+      const api = `${url}api/v1/calendar/?date[gte]=${year}-${month + 1}-1&date[lte]=${year}-${month + 1}-${monthdays}&schoolType=${school}`;
       const response = await fetch(api, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -248,7 +248,17 @@ function FoodCalendar(props) {
           <button className='foodCalendar' id='goToPreMonth' style={{ fontSize: mySize.adjust(0.018), marginLeft: "10%" }} onClick={() => preMonth()}>
             GOING TO PREVIOUS MONTH
           </button>
-          <SchoolSelection setSchool={setSchool} cl='foodCalendar' st={{ marginLeft: "50%", marginBottom: "1%", fontSize: mySize.adjust(0.02) }} />
+          <select
+            name='school'
+            id='schoolSelect'
+            className='foodCalendar'
+            style={{ marginLeft: "50%", marginBottom: "1%", fontSize: mySize.adjust(0.02) }}
+            onChange={(event) => setSchool(event.target.value)}
+          >
+            <option value={"Elementary School"}>Elementary School</option>
+            <option value={"High School"}>High School</option>
+            <option value={"Others"}>Others</option>
+          </select>
         </div>
 
         <div id='calendar' className='foodCalendar'>

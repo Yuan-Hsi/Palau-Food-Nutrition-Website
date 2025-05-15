@@ -21,7 +21,7 @@ function FoodCalendarVertical(props) {
   const [monthdays, setMonthdays] = useState(0);
   const [firstWeekDay, setFirstWeekDay] = useState(0);
   const [calendarDB, setCalendarDB] = useState({});
-  const [school, setSchool] = useState("67e63350944e3010a95752b5");
+  const [school, setSchool] = useState("Elementary school");
   const [favorite, setFavorite] = useState([]);
   const [dislike, setDislike] = useState([]);
   const todayRef = useRef(null);
@@ -53,7 +53,7 @@ function FoodCalendarVertical(props) {
   // get calendarDB  = { year-month-day : {[foods:{_id,category_id,name},{...}], _id:}}
   useEffect(() => {
     const getCalendarDB = async () => {
-      const api = `${url}api/v1/calendar/?date[gte]=${year}-${month + 1}-1&date[lte]=${year}-${month + 1}-${monthdays}&schoolId=${school}`;
+      const api = `${url}api/v1/calendar/?date[gte]=${year}-${month + 1}-1&date[lte]=${year}-${month + 1}-${monthdays}&schoolType=${school}`;
       const response = await fetch(api, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -189,7 +189,11 @@ function FoodCalendarVertical(props) {
     <Fragment>
       <div style={{ margin: "3% 0 3% 0", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
         <h3 style={{ margin: "0 0 1% 0", letterSpacing: "0.2em", fontSize: mySize.adjust(0.03) }}> - school -</h3>
-        <SchoolSelection setSchool={setSchool} />
+        <select name='school' id='schoolSelect' onChange={(event) => setSchool(event.target.value)}>
+          <option value={"Elementary School"}>Elementary School</option>
+          <option value={"High School"}>High School</option>
+          <option value={"Others"}>Others</option>
+        </select>
       </div>
       <div id='changeMonth' className='fcv'>
         <button id='prevMonth' className='fcv' onClick={() => preMonth()}>
