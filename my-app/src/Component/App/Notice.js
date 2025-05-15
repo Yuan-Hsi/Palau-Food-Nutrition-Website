@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import "./Notice.css";
 import { transformDate } from "../Utils/utils.js";
 import he from "he";
@@ -12,28 +12,28 @@ function Notice(props) {
   const [closeNotice, setCloseNotice] = useState(false);
   const [openNotice, setOpenNotice] = useState(true);
   const [posts, setPosts] = useState([]);
+  const noticeRef = useRef(null);
 
   useEffect(() => {
-    const handleClick = () => {
-      setOpenNotice((prevOpenNotice) => {
-        // 利用函數式更新來讓 openNotice 到最新的值
-        if (prevOpenNotice) {
-          // 如果 openNotice 是 true，則關閉它
-          return false;
-        } else {
-          // 如果 openNotice 已經是 false，則關閉 closeNotice
-          setCloseNotice(true);
-          return false; // 確保 openNotice 仍然是 false
-        }
-      });
+    const handleOutsideClick = (event) => {
+      // 检查点击是否在 noticeBack 元素之外
+      const notice = noticeRef.current;
+      if (notice && !notice.contains(event.target)) {
+        setCloseNotice(true);
+      }
     };
 
-    window.addEventListener("click", handleClick);
+    // 只有当 Notice 显示时才添加事件监听器
+    if (!openNotice) {
+      setTimeout(() => {
+        document.addEventListener("click", handleOutsideClick);
+      }, 0);
+    }
 
     return () => {
-      window.removeEventListener("click", handleClick);
+      document.removeEventListener("click", handleOutsideClick);
     };
-  }, []);
+  }, [openNotice, closeNotice]);
 
   useEffect(() => {
     // Notice content
@@ -69,6 +69,7 @@ function Notice(props) {
             borderRadius: "5%",
             boxShadow: "8px 5px 20.6px rgba(0, 0, 0, 0.25)",
           }}
+          ref={noticeRef}
         >
           <div className='content' style={{ overflow: "auto", height: "100%" }}>
             {posts &&
@@ -114,6 +115,9 @@ function Notice(props) {
                 borderRadius: "5%",
                 boxShadow: "1px -3px 15.5px rgba(0, 0, 0, 0.25)",
                 transition: "0.5s",
+              }}
+              onClick={() => {
+                setOpenNotice(false);
               }}
             >
               <h1

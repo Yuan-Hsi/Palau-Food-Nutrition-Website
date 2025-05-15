@@ -61,7 +61,7 @@ function App() {
   return (
     <Fragment>
       <Login plateSize={plateSize} setUserInfo={setUserInfo} googleSignup={newUser} position={plateSize === "90vh" ? "rightCorner" : "upperCenter"} />
-      <div id='menu' style={{ height: "100vh", position: "relative", ...centerStyle }}>
+      <div id='_menu' style={{ height: "100vh", position: "relative", ...centerStyle }}>
         <Notice plateSize={plateSize} />
         <div id='plateBack' style={{ width: plateSize, height: plateSize, boxShadow: "6px 4px 23.3px rgba(0, 0, 0, 0.25)", position: "absolute", zIndex: 0, ...plateStyle }}></div>
         <div
@@ -80,6 +80,9 @@ function App() {
         </div>
         <div id='blueLine'></div>
       </div>
+      <p style={{ margin: "-4% 1% 0 0 ", color: "#cfcfcf", float: "right", textAlign: "right" }}>
+        © Copyright <span style={{ fontWeight: "bold" }}>Taiwan ICDF</span>. All Rights Reserved.<br></br> Developed by Yuan-Hsi Chen.
+      </p>
     </Fragment>
   );
 }
