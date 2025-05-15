@@ -42,7 +42,7 @@ app.use(
 ); // set security HTTP headers
 
 app.use(morgan("dev"));
-app.use(express.json({ limit: "5mb" }));
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 
 const limiter = rateLimit({
