@@ -3,11 +3,8 @@ const catchAsync = require("./utils/catchAsync");
 const AppError = require("./utils/appError");
 const factory = require("./handleFunction");
 
-
-
 exports.getPublicComments = catchAsync(async (req, res, next) => {
-
-  const query = req.params.postId ? { post: req.params.postId, visibility: true } : {visibility: true};
+  const query = req.params.postId ? { post: req.params.postId, visibility: true } : { visibility: true };
   const comments = await Comment.find(query).sort("timestamp").populate("user");
 
   res.status(200).json({
@@ -20,10 +17,9 @@ exports.getPublicComments = catchAsync(async (req, res, next) => {
 });
 
 exports.getComments = catchAsync(async (req, res, next) => {
-
   let query = {
-    ...(req.params.postId && { post: req.params.postId }), 
-    ...(req.user.title !== "admin" && { $or: [{ user: req.user._id }, { visibility: true }] }) // 如果不是 admin，則添加 $or 條件
+    ...(req.params.postId && { post: req.params.postId }),
+    ...(req.user.title !== "admin" && { $or: [{ user: req.user._id }, { visibility: true }] }), // 如果不是 admin，則添加 $or 條件
   };
 
   const comments = await Comment.find(query).sort("timestamp").populate("user");
@@ -53,13 +49,9 @@ exports.postComment = catchAsync(async (req, res, next) => {
 
 exports.validation = catchAsync(async (req, res, next) => {
   const theComment = await Comment.findById(req.params.id);
-
-  if (!(req.user.title === "admin") && !(req.user._id === theComment.user)) {
+  if (!(req.user.title === "admin") && !(req.user._id.toString() === theComment.user._id.toString())) {
     console.log("error");
-    throw new AppError(
-      "You do not have permission to perform this action.",
-      403
-    );
+    throw new AppError("You do not have permission to perform this action.", 403);
   }
 
   next();
