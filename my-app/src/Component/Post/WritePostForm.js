@@ -18,14 +18,14 @@ function WritePostForm(props) {
   const { user } = useUser();
   const navigate = useNavigate();
   const mySize = new SizeHelper(props.size);
-  const [cooker, setCooker] = useState(false);
+  const [cook, setCook] = useState(false);
   const [student, setStudent] = useState(false);
   const [content, setContent] = useState("");
 
   useEffect(() => {
     if (props.original) {
       setContent(props.original.content);
-      setCooker(props.original.forCooker);
+      setCook(props.original.forCook);
       setStudent(props.original.forStudent);
     }
   }, [props.original]);
@@ -35,7 +35,7 @@ function WritePostForm(props) {
     const formData = new FormData(e.target);
     const safeContent = DOMPurify.sanitize(content);
 
-    const req = Object.assign(Object.fromEntries(formData.entries()), { timestamp: Date.now(), author: user.id, content: safeContent, forCooker: cooker, forStudent: student });
+    const req = Object.assign(Object.fromEntries(formData.entries()), { timestamp: Date.now(), author: user.id, content: safeContent, forCook: cook, forStudent: student });
     const jsonData = JSON.stringify(req);
 
     if (!user.title || user.title !== "admin") {
@@ -43,7 +43,7 @@ function WritePostForm(props) {
       return;
     }
 
-    if (!(cooker || student)) {
+    if (!(cook || student)) {
       alert("You should specify who you post for.");
       return;
     }
@@ -96,12 +96,12 @@ function WritePostForm(props) {
           <div style={{ width: "78%", display: "flex", justifyContent: "space-evenly" }}>
             <input
               type='button'
-              name='forCooker'
+              name='forCook'
               class='forBtn'
-              id='Cooker'
-              style={{ fontSize: mySize.adjust(0.03), backgroundColor: cooker ? "#FFDD31" : "#efefef" }}
-              value='Cooker'
-              onClick={() => setCooker(!cooker)}
+              id='Cook'
+              style={{ fontSize: mySize.adjust(0.03), backgroundColor: cook ? "#FFDD31" : "#efefef" }}
+              value='Cook'
+              onClick={() => setCook(!cook)}
             ></input>
             <input
               type='button'
