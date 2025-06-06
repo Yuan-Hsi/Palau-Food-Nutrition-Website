@@ -21,8 +21,8 @@ schoolRouter
 
 // prettier-ignore
 schoolRouter
-.route("/cooker/:id")
-.patch(loginRequire, restrictTo("admin"), schoolFunction.addACooker)
-.delete(loginRequire, restrictTo("admin"), schoolFunction.removeACooker)
+.route("/cook/:id")
+.patch(loginRequire, restrictTo("admin"), schoolFunction.addACook)
+.delete(loginRequire, restrictTo("admin"), schoolFunction.removeACook)
 
 module.exports = schoolRouter;

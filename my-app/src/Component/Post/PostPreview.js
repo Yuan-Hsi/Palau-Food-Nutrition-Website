@@ -47,8 +47,8 @@ function PostPreview(props) {
       let api = `${url}api/v1/post?page=${page}&`;
 
       if (args.q !== "") api += `q=${args.q}&`;
-      if (!(args.whoFilter.forCooker && args.whoFilter.forStudent)) {
-        if (args.whoFilter.forCooker) api += "forCooker=true&";
+      if (!(args.whoFilter.forCook && args.whoFilter.forStudent)) {
+        if (args.whoFilter.forCook) api += "forCook=true&";
         if (args.whoFilter.forStudent) api += "forStudent=true&";
       }
 
@@ -70,10 +70,10 @@ function PostPreview(props) {
 
   // forWho function
   const forwho = function (post) {
-    if (post.forCooker && post.forStudent) {
+    if (post.forCook && post.forStudent) {
       return "For All";
-    } else if (post.forCooker) {
-      return "For Cooker";
+    } else if (post.forCook) {
+      return "For Cook";
     }
     return "For Student";
   };

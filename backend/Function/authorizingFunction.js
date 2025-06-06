@@ -283,9 +283,9 @@ exports.isLoggedin = async (req, res, next) => {
 };
 
 exports.formAccess = catchAsync(async (req, res, next) => {
-  const school = await School.findOne(req.body).select("+cooker +inventoryLink");
+  const school = await School.findOne(req.body).select("+cooks +inventoryLink");
 
-  if ((school.cooker && school.cooker.includes(req.user._id)) || req.user.title == "admin") {
+  if ((school.cooks && school.cooks.includes(req.user._id)) || req.user.title == "admin") {
     let url = "";
 
     if (req.params.formType == "wmcount") {

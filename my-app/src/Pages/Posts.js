@@ -14,11 +14,11 @@ function Post() {
   const [q, setQ] = useState("");
   const { user } = useUser();
   const { size, isVertical } = useSize();
-  const [whoFilter, setWhoFilter] = useState({ forCooker: 0, forStudent: 0 });
+  const [whoFilter, setWhoFilter] = useState({ forCook: 0, forStudent: 0 });
 
   useEffect(() => {
-    if (user.title === "student") setWhoFilter({ forCooker: 0, forStudent: 1 });
-    if (user.title === "cooker") setWhoFilter({ forCooker: 1, forStudent: 0 });
+    if (user.title === "student") setWhoFilter({ forCook: 0, forStudent: 1 });
+    if (user.title === "cook") setWhoFilter({ forCook: 1, forStudent: 0 });
   }, [user]);
 
   return (

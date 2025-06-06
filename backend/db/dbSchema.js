@@ -11,8 +11,8 @@ const userSchema = mongoose.Schema({
   },
   title: {
     type: String,
-    enum: ["admin", "cooker", "student"], // limit the value
-    require: [true, "Are you a MOE admin/Cooker/Student ?"],
+    enum: ["admin", "cook", "student"], // limit the value
+    require: [true, "Are you a MOE admin/Cook/Student ?"],
   },
   school: {
     default: "",
@@ -119,7 +119,7 @@ const postSchema = mongoose.Schema(
     setNotice: {
       type: Boolean,
     },
-    forCooker: {
+    forCook: {
       type: Boolean,
       default: false,
     },
@@ -352,7 +352,7 @@ const schoolSchema = mongoose.Schema(
       required: [true, "The school name can not be blank."],
       unique: true,
     },
-    cooker: {
+    cooks: {
       type: Array,
     },
     inventoryLink: {

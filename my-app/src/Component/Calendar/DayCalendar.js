@@ -85,7 +85,6 @@ function DayCalendar(props) {
 
       const jsonData = JSON.stringify({ schoolType: props.school, date: theDate, foods: [foodId] });
 
-      console.log(props.school);
       const response = await fetch(`${url}api/v1/calendar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -216,7 +215,6 @@ function DayCalendar(props) {
     const data = await response.json();
 
     if (data.status === "success") {
-      console.log(data);
     } else {
       alert("Something wrong... in updatePreference");
     }

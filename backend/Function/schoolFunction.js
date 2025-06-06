@@ -39,8 +39,8 @@ exports.getSchoolsPrivate = catchAsync(async (req, res, next) => {
 });
 
 exports.updateSchool = catchAsync(async (req, res, next) => {
-  if (req.body.cooker) {
-    throw new AppError("If you want to change the cooker, please using the certain routes, not this!, 400");
+  if (req.body.cook) {
+    throw new AppError("If you want to change the cooks, please using the certain routes, not this!, 400");
   }
 
   const update = await School.findByIdAndUpdate(req.params.id, req.body, {
@@ -59,16 +59,16 @@ exports.updateSchool = catchAsync(async (req, res, next) => {
 });
 
 // prettier-ignore
-exports.addACooker = catchAsync(async (req, res, next) => {
+exports.addACook = catchAsync(async (req, res, next) => {
   
   const school = await School.findById(req.params.id);
-  const oldCooker = school.cooker;
-  if (oldCooker.includes(req.body.cooker)) {
-    throw new AppError("This cooker is already in the list!", 400);
+  const oldCook = school.cooks;
+  if (oldCook.includes(req.body.cook)) {
+    throw new AppError("This cook is already in the list!", 400);
   }
 
-  const newCooker = oldCooker.concat(req.body.cooker);
-  const update = await School.findByIdAndUpdate(req.params.id, { cooker: newCooker }, {
+  const newCook = oldCook.concat(req.body.cook);
+  const update = await School.findByIdAndUpdate(req.params.id, { cooks: newCook }, {
     new: true, // 返回改後資料
     runValidators: true, // 會再跑一次 schema 確認
   });
@@ -84,16 +84,16 @@ exports.addACooker = catchAsync(async (req, res, next) => {
 });
 
 // prettier-ignore
-exports.removeACooker = catchAsync(async (req, res, next) => {
+exports.removeACook = catchAsync(async (req, res, next) => {
   
   const school = await School.findById(req.params.id);
-  const oldCooker = school.cooker;
-  if (!oldCooker.includes(req.body.cooker)) {
-    throw new AppError("This cooker is not in this school list!", 400);
+  const oldCook = school.cooks;
+  if (!oldCook.includes(req.body.cook)) {
+    throw new AppError("This cook is not in this school list!", 400);
   }
 
-  const newCooker = oldCooker.filter(cooker => cooker !== req.body.cooker);
-  const update = await School.findByIdAndUpdate(req.params.id, { cooker: newCooker }, {
+  const newCook = oldCook.filter(cook => cook !== req.body.cook);
+  const update = await School.findByIdAndUpdate(req.params.id, { cooks: newCook }, {
     new: true, // 返回改後資料
     runValidators: true, // 會再跑一次 schema 確認
   });

@@ -38,11 +38,11 @@ function ForwhoFilter(props) {
           <div id='filterBtnSet'>
             <button
               className='filterBtn'
-              id='cookerFilter'
-              onClick={() => filterClick("forCooker")}
-              style={{ fontSize: mySize.adjust(0.025), backgroundColor: props.whoFilter.forCooker ? "#6be508" : "#c0c0c0" }}
+              id='cookFilter'
+              onClick={() => filterClick("forCook")}
+              style={{ fontSize: mySize.adjust(0.025), backgroundColor: props.whoFilter.forCook ? "#6be508" : "#c0c0c0" }}
             >
-              Cooker
+              Cook
             </button>
             <button
               className='filterBtn'
@@ -63,11 +63,11 @@ function ForwhoFilter(props) {
           <div id='filterBtnSet' style={verticalBtnSet}>
             <button
               className='filterBtn'
-              id='cookerFilter'
-              onClick={() => filterClick("forCooker")}
-              style={{ fontSize: mySize.adjust(0.025), backgroundColor: props.whoFilter.forCooker ? "#6be508" : "#c0c0c0", ...verticalBtn }}
+              id='cookFilter'
+              onClick={() => filterClick("forCook")}
+              style={{ fontSize: mySize.adjust(0.025), backgroundColor: props.whoFilter.forCook ? "#6be508" : "#c0c0c0", ...verticalBtn }}
             >
-              Cooker
+              Cook
             </button>
             <button
               className='filterBtn'
